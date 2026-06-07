@@ -1,17 +1,156 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>طيب الحي للعود والأدهان - نظام إدارة المبيعات</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body class="bg-neutral-950 text-neutral-100">
-    <div id="root"></div>
-    <script type="text/babel" src="app.js"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>طيب الحي للعود والأدهان - نظام الإدارة المتكامل</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #FDFBF7;
+            color: #4A3B32;
+        }
+        /* خلفية مخصصة تحاكي النقوش والأجواء الفاخرة الضبابية */
+        .luxury-bg {
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(245, 239, 235, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(212, 175, 55, 0.05) 0%, transparent 40%),
+                linear-gradient(135deg, #FDFBF7 0%, #F5EFEB 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        /* تأثير النخيل والنقوش الضبابية */
+        .luxury-bg::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            opacity: 0.03;
+            background-image: url('https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?auto=format&fit=crop&w=1000&q=80'); /* نقش خلفية قماش/جداري */
+            background-size: cover;
+            pointer-events: none;
+        }
+        /* تأثير التوهج الذهبي الناعم */
+        .gold-glow {
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.15);
+        }
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #B8860B 0%, #D4AF37 50%, #AA7C11 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gold-gradient-btn {
+            background: linear-gradient(135deg, #D4AF37 0%, #C39B32 100%);
+        }
+        .gold-gradient-btn:hover {
+            background: linear-gradient(135deg, #C39B32 0%, #A17E26 100%);
+        }
+    </style>
+</head>
+<body class="luxury-bg min-h-screen flex flex-col justify-between selection:bg-amber-100 selection:text-amber-900">
+
+    <header class="w-full max-w-7xl mx-auto px-6 py-6 flex justify-between items-center z-10">
+        <button class="flex items-center gap-2 px-4 py-2 rounded-full border border-amber-200/60 bg-white/40 backdrop-blur-md text-sm font-medium hover:bg-white/80 transition-all duration-300 shadow-sm cursor-pointer text-[#6B5A50]">
+            <i class="fa-solid fa-gear text-amber-600 animate-spin-slow"></i>
+            <span>الإعدادات</span>
+        </button>
+
+        <button class="flex items-center gap-2 px-5 py-2 rounded-full border border-amber-500/30 bg-white/60 backdrop-blur-md text-sm font-semibold text-[#4A3B32] hover:border-amber-500/60 hover:bg-amber-50/40 transition-all duration-300 shadow-sm cursor-pointer">
+            <i class="fa-solid fa-user-check text-amber-600 text-xs"></i>
+            <span>تسجيل الدخول / إنشاء حساب</span>
+        </button>
+    </header>
+
+    <main class="w-full max-w-4xl mx-auto px-6 text-center py-8 z-10 flex flex-col items-center justify-center flex-grow">
+        
+        <div class="w-28 h-28 rounded-full bg-white/70 backdrop-blur-md border-2 border-amber-400/40 flex items-center justify-center gold-glow mb-6 p-1 transition-transform duration-500 hover:scale-105">
+            <div class="w-full h-full rounded-full border border-amber-300/30 bg-gradient-to-br from-amber-50 to-white flex flex-col items-center justify-center">
+                <i class="fa-solid fa-eye-dropper text-3xl gold-gradient-text mb-0.5"></i>
+                <span class="text-xs font-bold tracking-widest text-amber-700">طيب الحي</span>
+            </div>
+        </div>
+
+        <h1 class="text-5xl md:text-6xl font-extrabold tracking-wide text-[#3D3028] mb-2 drop-shadow-sm">
+            طيب الحي
+        </h1>
+        <h2 class="text-xl md:text-2xl font-medium tracking-widest gold-gradient-text uppercase mb-6">
+            للعود والأدهان
+        </h2>
+        
+        <p class="text-base md:text-lg text-[#6B5A50] max-w-xl leading-relaxed mb-8 font-light">
+            نظام متكامل لإدارة العطور والعود والأدهان والمخزون والكاشير والمبيعات من مكان واحد.
+        </p>
+
+        <button class="gold-gradient-btn text-white font-semibold px-12 py-4 rounded-full text-base tracking-wide shadow-md shadow-amber-700/10 hover:shadow-lg hover:shadow-amber-700/20 transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer flex items-center gap-3">
+            <span>دخول النظام</span>
+            <i class="fa-solid fa-arrow-left text-sm"></i>
+        </button>
+
+    </main>
+
+    <section class="w-full max-w-5xl mx-auto px-6 mb-12 z-10">
+        <div class="relative w-full h-64 md:h-80 rounded-2xl overflow-hidden border border-white/60 bg-white/20 backdrop-blur-sm p-2 gold-glow">
+            <div class="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent z-10"></div>
+            
+            <div class="w-full h-full rounded-xl bg-cover bg-center relative" 
+                 style="background-image: url('https://images.unsplash.com/photo-1615655096345-61a54750068d?auto=format&fit=crop&w=1200&q=80');">
+                
+                <div class="absolute inset-0 bg-amber-900/5 backdrop-contrast-105 flex items-end justify-center pb-6">
+                    <div class="bg-white/80 backdrop-blur-md px-6 py-2.5 rounded-full border border-amber-200/40 text-xs text-[#5C4D43] font-medium tracking-wide shadow-sm flex items-center gap-4">
+                        <span><i class="fa-solid fa-fire-burner text-amber-600 ml-1"></i> مبخرة ملكية</span>
+                        <span class="text-amber-300">|</span>
+                        <span><i class="fa-solid fa-tree text-amber-600 ml-1"></i> عود طبيعي</span>
+                        <span class="text-amber-300">|</span>
+                        <span><i class="fa-solid fa-flask text-amber-600 ml-1"></i> دهن العود وعطور فاخرة</span>
+                        <span class="text-amber-300">|</span>
+                        <span><i class="fa-solid fa-leaf text-amber-600 ml-1"></i> زعفران نقّى</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="w-full border-t border-amber-200/30 bg-white/30 backdrop-blur-md py-8 z-10">
+        <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            
+            <div class="flex flex-wrap justify-center items-center gap-x-6 gap-y-3 text-sm text-[#6B5A50]">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-location-dot text-amber-600"></i>
+                    <span class="font-medium">الإمارات العربية المتحدة</span>
+                </div>
+                <div class="flex items-center gap-2 hover:text-amber-700 transition-colors">
+                    <i class="fa-solid fa-phone text-amber-600 text-xs"></i>
+                    <a href="tel:+971000000000" dir="ltr">+971 00 000 0000</a>
+                </div>
+                <div class="flex items-center gap-2 hover:text-green-700 transition-colors">
+                    <i class="fa-brands fa-whatsapp text-green-600 text-base"></i>
+                    <a href="https://wa.me/#" target="_blank">واتساب</a>
+                </div>
+                <div class="flex items-center gap-2 hover:text-amber-700 transition-colors">
+                    <i class="fa-solid fa-envelope text-amber-600 text-xs"></i>
+                    <a href="mailto:info@tayebalhay.com">البريد الإلكتروني</a>
+                </div>
+                <div class="flex items-center gap-2 hover:text-pink-700 transition-colors">
+                    <i class="fa-brands fa-instagram text-pink-600 text-base"></i>
+                    <a href="#" target="_blank">انستغرام</a>
+                </div>
+                <div class="flex items-center gap-2 hover:text-black transition-colors">
+                    <i class="fa-brands fa-tiktok text-gray-800 text-base"></i>
+                    <a href="#" target="_blank">تيك توك</a>
+                </div>
+            </div>
+
+            <div class="text-xs text-[#8A776C] font-light">
+                جميع الحقوق محفوظة © طيب الحي للعود والأدهان
+            </div>
+            
+        </div>
+    </footer>
+
+</body>
 </html>
