@@ -18,11 +18,11 @@
             overflow-x: hidden;
         }
         
-        /* الخلفية المائية الفاخرة المدمجة بالعطور، البخور وحبات الزعفران */
+        /* الخلفية المائية الفاخرة المدمجة بالعطور، البخور وحبات الزعفران المتناثرة */
         .water-saffron-bg {
             background-image: 
-                linear-gradient(to bottom, rgba(250, 246, 240, 0.45), rgba(243, 235, 224, 0.75)),
-                url('https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=1920&q=80'); /* صورة سطح مائي بنقوش تموجات ذهبية مع ذرات متناثرة تعاكس إضاءة العطور والزعفران */
+                linear-gradient(to bottom, rgba(250, 246, 240, 0.55), rgba(243, 235, 224, 0.8)),
+                url('https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=1920&q=80'); /* خلفية تموجات مائية ذهبية دافئة مريحة للعين */
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -72,7 +72,7 @@
         </div>
         
         <div class="p-6 overflow-y-auto flex-grow custom-scroll space-y-4 text-sm">
-            <p class="text-xs text-gray-500 mb-2">عند تعديل أي حقل هنا، سيتم تحديث صفحة الهبوط فوراً أمامك ويتم حفظها بالمتصفح.</p>
+            <p class="text-xs text-gray-500 mb-2">عند تعديل أي حقل هنا، سيتم تحديث صفحة الهبوط فوراً أمامك ويتم حفظها بالمتصفح تلقائياً.</p>
             
             <div>
                 <label class="block font-semibold mb-1 text-amber-900">العنوان الرئيسي للمؤسسة:</label>
@@ -94,7 +94,7 @@
                 
                 <div>
                     <label class="block text-xs font-semibold mb-1">رقم الهاتف:</label>
-                    <input type="text" id="inputPhone" oninput="updateLiveData()" class="w-full p-2 rounded-lg border border-gray-200" placeholder="+971 50 000 0000">
+                    <input type="text" id="inputPhone" oninput="updateLiveData()" class="w-full p-2 rounded-lg border border-gray-200" placeholder="+971 00 000 0000">
                 </div>
 
                 <div>
@@ -109,9 +109,9 @@
             </div>
 
             <div class="border-t border-amber-100 pt-3">
-                <label class="block font-semibold mb-1 text-amber-900">رابط مسار صورة الشعار (اللوجو):</label>
-                <input type="text" id="inputLogoImg" oninput="updateLiveData()" class="w-full p-2 text-xs rounded-lg border border-amber-200" placeholder="اسم الصورة أو الرابط الإلكتروني">
-                <span class="text-[10px] text-gray-400 block mt-1">افتراضياً يبحث الكود عن ملف باسم <code class="bg-gray-100 px-1 py-0.5 rounded">شعار الطيب.jpeg</code> في نفس المجلد.</span>
+                <label class="block font-semibold mb-1 text-amber-900">رابط أو اسم ملف الشعار (اللوجو):</label>
+                <input type="text" id="inputLogoImg" oninput="updateLiveData()" class="w-full p-2 text-xs rounded-lg border border-amber-200" placeholder="شعار الطيب.jpeg">
+                <span class="text-[10px] text-gray-400 block mt-1">افتراضياً الكود مهيأ لقراءة الملف باسم <code class="bg-gray-100 px-1 py-0.5 rounded">شعار الطيب.jpeg</code>.</span>
             </div>
         </div>
 
@@ -132,22 +132,22 @@
         </button>
     </header>
 
-    <main class="w-full max-w-4xl mx-auto px-6 text-center py-4 z-10 flex flex-col items-center justify-center flex-grow relative">
+    <main class="w-full max-w-4xl mx-auto px-6 text-center py-12 z-10 flex flex-col items-center justify-center flex-grow relative">
         
-        <div class="w-36 h-36 rounded-full bg-white/90 backdrop-blur-md border-2 border-amber-400/60 flex items-center justify-center gold-glow mb-6 p-1 transition-transform duration-700 hover:scale-105">
+        <div class="w-40 h-40 rounded-full bg-white/90 backdrop-blur-md border-2 border-amber-400/60 flex items-center justify-center gold-glow mb-8 p-1 transition-transform duration-700 hover:scale-105">
             <div class="w-full h-full rounded-full border border-amber-300/30 bg-white flex items-center justify-center overflow-hidden">
                 <img id="mainLogoImage" src="شعار الطيب.jpeg" alt="شعار طيب الحي" class="w-full h-full object-contain object-center" onerror="this.src='https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=150&q=80';">
             </div>
         </div>
 
-        <h1 id="mainTitle" class="text-5xl md:text-7xl font-black tracking-normal text-[#271E1A] mb-1 drop-shadow-xs">
+        <h1 id="mainTitle" class="text-5xl md:text-7xl font-black tracking-normal text-[#271E1A] mb-2 drop-shadow-xs">
             طيب الحي
         </h1>
         <h2 id="subTitle" class="text-xl md:text-2xl font-bold tracking-widest gold-text-gradient uppercase mb-6">
             للعود والأدهان
         </h2>
         
-        <p id="systemDesc" class="text-base md:text-xl text-[#524339] max-w-2xl leading-relaxed mb-8 font-medium drop-shadow-xs">
+        <p id="systemDesc" class="text-base md:text-xl text-[#524339] max-w-2xl leading-relaxed mb-10 font-medium drop-shadow-xs">
             نظام متكامل لإدارة العطور والعود والأدهان والمخزون والكاشير والمبيعات من مكان واحد.
         </p>
 
@@ -158,35 +158,12 @@
 
     </main>
 
-    <section class="w-full max-w-5xl mx-auto px-6 mb-8 z-10 relative">
-        <div class="relative w-full h-64 md:h-76 rounded-2xl overflow-hidden border border-white/90 bg-white/20 backdrop-blur-md p-2 gold-glow">
-            
-            <div class="absolute inset-0 bg-gradient-to-t from-white/95 via-white/50 to-transparent z-10"></div>
-            
-            <div class="w-full h-full rounded-xl bg-cover bg-center relative" 
-                 style="background-image: url('https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1200&q=80');">
-                
-                <div class="absolute inset-0 flex items-end justify-center pb-6 z-20">
-                    <div class="bg-white/95 backdrop-blur-xl px-6 py-2.5 rounded-full border border-amber-200/40 text-xs text-[#4A3B32] font-bold tracking-wide shadow-sm flex flex-wrap justify-center items-center gap-4 md:gap-6">
-                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-fire-burner text-amber-600"></i> مبخرة عربية فاخرة</span>
-                        <span class="text-amber-300/70 font-light">|</span>
-                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-tree text-amber-600"></i> قطع عود طبيعي</span>
-                        <span class="text-amber-300/70 font-light">|</span>
-                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-prescription-bottle text-amber-600"></i> قارورات دهن عود وعطور فاخرة</span>
-                        <span class="text-amber-300/70 font-light">|</span>
-                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-leaf text-amber-600"></i> زعفران طبيعي ونقي</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <footer class="w-full border-t border-amber-200/30 bg-white/60 backdrop-blur-xl py-6 z-10 relative">
         <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
             
             <div class="flex flex-wrap justify-center items-center gap-x-6 gap-y-3 text-xs md:text-sm text-[#5C4D43]">
                 <div class="flex items-center gap-1.5 font-semibold bg-amber-50/80 px-3 py-1.5 rounded-full border border-amber-200/20">
-                    <i class="fa-solid fa-location-dot text-amber-600"></i>
+                    <i class="fa-solid space-x-1 fa-location-dot text-amber-600"></i>
                     <span>الموقع: الإمارات العربية المتحدة</span>
                 </div>
                 
@@ -232,7 +209,7 @@
             logoImg: "شعار الطيب.jpeg"
         };
 
-        // فتح وإخلاق نافذة الإعدادات الجانبية بسلاسة
+        // فتح وإغلاق نافذة الإعدادات الجانبية بسلاسة
         function toggleSettings() {
             const sidebar = document.getElementById('settingsPanel');
             sidebar.classList.toggle('translate-x-full');
