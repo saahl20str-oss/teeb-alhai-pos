@@ -8,127 +8,98 @@
 </head>
 
 <body>
-  <main class="landing">
+  <main class="page">
 
     <header class="topbar">
-      <button class="btn settings-btn" onclick="openSettings()">الإعدادات</button>
-
-      <div class="selectors">
-        <select id="languageSelect">
-          <option value="ar">العربية</option>
-          <option value="en">English</option>
-        </select>
-
-        <select id="currencySelect">
-          <option value="AED">AED - درهم</option>
-        </select>
-
-        <select id="countrySelect">
-          <option value="UAE">الإمارات</option>
-        </select>
-      </div>
-
-      <button class="btn login-btn" onclick="goLogin()">إنشاء حساب / تسجيل الدخول</button>
+      <button class="top-btn" onclick="openSettings()">⚙ الإعدادات</button>
+      <button class="top-btn login" onclick="goLogin()">تسجيل الدخول / إنشاء حساب</button>
     </header>
 
     <section class="hero">
-      <div class="brand-box">
-        <div class="logo-circle">
-          <span>طيب</span>
-        </div>
-
-        <h1 id="mainTitle">طيب الحي</h1>
-        <p id="subTitle">للعود والأدهان</p>
-
-        <div class="gold-line"></div>
-
-        <p class="description" id="descriptionText">
-          نظام فاخر وبسيط لإدارة العطور، العود، البخور، الأدهان، المخزون، الكاشير، والمبيعات من مكان واحد.
-        </p>
-
-        <div class="hero-actions">
-          <button class="primary-action" onclick="goLogin()">ابدأ الآن</button>
-          <button class="secondary-action" onclick="scrollToContact()">طرق التواصل</button>
-        </div>
-      </div>
-    </section>
-
-    <section class="features">
-      <div class="feature-card">
-        <h3>إدارة المخزون</h3>
-        <p>متابعة المنتجات والكميات والتنبيهات بسهولة.</p>
+      <div class="logo-circle">
+        <div class="logo-text">طيب</div>
+        <span>Teeb Al Hai</span>
       </div>
 
-      <div class="feature-card">
-        <h3>الكاشير</h3>
-        <p>بيع سريع، فواتير منظمة، وحسابات واضحة.</p>
-      </div>
+      <h1 id="mainTitle">طيب الحي</h1>
+      <h2 id="subTitle">للعود والأدهان</h2>
 
-      <div class="feature-card">
-        <h3>صلاحيات الموظفين</h3>
-        <p>المدير يتحكم في صلاحيات كل موظف حسب دوره.</p>
-      </div>
-    </section>
-
-    <footer id="contact" class="footer">
-      <h2>تواصل معنا</h2>
-
-      <div class="contact-grid">
-        <div>
-          <strong>الهاتف</strong>
-          <span id="phoneText">0500000000</span>
-        </div>
-
-        <div>
-          <strong>واتساب</strong>
-          <span id="whatsappText">0500000000</span>
-        </div>
-
-        <div>
-          <strong>البريد الإلكتروني</strong>
-          <span id="emailText">info@teebalhai.com</span>
-        </div>
-
-        <div>
-          <strong>الموقع</strong>
-          <span id="locationText">الإمارات العربية المتحدة</span>
-        </div>
-      </div>
-
-      <p class="copyright">
-        © 2026 طيب الحي — جميع الحقوق محفوظة
+      <p id="descriptionText" class="description">
+        نظام إدارة متكامل لمتجرك في عالم العود والأدهان والعطور
       </p>
+
+      <button class="main-btn" onclick="goLogin()">دخول النظام</button>
+
+      <div class="products-scene">
+        <div class="product small">🪵</div>
+        <div class="product bottle">🧴</div>
+        <div class="product incense">🔥</div>
+        <div class="product bottle large">🏺</div>
+        <div class="product saffron">🌺</div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="contact-item">
+        <strong>الموقع</strong>
+        <span id="locationText">الإمارات العربية المتحدة - دبي</span>
+      </div>
+
+      <div class="contact-item">
+        <strong>الهاتف</strong>
+        <span id="phoneText">+971 50 123 4567</span>
+      </div>
+
+      <div class="contact-item">
+        <strong>البريد الإلكتروني</strong>
+        <span id="emailText">info@teebalhai.ae</span>
+      </div>
+
+      <div class="contact-item">
+        <strong>واتساب</strong>
+        <span id="whatsappText">+971 50 123 4567</span>
+      </div>
+
+      <div class="socials">
+        <span>Instagram</span>
+        <span>TikTok</span>
+      </div>
     </footer>
+
+    <div class="copyright">
+      جميع الحقوق محفوظة © 2026 طيب الحي للعود والأدهان
+    </div>
+
   </main>
 
   <div id="settingsModal" class="modal">
     <div class="modal-box">
-      <button class="close-btn" onclick="closeSettings()">×</button>
+      <button class="close" onclick="closeSettings()">×</button>
 
-      <h2>إعدادات الصفحة</h2>
+      <h3>إعدادات الصفحة</h3>
 
       <label>العنوان الرئيسي</label>
-      <input id="titleInput" type="text" value="طيب الحي" />
+      <input id="titleInput" value="طيب الحي" />
 
       <label>العنوان الفرعي</label>
-      <input id="subtitleInput" type="text" value="للعود والأدهان" />
+      <input id="subtitleInput" value="للعود والأدهان" />
 
       <label>وصف الصفحة</label>
-      <textarea id="descriptionInput">نظام فاخر وبسيط لإدارة العطور، العود، البخور، الأدهان، المخزون، الكاشير، والمبيعات من مكان واحد.</textarea>
-
-      <label>رقم الهاتف</label>
-      <input id="phoneInput" type="text" value="0500000000" />
-
-      <label>واتساب</label>
-      <input id="whatsappInput" type="text" value="0500000000" />
-
-      <label>البريد الإلكتروني</label>
-      <input id="emailInput" type="email" value="info@teebalhai.com" />
+      <textarea id="descriptionInput">نظام إدارة متكامل لمتجرك في عالم العود والأدهان والعطور</textarea>
 
       <label>الموقع</label>
-      <input id="locationInput" type="text" value="الإمارات العربية المتحدة" />
+      <input id="locationInput" value="الإمارات العربية المتحدة - دبي" />
 
-      <button class="save-btn" onclick="saveSettings()">حفظ التعديلات</button>
+      <label>الهاتف</label>
+      <input id="phoneInput" value="+971 50 123 4567" />
+
+      <label>واتساب</label>
+      <input id="whatsappInput" value="+971 50 123 4567" />
+
+      <label>البريد الإلكتروني</label>
+      <input id="emailInput" value="info@teebalhai.ae" />
+
+      <button class="save" onclick="saveSettings()">حفظ التعديلات</button>
     </div>
   </div>
 
