@@ -1,279 +1,335 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>طيب الحي للعود والأدهان - البوابة الرقمية المتكاملة</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        body {
-            font-family: 'Tajawal', sans-serif;
-            background-color: #FAF6F0;
-            color: #3D312A;
-            overflow-x: hidden;
-        }
-        
-        /* الخلفية المائية الفاخرة المدمجة بالعطور، البخور وحبات الزعفران المتناثرة */
-        .water-saffron-bg {
-            background-image: 
-                linear-gradient(to bottom, rgba(250, 246, 240, 0.55), rgba(243, 235, 224, 0.8)),
-                url('https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=1920&q=80'); /* خلفية تموجات مائية ذهبية دافئة مريحة للعين */
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>طيب الحي للعود والأدهان</title>
 
-        /* توهج ذهبي ملكي ناعم حول العناصر الأساسية */
-        .gold-glow {
-            box-shadow: 0 0 40px rgba(212, 175, 55, 0.25);
-        }
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 
-        .gold-text-gradient {
-            background: linear-gradient(135deg, #8A6615 0%, #D4AF37 40%, #F5E5B8 70%, #AA7C11 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Tajawal", sans-serif;
+    }
 
-        .btn-gold-gradient {
-            background: linear-gradient(135deg, #D4AF37 0%, #AA7C11 100%);
-            box-shadow: 0 4px 25px rgba(170, 124, 17, 0.3);
-        }
-        .btn-gold-gradient:hover {
-            background: linear-gradient(135deg, #AA7C11 0%, #8A6615 100%);
-            box-shadow: 0 6px 30px rgba(170, 124, 17, 0.45);
-        }
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 20% 15%, rgba(218, 176, 95, 0.18), transparent 28%),
+        radial-gradient(circle at 80% 20%, rgba(255, 245, 220, 0.95), transparent 35%),
+        linear-gradient(180deg, #fffaf0 0%, #f7eddc 52%, #fffdf8 100%);
+      color: #2f2418;
+      overflow-x: hidden;
+    }
 
-        /* شريط تمرير مخصص ونظيف للوحة الإعدادات الجانبية */
-        .custom-scroll::-webkit-scrollbar {
-            width: 5px;
-        }
-        .custom-scroll::-webkit-scrollbar-thumb {
-            background: #D4AF37;
-            border-radius: 10px;
-        }
-    </style>
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(190, 151, 78, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(190, 151, 78, 0.06) 1px, transparent 1px);
+      background-size: 44px 44px;
+      pointer-events: none;
+    }
+
+    .page {
+      min-height: 100vh;
+      position: relative;
+      padding: 28px 6vw 0;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 5;
+    }
+
+    .btn {
+      border: 1px solid rgba(179, 132, 55, 0.45);
+      background: rgba(255, 255, 255, 0.42);
+      backdrop-filter: blur(14px);
+      color: #5a3d16;
+      padding: 12px 22px;
+      border-radius: 999px;
+      font-weight: 800;
+      text-decoration: none;
+      box-shadow: 0 14px 35px rgba(120, 82, 25, 0.08);
+      transition: 0.25s ease;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      background: #fff8e8;
+      box-shadow: 0 18px 45px rgba(154, 111, 38, 0.16);
+    }
+
+    .hero {
+      min-height: calc(100vh - 100px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      padding: 45px 0 20px;
+    }
+
+    .hero-card {
+      width: min(980px, 100%);
+      padding: 46px 34px 32px;
+      border: 1px solid rgba(202, 162, 88, 0.28);
+      border-radius: 42px;
+      background: rgba(255, 255, 255, 0.34);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 30px 90px rgba(115, 82, 35, 0.12);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border-radius: 32px;
+      border: 1px solid rgba(208, 171, 96, 0.18);
+      pointer-events: none;
+    }
+
+    .logo {
+      width: 148px;
+      height: 148px;
+      margin: 0 auto 22px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at 35% 30%, #fff7dc 0%, #e8c46f 42%, #9e6e22 100%);
+      box-shadow:
+        0 0 0 10px rgba(255, 255, 255, 0.45),
+        0 0 0 13px rgba(192, 142, 50, 0.18),
+        0 26px 60px rgba(123, 82, 20, 0.24);
+      color: #fff8df;
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      text-shadow: 0 3px 12px rgba(66, 43, 10, 0.35);
+    }
+
+    h1 {
+      font-size: clamp(54px, 9vw, 104px);
+      line-height: 0.95;
+      font-weight: 900;
+      color: #3a2a16;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: clamp(28px, 4.5vw, 54px);
+      font-weight: 800;
+      color: #9a6d24;
+      margin-bottom: 18px;
+    }
+
+    .desc {
+      max-width: 720px;
+      margin: 0 auto 30px;
+      font-size: clamp(17px, 2vw, 22px);
+      line-height: 1.9;
+      color: #5f4b30;
+      font-weight: 500;
+    }
+
+    .main-btn {
+      display: inline-block;
+      padding: 16px 42px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 20px;
+      font-weight: 900;
+      color: #fff9e8;
+      background: linear-gradient(135deg, #b8862f, #d8b15d, #9a6a20);
+      box-shadow: 0 18px 42px rgba(154, 106, 32, 0.28);
+      transition: 0.25s ease;
+    }
+
+    .main-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 24px 55px rgba(154, 106, 32, 0.35);
+    }
+
+    .luxury-image {
+      margin: 42px auto 8px;
+      width: min(820px, 100%);
+      min-height: 260px;
+      border-radius: 36px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.45), rgba(255,247,226,0.25)),
+        radial-gradient(circle at 20% 40%, rgba(187, 128, 42, 0.25), transparent 22%),
+        radial-gradient(circle at 75% 38%, rgba(216, 177, 93, 0.28), transparent 26%);
+      border: 1px solid rgba(199, 155, 75, 0.25);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 30px 80px rgba(111, 77, 27, 0.13);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .luxury-image::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        url("data:image/svg+xml,%3Csvg width='900' height='300' viewBox='0 0 900 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cg opacity='.9'%3E%3Cellipse cx='450' cy='245' rx='330' ry='32' fill='%23d9bc7c' opacity='.25'/%3E%3Cpath d='M128 210c30-50 95-52 128 0' fill='%238f5d22' opacity='.95'/%3E%3Crect x='148' y='156' width='88' height='58' rx='18' fill='%23c6953e'/%3E%3Cpath d='M158 155c10-28 57-28 68 0' fill='%23fff0c9' opacity='.85'/%3E%3Cpath d='M174 132c25-34 42-58 21-99 50 44 34 78 7 106' fill='%23d6ad55' opacity='.75'/%3E%3Cpath d='M335 93h58c15 0 27 12 27 27v100h-112V120c0-15 12-27 27-27z' fill='%23fff7e4' stroke='%23c9943c' stroke-width='4'/%3E%3Crect x='338' y='126' width='52' height='62' rx='12' fill='%23d3a24e' opacity='.65'/%3E%3Crect x='348' y='60' width='32' height='35' rx='8' fill='%23b98732'/%3E%3Cpath d='M500 82h62c16 0 29 13 29 29v112H471V111c0-16 13-29 29-29z' fill='%23fdf6e5' stroke='%23b98732' stroke-width='4'/%3E%3Crect x='504' y='123' width='54' height='70' rx='14' fill='%23a86e25' opacity='.62'/%3E%3Crect x='515' y='45' width='32' height='39' rx='8' fill='%23c99b45'/%3E%3Cpath d='M648 206c36-42 88-50 121-9-38 24-85 29-121 9z' fill='%236b4022'/%3E%3Cpath d='M660 192c20-18 61-20 88-6' stroke='%23d7aa55' stroke-width='7' stroke-linecap='round'/%3E%3Cg stroke='%23b12d18' stroke-width='4' stroke-linecap='round'%3E%3Cpath d='M705 145l62-34'/%3E%3Cpath d='M714 157l70-26'/%3E%3Cpath d='M695 164l62-10'/%3E%3C/g%3E%3Ccircle cx='768' cy='111' r='8' fill='%23c73c20'/%3E%3Ccircle cx='786' cy='130' r='7' fill='%23d24b25'/%3E%3C/g%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center bottom;
+    }
+
+    .contact {
+      margin-top: 30px;
+      padding: 26px 16px 18px;
+      text-align: center;
+      color: #6b5638;
+      position: relative;
+      z-index: 3;
+    }
+
+    .contact h2 {
+      color: #8d6425;
+      font-size: 22px;
+      margin-bottom: 14px;
+      font-weight: 900;
+    }
+
+    .contact-grid {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .contact-item {
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.45);
+      border: 1px solid rgba(188, 145, 68, 0.22);
+      font-weight: 700;
+    }
+
+    footer {
+      padding: 18px 10px 28px;
+      text-align: center;
+      color: #7c6545;
+      font-weight: 700;
+    }
+
+    .palm {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(171, 133, 63, 0.11), transparent 65%);
+      filter: blur(4px);
+      z-index: 1;
+    }
+
+    .palm.one { right: -90px; top: 170px; }
+    .palm.two { left: -110px; bottom: 160px; }
+
+    @media (max-width: 640px) {
+      .page {
+        padding: 18px 18px 0;
+      }
+
+      .topbar {
+        gap: 10px;
+      }
+
+      .btn {
+        padding: 10px 14px;
+        font-size: 13px;
+      }
+
+      .hero-card {
+        padding: 36px 18px 24px;
+        border-radius: 30px;
+      }
+
+      .logo {
+        width: 118px;
+        height: 118px;
+        font-size: 26px;
+      }
+
+      .luxury-image {
+        min-height: 210px;
+        border-radius: 28px;
+      }
+
+      .contact-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
-<body class="water-saffron-bg min-h-screen flex flex-col justify-between relative selection:bg-amber-100">
 
-    <div id="settingsPanel" class="fixed top-0 right-0 h-full w-85 bg-white/95 backdrop-blur-2xl shadow-2xl z-50 transform translate-x-full transition-transform duration-500 ease-out border-l border-amber-200/50 flex flex-col">
-        <div class="p-6 border-b border-amber-100 flex justify-between items-center bg-gradient-to-l from-amber-50/50 to-transparent">
-            <div class="flex items-center gap-2">
-                <i class="fa-solid fa-sliders text-amber-600 text-lg"></i>
-                <h3 class="font-bold text-base text-[#3D312A]">إعدادات وتخصيص الواجهة</h3>
-            </div>
-            <button onclick="toggleSettings()" class="w-8 h-8 rounded-full bg-amber-50 hover:bg-amber-100 text-amber-800 flex items-center justify-center transition-all cursor-pointer">
-                <i class="fa-solid fa-xmark text-sm"></i>
-            </button>
-        </div>
-        
-        <div class="p-6 overflow-y-auto flex-grow custom-scroll space-y-4 text-sm">
-            <p class="text-xs text-gray-500 mb-2">عند تعديل أي حقل هنا، سيتم تحديث صفحة الهبوط فوراً أمامك ويتم حفظها بالمتصفح تلقائياً.</p>
-            
-            <div>
-                <label class="block font-semibold mb-1 text-amber-900">العنوان الرئيسي للمؤسسة:</label>
-                <input type="text" id="inputMainTitle" oninput="updateLiveData()" class="w-full p-2.5 rounded-lg border border-amber-200 bg-white" placeholder="طيب الحي">
-            </div>
+<body>
+  <main class="page">
+    <div class="palm one"></div>
+    <div class="palm two"></div>
 
-            <div>
-                <label class="block font-semibold mb-1 text-amber-900">العنوان الفرعي:</label>
-                <input type="text" id="inputSubTitle" oninput="updateLiveData()" class="w-full p-2.5 rounded-lg border border-amber-200 bg-white" placeholder="للعود والأدهان">
-            </div>
-
-            <div>
-                <label class="block font-semibold mb-1 text-amber-900">الوصف التعريفي للنظام:</label>
-                <textarea id="inputDesc" oninput="updateLiveData()" rows="3" class="w-full p-2.5 rounded-lg border border-amber-200 bg-white leading-relaxed" placeholder="نظام متكامل لإدارة..."></textarea>
-            </div>
-
-            <div class="border-t border-amber-100 pt-3 space-y-3">
-                <h4 class="font-bold text-xs text-amber-700 uppercase tracking-wider">روابط وسائل التواصل والاتصال</h4>
-                
-                <div>
-                    <label class="block text-xs font-semibold mb-1">رقم الهاتف:</label>
-                    <input type="text" id="inputPhone" oninput="updateLiveData()" class="w-full p-2 rounded-lg border border-gray-200" placeholder="+971 00 000 0000">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold mb-1">رابط واتساب الدعم:</label>
-                    <input type="text" id="inputWhatsapp" oninput="updateLiveData()" class="w-full p-2 rounded-lg border border-gray-200" placeholder="https://wa.me/...">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold mb-1">البريد الإلكتروني المعتمد:</label>
-                    <input type="text" id="inputEmail" oninput="updateLiveData()" class="w-full p-2 rounded-lg border border-gray-200" placeholder="info@domain.com">
-                </div>
-            </div>
-
-            <div class="border-t border-amber-100 pt-3">
-                <label class="block font-semibold mb-1 text-amber-900">رابط أو اسم ملف الشعار (اللوجو):</label>
-                <input type="text" id="inputLogoImg" oninput="updateLiveData()" class="w-full p-2 text-xs rounded-lg border border-amber-200" placeholder="شعار الطيب.jpeg">
-                <span class="text-[10px] text-gray-400 block mt-1">افتراضياً الكود مهيأ لقراءة الملف باسم <code class="bg-gray-100 px-1 py-0.5 rounded">شعار الطيب.jpeg</code>.</span>
-            </div>
-        </div>
-
-        <div class="p-4 border-t border-amber-100 bg-amber-50/50 text-center">
-            <button onclick="resetToDefaults()" class="text-xs text-red-600 hover:underline cursor-pointer">إعادة ضبط الواجهة الافتراضية</button>
-        </div>
-    </div>
-
-    <header class="w-full max-w-7xl mx-auto px-6 py-6 flex justify-between items-center z-10 relative">
-        <button onclick="toggleSettings()" class="flex items-center gap-2 px-4 py-2.5 rounded-full border border-amber-400/30 bg-white/70 backdrop-blur-md text-xs font-bold text-[#5C4D43] hover:bg-white hover:border-amber-500 transition-all duration-300 shadow-sm cursor-pointer group">
-            <i class="fa-solid fa-gear text-amber-600 group-hover:rotate-90 transition-transform duration-300"></i>
-            <span>الإعدادات</span>
-        </button>
-
-        <button class="flex items-center gap-2 px-5 py-2.5 rounded-full border border-amber-600/20 bg-white/80 backdrop-blur-md text-xs font-bold text-[#3D312A] hover:border-amber-500 hover:bg-amber-50/40 transition-all duration-300 shadow-sm cursor-pointer">
-            <i class="fa-solid fa-circle-user text-amber-600 text-sm"></i>
-            <span>تسجيل الدخول / إنشاء حساب</span>
-        </button>
+    <header class="topbar">
+      <button class="btn" onclick="openSettings()">الإعدادات</button>
+      <a class="btn" href="login.html">تسجيل الدخول / إنشاء حساب</a>
     </header>
 
-    <main class="w-full max-w-4xl mx-auto px-6 text-center py-12 z-10 flex flex-col items-center justify-center flex-grow relative">
-        
-        <div class="w-40 h-40 rounded-full bg-white/90 backdrop-blur-md border-2 border-amber-400/60 flex items-center justify-center gold-glow mb-8 p-1 transition-transform duration-700 hover:scale-105">
-            <div class="w-full h-full rounded-full border border-amber-300/30 bg-white flex items-center justify-center overflow-hidden">
-                <img id="mainLogoImage" src="شعار الطيب.jpeg" alt="شعار طيب الحي" class="w-full h-full object-contain object-center" onerror="this.src='https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=150&q=80';">
-            </div>
-        </div>
+    <section class="hero">
+      <div class="hero-card">
+        <div class="logo">طيب<br>الحي</div>
 
-        <h1 id="mainTitle" class="text-5xl md:text-7xl font-black tracking-normal text-[#271E1A] mb-2 drop-shadow-xs">
-            طيب الحي
-        </h1>
-        <h2 id="subTitle" class="text-xl md:text-2xl font-bold tracking-widest gold-text-gradient uppercase mb-6">
-            للعود والأدهان
-        </h2>
-        
-        <p id="systemDesc" class="text-base md:text-xl text-[#524339] max-w-2xl leading-relaxed mb-10 font-medium drop-shadow-xs">
-            نظام متكامل لإدارة العطور والعود والأدهان والمخزون والكاشير والمبيعات من مكان واحد.
+        <h1>طيب الحي</h1>
+        <div class="subtitle">للعود والأدهان</div>
+
+        <p class="desc">
+          نظام متكامل لإدارة العطور والعود والأدهان والمخزون والكاشير والمبيعات من مكان واحد.
         </p>
 
-        <button class="btn-gold-gradient text-white font-bold px-16 py-4 rounded-full text-base tracking-wide transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer flex items-center gap-3">
-            <span>دخول النظام</span>
-            <i class="fa-solid fa-arrow-left text-sm"></i>
-        </button>
+        <a class="main-btn" href="login.html">دخول النظام</a>
 
-    </main>
+        <div class="luxury-image" aria-label="مبخرة عربية وعود ودهن عود وعطور وزعفران"></div>
+      </div>
+    </section>
 
-    <footer class="w-full border-t border-amber-200/30 bg-white/60 backdrop-blur-xl py-6 z-10 relative">
-        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
-            
-            <div class="flex flex-wrap justify-center items-center gap-x-6 gap-y-3 text-xs md:text-sm text-[#5C4D43]">
-                <div class="flex items-center gap-1.5 font-semibold bg-amber-50/80 px-3 py-1.5 rounded-full border border-amber-200/20">
-                    <i class="fa-solid space-x-1 fa-location-dot text-amber-600"></i>
-                    <span>الموقع: الإمارات العربية المتحدة</span>
-                </div>
-                
-                <a id="linkPhone" href="tel:+971000000000" dir="ltr" class="flex items-center gap-1.5 hover:text-amber-700 transition-colors font-semibold">
-                    <i class="fa-solid fa-phone text-amber-600 text-xs"></i>
-                    <span id="txtPhone">+971 00 000 0000</span>
-                </a>
-                
-                <a id="linkValueWhatsapp" href="https://wa.me/#" target="_blank" class="flex items-center gap-1.5 hover:text-green-700 transition-colors font-semibold">
-                    <i class="fa-brands fa-whatsapp text-green-600 text-base"></i>
-                    <span>واتساب</span>
-                </a>
-                
-                <a id="linkEmail" href="mailto:info@tayebalhay.com" class="flex items-center gap-1.5 hover:text-amber-700 transition-colors">
-                    <i class="fa-solid fa-envelope text-amber-600 text-xs"></i>
-                    <span id="txtEmail">info@tayebalhay.com</span>
-                </a>
-                
-                <div class="flex items-center gap-2 border-r border-amber-200/60 pr-4">
-                    <a href="#" target="_blank" class="text-pink-600 font-medium hover:underline text-xs">انستغرام</a>
-                    <span class="text-amber-300">.</span>
-                    <a href="#" target="_blank" class="text-gray-800 font-medium hover:underline text-xs">تيك توك</a>
-                </div>
-            </div>
+    <section class="contact">
+      <h2>التواصل</h2>
+      <div class="contact-grid">
+        <div class="contact-item">الموقع: الإمارات العربية المتحدة</div>
+        <div class="contact-item">الهاتف: 000000000</div>
+        <div class="contact-item">واتساب: 000000000</div>
+        <div class="contact-item">البريد الإلكتروني: info@example.com</div>
+        <div class="contact-item">انستغرام: @teebalhai</div>
+        <div class="contact-item">تيك توك: @teebalhai</div>
+      </div>
+    </section>
 
-            <div class="text-xs text-[#8A776C] font-semibold">
-                جميع الحقوق محفوظة © طيب الحي للعود والأدهان
-            </div>
-            
-        </div>
+    <footer>
+      جميع الحقوق محفوظة © طيب الحي للعود والأدهان
     </footer>
+  </main>
 
-
-    <script>
-        // قيم ضبط المصنع الافتراضية للعود والعطور
-        const defaultSettings = {
-            mainTitle: "طيب الحي",
-            subTitle: "للعود والأدهان",
-            desc: "نظام متكامل لإدارة العطور والعود والأدهان والمخزون والكاشير والمبيعات من مكان واحد.",
-            phone: "+971 00 000 0000",
-            whatsapp: "https://wa.me/#",
-            email: "info@tayebalhay.com",
-            logoImg: "شعار الطيب.jpeg"
-        };
-
-        // فتح وإغلاق نافذة الإعدادات الجانبية بسلاسة
-        function toggleSettings() {
-            const sidebar = document.getElementById('settingsPanel');
-            sidebar.classList.toggle('translate-x-full');
-        }
-
-        // استدعاء وتعبئة البيانات عند تشغيل الصفحة للمرة الأولى
-        window.onload = function() {
-            document.getElementById('inputMainTitle').value = localStorage.getItem('t_mainTitle') || defaultSettings.mainTitle;
-            document.getElementById('inputSubTitle').value = localStorage.getItem('t_subTitle') || defaultSettings.subTitle;
-            document.getElementById('inputDesc').value = localStorage.getItem('t_desc') || defaultSettings.desc;
-            document.getElementById('inputPhone').value = localStorage.getItem('t_phone') || defaultSettings.phone;
-            document.getElementById('inputWhatsapp').value = localStorage.getItem('t_whatsapp') || defaultSettings.whatsapp;
-            document.getElementById('inputEmail').value = localStorage.getItem('t_email') || defaultSettings.email;
-            document.getElementById('inputLogoImg').value = localStorage.getItem('t_logoImg') || defaultSettings.logoImg;
-            
-            applySettingsToUI();
-        };
-
-        // تحديث البيانات الحية المباشرة في المتصفح وحفظها بذاكرة التخزين المحلية
-        function updateLiveData() {
-            localStorage.setItem('t_mainTitle', document.getElementById('inputMainTitle').value);
-            localStorage.setItem('t_subTitle', document.getElementById('inputSubTitle').value);
-            localStorage.setItem('t_desc', document.getElementById('inputDesc').value);
-            localStorage.setItem('t_phone', document.getElementById('inputPhone').value);
-            localStorage.setItem('t_whatsapp', document.getElementById('inputWhatsapp').value);
-            localStorage.setItem('t_email', document.getElementById('inputEmail').value);
-            localStorage.setItem('t_logoImg', document.getElementById('inputLogoImg').value);
-            
-            applySettingsToUI();
-        }
-
-        // إخراج وطباعة القيم الجديدة على عناصر صفحة الهبوط مباشرة
-        function applySettingsToUI() {
-            document.getElementById('mainTitle').innerText = localStorage.getItem('t_mainTitle') || defaultSettings.mainTitle;
-            document.getElementById('subTitle').innerText = localStorage.getItem('t_subTitle') || defaultSettings.subTitle;
-            document.getElementById('systemDesc').innerText = localStorage.getItem('t_desc') || defaultSettings.desc;
-            
-            document.getElementById('txtPhone').innerText = localStorage.getItem('t_phone') || defaultSettings.phone;
-            document.getElementById('linkPhone').href = "tel:" + (localStorage.getItem('t_phone') || defaultSettings.phone);
-            
-            document.getElementById('linkValueWhatsapp').href = localStorage.getItem('t_whatsapp') || defaultSettings.whatsapp;
-            
-            document.getElementById('txtEmail').innerText = localStorage.getItem('t_email') || defaultSettings.email;
-            document.getElementById('linkEmail').href = "mailto:" + (localStorage.getItem('t_email') || defaultSettings.email);
-            
-            // تغيير مسار اللوجو حياً عند رفعه أو تعديل اسمه
-            document.getElementById('mainLogoImage').src = localStorage.getItem('t_logoImg') || defaultSettings.logoImg;
-        }
-
-        // العودة لتهيئة المصنع والمسح الشامل
-        function resetToDefaults() {
-            if(confirm("هل تود العودة للبيانات والمسارات الأصلية الافتراضية للنظام؟")) {
-                localStorage.clear();
-                document.getElementById('inputMainTitle').value = defaultSettings.mainTitle;
-                document.getElementById('inputSubTitle').value = defaultSettings.subTitle;
-                document.getElementById('inputDesc').value = defaultSettings.desc;
-                document.getElementById('inputPhone').value = defaultSettings.phone;
-                document.getElementById('inputWhatsapp').value = defaultSettings.whatsapp;
-                document.getElementById('inputEmail').value = defaultSettings.email;
-                document.getElementById('inputLogoImg').value = defaultSettings.logoImg;
-                applySettingsToUI();
-            }
-        }
-    </script>
-
+  <script>
+    function openSettings() {
+      alert("سيتم ربط صفحة الإعدادات لاحقًا.");
+      // يمكن تغييرها لاحقاً إلى:
+      // window.location.href = "settings.html";
+    }
+  </script>
 </body>
 </html>
