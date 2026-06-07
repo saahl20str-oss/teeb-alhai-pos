@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>طيب الحي للعود والأدهان</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --gold:#d8ad55;
+      --gold-2:#f8df9d;
+      --brown:#4a2b12;
+      --cream:#fff4d6;
+      --glass:rgba(58,31,9,.42);
+      --line:rgba(255,231,176,.35);
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family:"Tajawal",Arial,sans-serif;
+      color:#fff6dc;
+      background:#2b1708;
+      overflow-x:hidden;
+    }
+
+    .landing{
+      min-height:100vh;
+      position:relative;
+      isolation:isolate;
+      background-image:url("a_luxurious_arabic_web_landing_page_hero_screen.png");
+      background-size:cover;
+      background-position:center bottom;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      padding:32px 5vw 24px;
+    }
+
+    .landing::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      z-index:-2;
+      background:
+        radial-gradient(circle at center 34%, rgba(255,238,190,.34), transparent 20%),
+        linear-gradient(180deg, rgba(45,24,8,.25) 0%, rgba(45,24,8,.18) 38%, rgba(38,19,7,.55) 100%);
+    }
+
+    .landing::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      z-index:-1;
+      background:
+        linear-gradient(90deg, rgba(25,12,3,.35), transparent 26%, transparent 74%, rgba(25,12,3,.35)),
+        radial-gradient(circle at center, transparent 0%, transparent 45%, rgba(25,12,3,.30) 100%);
+      pointer-events:none;
+    }
+
+    .topbar{
+      width:100%;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      position:relative;
+      z-index:5;
+    }
+
+    .top-btn{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      min-height:56px;
+      padding:0 24px;
+      border-radius:999px;
+      text-decoration:none;
+      color:#fff4d6;
+      font-weight:800;
+      font-size:17px;
+      border:1px solid rgba(255,238,190,.75);
+      background:rgba(48,26,9,.42);
+      backdrop-filter:blur(12px);
+      box-shadow:0 16px 42px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.18);
+      transition:.25s ease;
+      cursor:pointer;
+    }
+
+    .top-btn:hover{
+      transform:translateY(-2px);
+      background:rgba(88,52,17,.56);
+      box-shadow:0 20px 52px rgba(0,0,0,.28),0 0 22px rgba(248,223,157,.20);
+    }
+
+    .hero{
+      width:min(850px,100%);
+      margin:0 auto;
+      padding-top:4vh;
+      text-align:center;
+      transform:translateY(-1vh);
+    }
+
+    .brand-logo{
+      width:158px;
+      height:158px;
+      margin:0 auto 24px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      position:relative;
+      background:
+        radial-gradient(circle at 35% 25%, #fff4c9 0%, #d7a94a 42%, #70400e 100%);
+      border:2px solid rgba(255,238,190,.95);
+      box-shadow:
+        0 0 0 8px rgba(137,82,21,.40),
+        0 0 45px rgba(255,224,143,.45),
+        0 22px 55px rgba(0,0,0,.30);
+    }
+
+    .brand-logo::before{
+      content:"";
+      position:absolute;
+      inset:9px;
+      border-radius:50%;
+      border:1px solid rgba(80,43,12,.38);
+      background:radial-gradient(circle, rgba(255,255,255,.14), transparent 64%);
+    }
+
+    .brand-logo span{
+      position:relative;
+      z-index:2;
+      font-family:"Amiri",serif;
+      color:#3a2109;
+      font-size:38px;
+      line-height:1.05;
+      font-weight:700;
+      text-shadow:0 1px 0 rgba(255,244,214,.7);
+    }
+
+    h1{
+      font-family:"Amiri",serif;
+      font-size:clamp(72px, 10vw, 150px);
+      line-height:.9;
+      font-weight:700;
+      color:#f6d883;
+      letter-spacing:-4px;
+      text-shadow:
+        0 3px 0 rgba(63,34,10,.72),
+        0 14px 34px rgba(0,0,0,.52),
+        0 0 28px rgba(250,221,142,.25);
+      margin-bottom:18px;
+    }
+
+    .subtitle{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:16px;
+      font-size:clamp(28px,4vw,48px);
+      font-weight:900;
+      color:#fff7df;
+      text-shadow:0 8px 24px rgba(0,0,0,.48);
+      margin-bottom:24px;
+    }
+
+    .subtitle::before,.subtitle::after{
+      content:"";
+      width:min(115px,18vw);
+      height:1px;
+      background:linear-gradient(90deg,transparent,var(--gold-2),transparent);
+      box-shadow:0 0 10px rgba(248,223,157,.7);
+    }
+
+    .desc{
+      max-width:630px;
+      margin:0 auto 34px;
+      font-size:clamp(19px,2.2vw,27px);
+      line-height:1.85;
+      color:#fff8e5;
+      font-weight:700;
+      text-shadow:0 6px 18px rgba(0,0,0,.55);
+    }
+
+    .enter-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      min-width:310px;
+      min-height:76px;
+      padding:0 38px;
+      border-radius:999px;
+      color:#5a3510;
+      text-decoration:none;
+      font-size:27px;
+      font-weight:900;
+      background:linear-gradient(180deg,#fff5c8 0%,#f4c967 48%,#b87924 100%);
+      border:1px solid rgba(255,245,205,.95);
+      box-shadow:
+        0 18px 45px rgba(0,0,0,.36),
+        0 0 28px rgba(248,223,157,.42),
+        inset 0 2px 0 rgba(255,255,255,.65);
+      transition:.25s ease;
+    }
+
+    .enter-btn:hover{
+      transform:translateY(-3px) scale(1.015);
+      box-shadow:
+        0 26px 58px rgba(0,0,0,.43),
+        0 0 40px rgba(248,223,157,.58),
+        inset 0 2px 0 rgba(255,255,255,.78);
+    }
+
+    .contact-wrap{
+      width:100%;
+      margin:24px auto 0;
+      position:relative;
+      z-index:4;
+    }
+
+    .contact-bar{
+      width:min(1180px,100%);
+      margin:0 auto;
+      border-radius:22px;
+      border:1px solid rgba(255,231,176,.32);
+      background:rgba(52,29,11,.58);
+      backdrop-filter:blur(15px);
+      box-shadow:0 18px 50px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.10);
+      display:grid;
+      grid-template-columns:repeat(6,1fr);
+      overflow:hidden;
+    }
+
+    .contact-item{
+      min-height:92px;
+      padding:16px 12px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      text-align:center;
+      border-left:1px solid rgba(255,231,176,.16);
+    }
+
+    .contact-item:last-child{border-left:0}
+
+    .icon{
+      font-size:26px;
+      color:#ffe2a0;
+      line-height:1;
+      filter:drop-shadow(0 0 8px rgba(248,223,157,.38));
+    }
+
+    .label{
+      font-size:15px;
+      font-weight:900;
+      color:#ffe9b6;
+    }
+
+    .value{
+      font-size:13px;
+      font-weight:700;
+      color:#fff5dc;
+      direction:ltr;
+      unicode-bidi:embed;
+    }
+
+    footer{
+      padding-top:20px;
+      text-align:center;
+      color:#ffe9b6;
+      font-size:16px;
+      font-weight:700;
+      text-shadow:0 5px 16px rgba(0,0,0,.65);
+    }
+
+    @media (max-width:900px){
+      .landing{padding:22px 18px 18px;background-position:center bottom}
+      .top-btn{min-height:48px;padding:0 16px;font-size:14px}
+      .hero{padding-top:7vh}
+      .brand-logo{width:122px;height:122px;margin-bottom:18px}
+      .brand-logo span{font-size:30px}
+      h1{letter-spacing:-2px}
+      .desc{max-width:92%}
+      .enter-btn{min-width:245px;min-height:64px;font-size:22px}
+      .contact-bar{grid-template-columns:repeat(2,1fr);border-radius:18px}
+      .contact-item{min-height:82px;border-bottom:1px solid rgba(255,231,176,.12)}
+    }
+
+    @media (max-width:520px){
+      .topbar{gap:10px}
+      .top-btn{font-size:12px;padding:0 12px;gap:6px}
+      .hero{padding-top:5vh}
+      .subtitle{gap:8px}
+      .subtitle::before,.subtitle::after{width:42px}
+      .contact-bar{grid-template-columns:1fr}
+      .contact-item{border-left:0}
+    }
+  </style>
+</head>
+<body>
+  <main class="landing">
+    <header class="topbar">
+      <a class="top-btn" href="settings.html" aria-label="الإعدادات">⚙️ الإعدادات</a>
+      <a class="top-btn" href="login.html" aria-label="تسجيل الدخول أو إنشاء حساب">👤 تسجيل الدخول / إنشاء حساب</a>
+    </header>
+
+    <section class="hero" aria-label="واجهة طيب الحي">
+      <div class="brand-logo" aria-label="شعار طيب الحي">
+        <span>طيب<br>الحي</span>
+      </div>
+
+      <h1>طيب الحي</h1>
+      <div class="subtitle">للعود والأدهان</div>
+      <p class="desc">
+        نظام متكامل لإدارة العطور والعود والأدهان والمخزون والكاشير والمبيعات من مكان واحد.
+      </p>
+      <a class="enter-btn" href="login.html">دخول النظام ❯</a>
+    </section>
+
+    <section class="contact-wrap" aria-label="معلومات التواصل">
+      <div class="contact-bar">
+        <div class="contact-item">
+          <div class="icon">📍</div>
+          <div class="label">الموقع</div>
+          <div class="value">الإمارات العربية المتحدة</div>
+        </div>
+        <div class="contact-item">
+          <div class="icon">☎</div>
+          <div class="label">الهاتف</div>
+          <div class="value">+971 50 123 4567</div>
+        </div>
+        <div class="contact-item">
+          <div class="icon">☘</div>
+          <div class="label">واتساب</div>
+          <div class="value">+971 50 123 4567</div>
+        </div>
+        <div class="contact-item">
+          <div class="icon">✉</div>
+          <div class="label">البريد الإلكتروني</div>
+          <div class="value">info@teebalhai.ae</div>
+        </div>
+        <div class="contact-item">
+          <div class="icon">◎</div>
+          <div class="label">انستغرام</div>
+          <div class="value">@teebalhai.oud</div>
+        </div>
+        <div class="contact-item">
+          <div class="icon">♪</div>
+          <div class="label">تيك توك</div>
+          <div class="value">@teebalhai.oud</div>
+        </div>
+      </div>
+      <footer>جميع الحقوق محفوظة © طيب الحي للعود والأدهان</footer>
+    </section>
+  </main>
+</body>
+</html>
