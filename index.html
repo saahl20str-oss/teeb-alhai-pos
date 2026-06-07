@@ -1,17 +1,137 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>طيب الحي للعود والأدهان - نظام إدارة المبيعات</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body class="bg-neutral-950 text-neutral-100">
-    <div id="root"></div>
-    <script type="text/babel" src="app.js"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>طيب الحي | للعود والأدهان</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <main class="landing">
+
+    <header class="topbar">
+      <button class="btn settings-btn" onclick="openSettings()">الإعدادات</button>
+
+      <div class="selectors">
+        <select id="languageSelect">
+          <option value="ar">العربية</option>
+          <option value="en">English</option>
+        </select>
+
+        <select id="currencySelect">
+          <option value="AED">AED - درهم</option>
+        </select>
+
+        <select id="countrySelect">
+          <option value="UAE">الإمارات</option>
+        </select>
+      </div>
+
+      <button class="btn login-btn" onclick="goLogin()">إنشاء حساب / تسجيل الدخول</button>
+    </header>
+
+    <section class="hero">
+      <div class="brand-box">
+        <div class="logo-circle">
+          <span>طيب</span>
+        </div>
+
+        <h1 id="mainTitle">طيب الحي</h1>
+        <p id="subTitle">للعود والأدهان</p>
+
+        <div class="gold-line"></div>
+
+        <p class="description" id="descriptionText">
+          نظام فاخر وبسيط لإدارة العطور، العود، البخور، الأدهان، المخزون، الكاشير، والمبيعات من مكان واحد.
+        </p>
+
+        <div class="hero-actions">
+          <button class="primary-action" onclick="goLogin()">ابدأ الآن</button>
+          <button class="secondary-action" onclick="scrollToContact()">طرق التواصل</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="feature-card">
+        <h3>إدارة المخزون</h3>
+        <p>متابعة المنتجات والكميات والتنبيهات بسهولة.</p>
+      </div>
+
+      <div class="feature-card">
+        <h3>الكاشير</h3>
+        <p>بيع سريع، فواتير منظمة، وحسابات واضحة.</p>
+      </div>
+
+      <div class="feature-card">
+        <h3>صلاحيات الموظفين</h3>
+        <p>المدير يتحكم في صلاحيات كل موظف حسب دوره.</p>
+      </div>
+    </section>
+
+    <footer id="contact" class="footer">
+      <h2>تواصل معنا</h2>
+
+      <div class="contact-grid">
+        <div>
+          <strong>الهاتف</strong>
+          <span id="phoneText">0500000000</span>
+        </div>
+
+        <div>
+          <strong>واتساب</strong>
+          <span id="whatsappText">0500000000</span>
+        </div>
+
+        <div>
+          <strong>البريد الإلكتروني</strong>
+          <span id="emailText">info@teebalhai.com</span>
+        </div>
+
+        <div>
+          <strong>الموقع</strong>
+          <span id="locationText">الإمارات العربية المتحدة</span>
+        </div>
+      </div>
+
+      <p class="copyright">
+        © 2026 طيب الحي — جميع الحقوق محفوظة
+      </p>
+    </footer>
+  </main>
+
+  <div id="settingsModal" class="modal">
+    <div class="modal-box">
+      <button class="close-btn" onclick="closeSettings()">×</button>
+
+      <h2>إعدادات الصفحة</h2>
+
+      <label>العنوان الرئيسي</label>
+      <input id="titleInput" type="text" value="طيب الحي" />
+
+      <label>العنوان الفرعي</label>
+      <input id="subtitleInput" type="text" value="للعود والأدهان" />
+
+      <label>وصف الصفحة</label>
+      <textarea id="descriptionInput">نظام فاخر وبسيط لإدارة العطور، العود، البخور، الأدهان، المخزون، الكاشير، والمبيعات من مكان واحد.</textarea>
+
+      <label>رقم الهاتف</label>
+      <input id="phoneInput" type="text" value="0500000000" />
+
+      <label>واتساب</label>
+      <input id="whatsappInput" type="text" value="0500000000" />
+
+      <label>البريد الإلكتروني</label>
+      <input id="emailInput" type="email" value="info@teebalhai.com" />
+
+      <label>الموقع</label>
+      <input id="locationInput" type="text" value="الإمارات العربية المتحدة" />
+
+      <button class="save-btn" onclick="saveSettings()">حفظ التعديلات</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
 </html>
