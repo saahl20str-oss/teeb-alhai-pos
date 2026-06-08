@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>طيب الحي — تسجيل الدخول</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E2C97E;
+    --gold-dark: #8B6914;
+    --brown-deep: #1A0F00;
+    --brown-rich: #2D1A00;
+    --brown-mid: #3D2500;
+    --brown-warm: #5C3A10;
+    --cream: #F5EDD8;
+    --cream-dark: #E8D5A0;
+    --smoke: rgba(201,168,76,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: var(--brown-deep);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Animated background */
+  .bg-layer {
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse at 20% 50%, rgba(90,50,5,0.6) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(201,168,76,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 60% 80%, rgba(45,26,0,0.8) 0%, transparent 60%);
+    z-index: 0;
+  }
+
+  /* Smoke particles */
+  .smoke-container {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    overflow: hidden;
+  }
+  .smoke {
+    position: absolute;
+    bottom: -100px;
+    width: 3px;
+    border-radius: 50%;
+    background: linear-gradient(to top, transparent, rgba(201,168,76,0.15), transparent);
+    animation: smokeRise linear infinite;
+  }
+  .smoke:nth-child(1)  { left: 15%; width:60px; height:200px; animation-duration:8s;  animation-delay:0s; }
+  .smoke:nth-child(2)  { left: 30%; width:40px; height:150px; animation-duration:10s; animation-delay:2s; }
+  .smoke:nth-child(3)  { left: 50%; width:80px; height:250px; animation-duration:7s;  animation-delay:1s; }
+  .smoke:nth-child(4)  { left: 70%; width:50px; height:180px; animation-duration:9s;  animation-delay:3s; }
+  .smoke:nth-child(5)  { left: 85%; width:35px; height:120px; animation-duration:11s; animation-delay:0.5s; }
+
+  @keyframes smokeRise {
+    0%   { transform: translateY(0) scaleX(1); opacity: 0; }
+    20%  { opacity: 1; }
+    80%  { opacity: 0.3; }
+    100% { transform: translateY(-110vh) scaleX(3); opacity: 0; }
+  }
+
+  /* Gold geometric lines */
+  .geo-lines {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    overflow: hidden;
+  }
+  .geo-lines::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background-image:
+      linear-gradient(45deg, transparent 49.5%, rgba(201,168,76,0.04) 49.5%, rgba(201,168,76,0.04) 50.5%, transparent 50.5%),
+      linear-gradient(-45deg, transparent 49.5%, rgba(201,168,76,0.04) 49.5%, rgba(201,168,76,0.04) 50.5%, transparent 50.5%);
+    background-size: 80px 80px;
+  }
+
+  /* Main container */
+  .login-wrapper {
+    position: relative; z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    animation: fadeInUp 1s ease forwards;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Brand logo area */
+  .brand-area {
+    text-align: center;
+    margin-bottom: 40px;
+    animation: fadeInUp 1s ease 0.2s both;
+  }
+
+  .brand-icon {
+    width: 90px; height: 90px;
+    background: linear-gradient(135deg, var(--brown-rich), var(--brown-warm));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 40px rgba(201,168,76,0.3), inset 0 0 20px rgba(0,0,0,0.5);
+    font-size: 38px;
+    position: relative;
+  }
+  .brand-icon::after {
+    content: '';
+    position: absolute; inset: -6px;
+    border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0.25);
+  }
+  .brand-icon::before {
+    content: '';
+    position: absolute; inset: -12px;
+    border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0.1);
+  }
+
+  .brand-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--gold-light);
+    letter-spacing: 2px;
+    text-shadow: 0 0 30px rgba(201,168,76,0.4);
+  }
+  .brand-sub {
+    font-size: 13px;
+    color: rgba(201,168,76,0.5);
+    letter-spacing: 4px;
+    margin-top: 6px;
+    text-transform: uppercase;
+  }
+
+  /* Card */
+  .login-card {
+    background: linear-gradient(145deg, rgba(45,26,0,0.95), rgba(26,15,0,0.98));
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 20px;
+    padding: 48px 44px;
+    width: 420px;
+    box-shadow:
+      0 40px 80px rgba(0,0,0,0.8),
+      0 0 0 1px rgba(201,168,76,0.08),
+      inset 0 1px 0 rgba(201,168,76,0.1);
+    animation: fadeInUp 1s ease 0.3s both;
+    backdrop-filter: blur(20px);
+    position: relative;
+    overflow: hidden;
+  }
+  .login-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .card-title {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--cream);
+    margin-bottom: 32px;
+    text-align: center;
+  }
+  .card-title span {
+    display: block;
+    font-size: 12px;
+    color: rgba(201,168,76,0.5);
+    letter-spacing: 3px;
+    margin-top: 4px;
+    text-transform: uppercase;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    color: var(--gold-light);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  .input-wrap {
+    position: relative;
+  }
+  .input-wrap .icon {
+    position: absolute;
+    right: 14px; top: 50%;
+    transform: translateY(-50%);
+    color: rgba(201,168,76,0.4);
+    font-size: 16px;
+    pointer-events: none;
+    transition: color 0.3s;
+  }
+  .input-wrap input:focus ~ .icon { color: var(--gold); }
+
+  input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 13px 42px 13px 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 10px;
+    color: var(--cream);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.3s;
+    direction: rtl;
+  }
+  input::placeholder { color: rgba(245,237,216,0.25); }
+  input:focus {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.06);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.08);
+  }
+
+  .role-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .role-btn {
+    padding: 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 8px;
+    color: rgba(245,237,216,0.5);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-align: center;
+  }
+  .role-btn.active, .role-btn:hover {
+    background: rgba(201,168,76,0.12);
+    border-color: var(--gold);
+    color: var(--gold-light);
+  }
+
+  .login-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
+    border: none;
+    border-radius: 10px;
+    color: var(--brown-deep);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    margin-top: 8px;
+    letter-spacing: 1px;
+  }
+  .login-btn::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(201,168,76,0.4);
+  }
+  .login-btn:hover::after { opacity: 1; }
+  .login-btn:active { transform: translateY(0); }
+
+  .error-msg {
+    background: rgba(220,50,50,0.1);
+    border: 1px solid rgba(220,50,50,0.3);
+    border-radius: 8px;
+    color: #ff8a8a;
+    padding: 10px 14px;
+    font-size: 13px;
+    margin-bottom: 16px;
+    display: none;
+    text-align: center;
+  }
+  .error-msg.show { display: block; animation: shake 0.3s ease; }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.15), transparent);
+    margin: 28px 0 20px;
+  }
+
+  .demo-accounts {
+    text-align: center;
+  }
+  .demo-title {
+    font-size: 11px;
+    color: rgba(201,168,76,0.4);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .demo-list {
+    display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+  }
+  .demo-chip {
+    padding: 5px 12px;
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 20px;
+    font-size: 12px;
+    color: rgba(201,168,76,0.5);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .demo-chip:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(201,168,76,0.06);
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-layer"></div>
+<div class="smoke-container">
+  <div class="smoke"></div><div class="smoke"></div>
+  <div class="smoke"></div><div class="smoke"></div><div class="smoke"></div>
+</div>
+<div class="geo-lines"></div>
+
+<div class="login-wrapper">
+  <div class="brand-area">
+    <div class="brand-icon">🪔</div>
+    <div class="brand-title">طيب الحي</div>
+    <div class="brand-sub">نظام إدارة المتجر</div>
+  </div>
+
+  <div class="login-card">
+    <div class="card-title">مرحباً بعودتك <span>WELCOME BACK</span></div>
+
+    <div class="form-group">
+      <label>اختر صلاحيتك</label>
+      <div class="role-selector">
+        <button class="role-btn active" onclick="setRole('admin', this)">👑 مدير</button>
+        <button class="role-btn" onclick="setRole('cashier', this)">🖥️ كاشير</button>
+        <button class="role-btn" onclick="setRole('inventory', this)">📦 مخزون</button>
+        <button class="role-btn" onclick="setRole('viewer', this)">👁️ مشاهدة</button>
+      </div>
+    </div>
+
+    <div class="error-msg" id="errorMsg">كلمة المرور أو اسم المستخدم غير صحيح</div>
+
+    <div class="form-group">
+      <label>اسم المستخدم</label>
+      <div class="input-wrap">
+        <input type="text" id="username" placeholder="أدخل اسم المستخدم" autocomplete="off">
+        <span class="icon">👤</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>كلمة المرور</label>
+      <div class="input-wrap">
+        <input type="password" id="password" placeholder="••••••••">
+        <span class="icon" id="togglePwd" style="cursor:pointer" onclick="togglePassword()">🔒</span>
+      </div>
+    </div>
+
+    <button class="login-btn" onclick="doLogin()">دخول إلى النظام</button>
+
+    <div class="divider"></div>
+    <div class="demo-accounts">
+      <div class="demo-title">حسابات تجريبية</div>
+      <div class="demo-list">
+        <div class="demo-chip" onclick="fillDemo('admin','admin123')">مدير</div>
+        <div class="demo-chip" onclick="fillDemo('cashier1','1234')">كاشير</div>
+        <div class="demo-chip" onclick="fillDemo('stock1','1234')">مخزون</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Demo accounts
+const ACCOUNTS = {
+  admin:    { pass: 'admin123', role: 'admin',     name: 'Mohamed',  page: 'dashboard.html' },
+  cashier1: { pass: '1234',     role: 'cashier',   name: 'أحمد الكاشير', page: 'cashier.html' },
+  stock1:   { pass: '1234',     role: 'inventory', name: 'سالم المخزون', page: 'dashboard.html' },
+};
+
+let selectedRole = 'admin';
+function setRole(role, el) {
+  selectedRole = role;
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function fillDemo(user, pass) {
+  document.getElementById('username').value = user;
+  document.getElementById('password').value = pass;
+}
+
+function togglePassword() {
+  const inp = document.getElementById('password');
+  const icon = document.getElementById('togglePwd');
+  if (inp.type === 'password') { inp.type = 'text'; icon.textContent = '🔓'; }
+  else { inp.type = 'password'; icon.textContent = '🔒'; }
+}
+
+function doLogin() {
+  const u = document.getElementById('username').value.trim();
+  const p = document.getElementById('password').value.trim();
+  const err = document.getElementById('errorMsg');
+  err.classList.remove('show');
+
+  const acc = ACCOUNTS[u];
+  if (acc && acc.pass === p) {
+    localStorage.setItem('oud_user', JSON.stringify({ username: u, role: acc.role, name: acc.name }));
+    window.location.href = acc.role === 'cashier' ? 'cashier.html' : 'dashboard.html';
+  } else {
+    err.classList.add('show');
+    document.getElementById('password').value = '';
+  }
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+</script>
+</body>
+</html>
