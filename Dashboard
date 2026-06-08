@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>طيب الحي — لوحة التحكم</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #C9A84C;
+  --gold-light: #E2C97E;
+  --gold-dark: #8B6914;
+  --brown-deep: #1A0F00;
+  --brown-rich: #2D1A00;
+  --brown-mid: #3D2500;
+  --brown-warm: #5C3A10;
+  --cream: #F5EDD8;
+  --cream-muted: rgba(245,237,216,0.7);
+  --sidebar-w: 250px;
+  --success: #4CAF72;
+  --danger: #E05252;
+  --warning: #E09A30;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Tajawal',sans-serif; background:#0F0800; color:var(--cream); min-height:100vh; display:flex; overflow:hidden; }
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: var(--sidebar-w);
+  background: linear-gradient(180deg, var(--brown-rich) 0%, var(--brown-deep) 100%);
+  border-left: 1px solid rgba(201,168,76,0.15);
+  display: flex; flex-direction:column;
+  position: fixed; right:0; top:0; bottom:0;
+  z-index: 100;
+  box-shadow: -4px 0 30px rgba(0,0,0,0.5);
+}
+
+.sidebar-brand {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid rgba(201,168,76,0.1);
+  text-align: center;
+}
+.sidebar-logo {
+  width:54px; height:54px;
+  background: linear-gradient(135deg, var(--brown-warm), var(--brown-mid));
+  border-radius:50%; display:flex; align-items:center; justify-content:center;
+  margin:0 auto 10px;
+  border:2px solid var(--gold);
+  font-size:22px;
+  box-shadow: 0 0 20px rgba(201,168,76,0.2);
+}
+.sidebar-name { font-size:17px; font-weight:700; color:var(--gold-light); }
+.sidebar-user-badge {
+  display:inline-block; margin-top:6px;
+  padding:3px 12px;
+  background: rgba(201,168,76,0.15);
+  border:1px solid rgba(201,168,76,0.3);
+  border-radius:20px;
+  font-size:11px; color:var(--gold);
+}
+
+.nav-section { padding:8px 0; flex:1; overflow-y:auto; }
+.nav-label {
+  font-size:10px; color:rgba(201,168,76,0.35);
+  letter-spacing:3px; text-transform:uppercase;
+  padding:12px 20px 6px; display:block;
+}
+.nav-item {
+  display:flex; align-items:center; gap:12px;
+  padding:11px 20px;
+  color:rgba(245,237,216,0.55);
+  cursor:pointer; transition:all 0.2s;
+  font-size:14px; border-right:3px solid transparent;
+  text-decoration:none;
+}
+.nav-item .nav-icon { font-size:17px; width:22px; text-align:center; flex-shrink:0; }
+.nav-item:hover { color:var(--cream); background:rgba(201,168,76,0.06); }
+.nav-item.active {
+  color:var(--gold-light);
+  background: linear-gradient(90deg, rgba(201,168,76,0.12), transparent);
+  border-right-color: var(--gold);
+  font-weight:500;
+}
+
+.sidebar-footer {
+  padding:16px 20px;
+  border-top:1px solid rgba(201,168,76,0.1);
+}
+.logout-btn {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 14px; border-radius:8px;
+  background:rgba(220,50,50,0.08); border:1px solid rgba(220,50,50,0.2);
+  color:#ff8a8a; cursor:pointer; font-family:'Tajawal',sans-serif;
+  font-size:14px; transition:all 0.2s; width:100%;
+}
+.logout-btn:hover { background:rgba(220,50,50,0.15); }
+
+/* ===== MAIN AREA ===== */
+.main {
+  flex:1;
+  margin-right: var(--sidebar-w);
+  display:flex; flex-direction:column;
+  overflow:hidden;
+}
+
+/* TOP BAR */
+.topbar {
+  background: rgba(26,15,0,0.95);
+  border-bottom: 1px solid rgba(201,168,76,0.1);
+  padding: 14px 28px;
+  display:flex; align-items:center; justify-content:space-between;
+  backdrop-filter:blur(10px);
+  position:sticky; top:0; z-index:50;
+}
+.topbar-title { font-size:19px; font-weight:700; color:var(--cream); }
+.topbar-title span { color:var(--gold); }
+.topbar-right { display:flex; gap:12px; align-items:center; }
+
+.topbar-btn {
+  padding:8px 16px;
+  border-radius:8px; cursor:pointer;
+  font-family:'Tajawal',sans-serif; font-size:13px;
+  border:1px solid rgba(201,168,76,0.3);
+  background:rgba(201,168,76,0.08);
+  color:var(--gold-light);
+  transition:all 0.2s;
+}
+.topbar-btn:hover { background:rgba(201,168,76,0.15); }
+.topbar-btn.primary {
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  border-color:transparent; color:var(--brown-deep); font-weight:700;
+}
+.topbar-btn.primary:hover { box-shadow:0 4px 15px rgba(201,168,76,0.3); }
+
+.user-chip {
+  display:flex; align-items:center; gap:8px;
+  padding:6px 12px;
+  background:rgba(201,168,76,0.08);
+  border:1px solid rgba(201,168,76,0.15);
+  border-radius:20px;
+}
+.user-chip .dot { width:7px; height:7px; border-radius:50%; background:var(--success); }
+.user-chip span { font-size:13px; color:var(--cream-muted); }
+
+/* CONTENT AREA */
+.content {
+  flex:1; overflow-y:auto;
+  padding:28px;
+}
+
+/* PAGE SECTIONS */
+.page-section { display:none; }
+.page-section.active { display:block; animation:fadeIn 0.3s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+/* CARDS / KPIs */
+.kpi-grid {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:16px;
+  margin-bottom:24px;
+}
+.kpi-card {
+  background: linear-gradient(145deg, rgba(45,26,0,0.8), rgba(26,15,0,0.9));
+  border:1px solid rgba(201,168,76,0.15);
+  border-radius:14px; padding:20px;
+  position:relative; overflow:hidden;
+  transition:transform 0.2s;
+}
+.kpi-card:hover { transform:translateY(-2px); }
+.kpi-card::before {
+  content:''; position:absolute; top:0; right:0;
+  width:80px; height:80px;
+  border-radius:0 14px 0 100%;
+  background: rgba(201,168,76,0.06);
+}
+.kpi-icon { font-size:26px; margin-bottom:10px; }
+.kpi-value { font-size:28px; font-weight:700; color:var(--gold-light); line-height:1; }
+.kpi-unit { font-size:12px; color:rgba(201,168,76,0.5); margin-right:4px; }
+.kpi-label { font-size:12px; color:var(--cream-muted); margin-top:6px; }
+.kpi-trend { font-size:11px; margin-top:8px; }
+.kpi-trend.up { color:var(--success); }
+.kpi-trend.down { color:var(--danger); }
+
+/* TABLE */
+.section-header {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:16px;
+}
+.section-title {
+  font-size:17px; font-weight:700;
+  color:var(--cream);
+  display:flex; align-items:center; gap:8px;
+}
+.section-title::before {
+  content:''; display:inline-block;
+  width:4px; height:18px; background:var(--gold); border-radius:2px;
+}
+
+.table-card {
+  background: linear-gradient(145deg, rgba(45,26,0,0.7), rgba(26,15,0,0.85));
+  border:1px solid rgba(201,168,76,0.12);
+  border-radius:14px; overflow:hidden;
+  margin-bottom:20px;
+}
+table { width:100%; border-collapse:collapse; }
+thead tr { background:rgba(201,168,76,0.08); }
+thead th {
+  padding:13px 16px; text-align:right;
+  font-size:12px; color:var(--gold);
+  letter-spacing:1px; font-weight:600;
+  border-bottom:1px solid rgba(201,168,76,0.1);
+}
+tbody tr { border-bottom:1px solid rgba(201,168,76,0.06); transition:background 0.15s; }
+tbody tr:last-child { border-bottom:none; }
+tbody tr:hover { background:rgba(201,168,76,0.04); }
+tbody td { padding:12px 16px; font-size:14px; color:var(--cream-muted); }
+
+.badge {
+  display:inline-block; padding:3px 10px; border-radius:20px;
+  font-size:11px; font-weight:600;
+}
+.badge-active { background:rgba(76,175,114,0.15); color:var(--success); border:1px solid rgba(76,175,114,0.3); }
+.badge-inactive { background:rgba(220,80,80,0.12); color:#ff8a8a; border:1px solid rgba(220,80,80,0.25); }
+.badge-admin { background:rgba(201,168,76,0.15); color:var(--gold-light); border:1px solid rgba(201,168,76,0.3); }
+.badge-cashier { background:rgba(100,150,220,0.15); color:#90b4e8; border:1px solid rgba(100,150,220,0.3); }
+.badge-inventory { background:rgba(150,100,220,0.15); color:#c490e8; border:1px solid rgba(150,100,220,0.3); }
+
+.action-btns { display:flex; gap:6px; }
+.btn-sm {
+  padding:5px 10px; border-radius:6px; font-size:12px;
+  cursor:pointer; border:none; font-family:'Tajawal',sans-serif;
+  transition:all 0.2s;
+}
+.btn-edit { background:rgba(201,168,76,0.15); color:var(--gold-light); border:1px solid rgba(201,168,76,0.25); }
+.btn-edit:hover { background:rgba(201,168,76,0.25); }
+.btn-del { background:rgba(220,80,80,0.12); color:#ff8a8a; border:1px solid rgba(220,80,80,0.2); }
+.btn-del:hover { background:rgba(220,80,80,0.22); }
+.btn-perm { background:rgba(100,150,220,0.12); color:#90b4e8; border:1px solid rgba(100,150,220,0.2); }
+.btn-perm:hover { background:rgba(100,150,220,0.22); }
+
+/* SEARCH / FILTER BAR */
+.filter-bar {
+  display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;
+}
+.search-input {
+  flex:1; min-width:200px;
+  padding:9px 14px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(201,168,76,0.2);
+  border-radius:8px; color:var(--cream);
+  font-family:'Tajawal',sans-serif; font-size:14px;
+  outline:none; direction:rtl;
+}
+.search-input:focus { border-color:var(--gold); }
+.search-input::placeholder { color:rgba(245,237,216,0.25); }
+select.filter-select {
+  padding:9px 12px;
+  background:rgba(45,26,0,0.9);
+  border:1px solid rgba(201,168,76,0.2);
+  border-radius:8px; color:var(--cream-muted);
+  font-family:'Tajawal',sans-serif; font-size:13px;
+  outline:none; cursor:pointer; direction:rtl;
+}
+select.filter-select:focus { border-color:var(--gold); }
+
+/* MODAL */
+.modal-overlay {
+  position:fixed; inset:0; z-index:500;
+  background:rgba(0,0,0,0.75); backdrop-filter:blur(6px);
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; pointer-events:none; transition:opacity 0.25s;
+}
+.modal-overlay.open { opacity:1; pointer-events:all; }
+.modal {
+  background: linear-gradient(145deg, #2D1A00, #1A0F00);
+  border:1px solid rgba(201,168,76,0.25);
+  border-radius:16px; padding:36px;
+  width:500px; max-width:90vw;
+  transform:scale(0.92); transition:transform 0.25s;
+  position:relative; max-height:85vh; overflow-y:auto;
+}
+.modal-overlay.open .modal { transform:scale(1); }
+.modal-top { position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+.modal-title { font-size:18px; font-weight:700; color:var(--cream); margin-bottom:24px;
+  display:flex; align-items:center; gap:8px; }
+.modal-close {
+  position:absolute; top:16px; left:16px;
+  background:rgba(255,255,255,0.05); border:none;
+  border-radius:6px; color:var(--cream-muted);
+  width:30px; height:30px; cursor:pointer; font-size:16px;
+  display:flex; align-items:center; justify-content:center;
+}
+.modal-close:hover { color:var(--cream); background:rgba(255,255,255,0.1); }
+
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.form-group { margin-bottom:16px; }
+.form-group label { display:block; font-size:13px; color:var(--gold-light); margin-bottom:7px; }
+.form-input {
+  width:100%; padding:11px 14px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(201,168,76,0.2);
+  border-radius:8px; color:var(--cream);
+  font-family:'Tajawal',sans-serif; font-size:14px;
+  outline:none; direction:rtl; transition:border 0.2s;
+}
+.form-input:focus { border-color:var(--gold); background:rgba(201,168,76,0.05); }
+.form-input::placeholder { color:rgba(245,237,216,0.2); }
+select.form-input { cursor:pointer; }
+
+.permissions-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:8px;
+  padding:4px 0;
+}
+.perm-item {
+  display:flex; align-items:center; gap:8px;
+  padding:8px 12px; border-radius:8px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(201,168,76,0.1);
+  cursor:pointer; transition:all 0.2s;
+}
+.perm-item:hover { background:rgba(201,168,76,0.06); }
+.perm-item input[type=checkbox] { display:none; }
+.perm-check {
+  width:16px; height:16px; border-radius:4px;
+  border:2px solid rgba(201,168,76,0.3);
+  display:flex; align-items:center; justify-content:center;
+  transition:all 0.2s; flex-shrink:0;
+}
+.perm-item.checked .perm-check {
+  background:var(--gold); border-color:var(--gold);
+}
+.perm-item.checked .perm-check::after { content:'✓'; font-size:10px; color:var(--brown-deep); font-weight:700; }
+.perm-label { font-size:13px; color:var(--cream-muted); }
+.perm-item.checked .perm-label { color:var(--cream); }
+
+.modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:8px; padding-top:16px;
+  border-top:1px solid rgba(201,168,76,0.1); }
+.btn-save {
+  padding:10px 24px;
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  border:none; border-radius:8px;
+  color:var(--brown-deep); font-family:'Tajawal',sans-serif;
+  font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s;
+}
+.btn-save:hover { box-shadow:0 4px 15px rgba(201,168,76,0.3); }
+.btn-cancel {
+  padding:10px 20px;
+  background:transparent; border:1px solid rgba(201,168,76,0.2);
+  border-radius:8px; color:var(--cream-muted);
+  font-family:'Tajawal',sans-serif; font-size:14px; cursor:pointer;
+  transition:all 0.2s;
+}
+.btn-cancel:hover { border-color:rgba(201,168,76,0.4); color:var(--cream); }
+
+/* TOAST */
+.toast {
+  position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(100px);
+  background: linear-gradient(135deg, rgba(45,26,0,0.98), rgba(26,15,0,0.99));
+  border:1px solid rgba(201,168,76,0.3);
+  border-radius:12px; padding:14px 24px;
+  color:var(--cream); font-size:14px; z-index:1000;
+  transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  display:flex; align-items:center; gap:10px;
+  box-shadow:0 8px 30px rgba(0,0,0,0.5);
+}
+.toast.show { transform:translateX(-50%) translateY(0); }
+
+/* INVENTORY SECTION */
+.inv-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:20px; }
+.product-card {
+  background: linear-gradient(145deg, rgba(45,26,0,0.8), rgba(26,15,0,0.9));
+  border:1px solid rgba(201,168,76,0.12);
+  border-radius:12px; padding:18px;
+  transition:all 0.2s; cursor:pointer;
+}
+.product-card:hover { border-color:rgba(201,168,76,0.3); transform:translateY(-2px); }
+.product-card-icon { font-size:28px; margin-bottom:10px; }
+.product-card-name { font-size:15px; font-weight:600; color:var(--cream); }
+.product-card-cat { font-size:12px; color:rgba(201,168,76,0.5); margin-top:3px; }
+.product-card-footer {
+  display:flex; justify-content:space-between; align-items:center;
+  margin-top:14px; padding-top:12px;
+  border-top:1px solid rgba(201,168,76,0.08);
+}
+.product-price { font-size:16px; font-weight:700; color:var(--gold-light); }
+.product-stock { font-size:12px; padding:3px 8px; border-radius:6px; }
+.stock-ok { background:rgba(76,175,114,0.12); color:var(--success); }
+.stock-low { background:rgba(224,154,48,0.12); color:var(--warning); }
+.stock-out { background:rgba(220,80,80,0.12); color:var(--danger); }
+
+/* REPORTS */
+.report-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+.report-card {
+  background: linear-gradient(145deg, rgba(45,26,0,0.7), rgba(26,15,0,0.85));
+  border:1px solid rgba(201,168,76,0.12);
+  border-radius:14px; padding:22px;
+}
+.report-card-title { font-size:14px; color:var(--gold); margin-bottom:16px; font-weight:600; }
+.bar-wrap { margin-bottom:10px; }
+.bar-label { display:flex; justify-content:space-between; font-size:12px; color:var(--cream-muted); margin-bottom:4px; }
+.bar-track { height:8px; background:rgba(255,255,255,0.06); border-radius:4px; overflow:hidden; }
+.bar-fill { height:100%; border-radius:4px;
+  background:linear-gradient(90deg, var(--gold-dark), var(--gold-light));
+  transition:width 0.6s ease; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-logo">🪔</div>
+    <div class="sidebar-name">طيب الحي</div>
+    <span class="sidebar-user-badge" id="sidebarRole">مدير</span>
+  </div>
+
+  <nav class="nav-section">
+    <span class="nav-label">القائمة الرئيسية</span>
+    <div class="nav-item active" onclick="showPage('dashboard',this)"><span class="nav-icon">⊞</span>لوحة التحكم</div>
+    <div class="nav-item" onclick="showPage('inventory',this)"><span class="nav-icon">📦</span>المخزون</div>
+    <div class="nav-item" onclick="window.location.href='cashier.html'"><span class="nav-icon">🖥️</span>الكاشير</div>
+    <div class="nav-item" onclick="showPage('invoices',this)"><span class="nav-icon">📋</span>الفواتير</div>
+    <div class="nav-item" onclick="showPage('customers',this)"><span class="nav-icon">👥</span>العملاء</div>
+    <div class="nav-item" onclick="showPage('reports',this)"><span class="nav-icon">📊</span>الإحصائيات</div>
+
+    <span class="nav-label">الإدارة</span>
+    <div class="nav-item" onclick="showPage('employees',this)"><span class="nav-icon">👔</span>إدارة الموظفين</div>
+    <div class="nav-item" onclick="showPage('settings',this)"><span class="nav-icon">⚙️</span>الإعدادات</div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="logout-btn" onclick="logout()">🚪 تسجيل الخروج</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">لوحة <span>التحكم</span></div>
+    <div class="topbar-right">
+      <div class="user-chip"><div class="dot"></div><span id="topbarUser">Mohamed</span></div>
+      <button class="topbar-btn primary" onclick="openEmployeeModal()">+ إضافة موظف</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ===== DASHBOARD ===== -->
+    <div class="page-section active" id="page-dashboard">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-icon">💰</div>
+          <div class="kpi-value">12,840 <span class="kpi-unit">ر.س</span></div>
+          <div class="kpi-label">مبيعات اليوم</div>
+          <div class="kpi-trend up">▲ 18% من الأمس</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">🧾</div>
+          <div class="kpi-value">47</div>
+          <div class="kpi-label">فواتير اليوم</div>
+          <div class="kpi-trend up">▲ 5 فاتورة</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">📦</div>
+          <div class="kpi-value">234</div>
+          <div class="kpi-label">منتجات في المخزون</div>
+          <div class="kpi-trend down">▼ 12 منتج منخفض</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">👥</div>
+          <div class="kpi-value">6</div>
+          <div class="kpi-label">موظفين نشطين</div>
+          <div class="kpi-trend up">▲ الكل حاضر</div>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <div class="section-title">آخر الفواتير</div>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead><tr>
+            <th>رقم الفاتورة</th><th>العميل</th><th>الكاشير</th><th>المجموع</th><th>الوقت</th><th>الحالة</th>
+          </tr></thead>
+          <tbody>
+            <tr><td>#INV-1047</td><td>عبدالله الشمري</td><td>أحمد</td><td>320 ر.س</td><td>12:45</td><td><span class="badge badge-active">مكتملة</span></td></tr>
+            <tr><td>#INV-1046</td><td>نورة الحربي</td><td>سارة</td><td>185 ر.س</td><td>12:10</td><td><span class="badge badge-active">مكتملة</span></td></tr>
+            <tr><td>#INV-1045</td><td>فهد المطيري</td><td>أحمد</td><td>950 ر.س</td><td>11:30</td><td><span class="badge badge-active">مكتملة</span></td></tr>
+            <tr><td>#INV-1044</td><td>عميل زيارة</td><td>سارة</td><td>75 ر.س</td><td>11:05</td><td><span class="badge badge-inactive">مُعادة</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== INVENTORY ===== -->
+    <div class="page-section" id="page-inventory">
+      <div class="section-header">
+        <div class="section-title">إدارة المخزون</div>
+        <button class="topbar-btn primary" onclick="showToast('✅ تم فتح نموذج إضافة منتج')">+ منتج جديد</button>
+      </div>
+      <div class="inv-grid">
+        <div class="product-card"><div class="product-card-icon">🌿</div><div class="product-card-name">عود كمبودي فاخر</div><div class="product-card-cat">عود طبيعي</div><div class="product-card-footer"><span class="product-price">850 ر.س</span><span class="product-stock stock-ok">متوفر (23)</span></div></div>
+        <div class="product-card"><div class="product-card-icon">🫧</div><div class="product-card-name">دهن العود الملكي</div><div class="product-card-cat">دهون</div><div class="product-card-footer"><span class="product-price">420 ر.س</span><span class="product-stock stock-low">منخفض (4)</span></div></div>
+        <div class="product-card"><div class="product-card-icon">🕯️</div><div class="product-card-name">بخور الشمس</div><div class="product-card-cat">بخور</div><div class="product-card-footer"><span class="product-price">95 ر.س</span><span class="product-stock stock-ok">متوفر (56)</span></div></div>
+        <div class="product-card"><div class="product-card-icon">💎</div><div class="product-card-name">عطر الليل</div><div class="product-card-cat">عطور</div><div class="product-card-footer"><span class="product-price">620 ر.س</span><span class="product-stock stock-out">نافد (0)</span></div></div>
+        <div class="product-card"><div class="product-card-icon">🌸</div><div class="product-card-name">ورد الطائف الأصيل</div><div class="product-card-cat">دهون</div><div class="product-card-footer"><span class="product-price">380 ر.س</span><span class="product-stock stock-ok">متوفر (17)</span></div></div>
+        <div class="product-card"><div class="product-card-icon">🏺</div><div class="product-card-name">مجمر فضي مزخرف</div><div class="product-card-cat">معدات</div><div class="product-card-footer"><span class="product-price">150 ر.س</span><span class="product-stock stock-low">منخفض (2)</span></div></div>
+      </div>
+    </div>
+
+    <!-- ===== INVOICES ===== -->
+    <div class="page-section" id="page-invoices">
+      <div class="section-header">
+        <div class="section-title">سجل الفواتير</div>
+        <button class="topbar-btn" onclick="window.location.href='cashier.html'">🖥️ فتح الكاشير</button>
+      </div>
+      <div class="filter-bar">
+        <input class="search-input" placeholder="🔍 بحث برقم الفاتورة أو العميل..." type="text">
+        <select class="filter-select"><option>كل الحالات</option><option>مكتملة</option><option>مُعادة</option></select>
+        <select class="filter-select"><option>كل الكاشيرين</option><option>أحمد</option><option>سارة</option></select>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead><tr><th>رقم</th><th>العميل</th><th>الكاشير</th><th>المنتجات</th><th>المجموع</th><th>التاريخ</th><th>الحالة</th></tr></thead>
+          <tbody id="invoicesTable">
+            <tr><td>#INV-1047</td><td>عبدالله الشمري</td><td>أحمد</td><td>3 منتجات</td><td>320 ر.س</td><td>2025/06/08</td><td><span class="badge badge-active">مكتملة</span></td></tr>
+            <tr><td>#INV-1046</td><td>نورة الحربي</td><td>سارة</td><td>2 منتجات</td><td>185 ر.س</td><td>2025/06/08</td><td><span class="badge badge-active">مكتملة</span></td></tr>
+            <tr><td>#INV-1045</td><td>فهد المطيري</td><td>أحمد</td><td>5 منتجات</td><td>950 ر.س</td><td>2025/06/08</td><td><span class="badge badge-active">مكتملة</span></td></tr>
+            <tr><td>#INV-1044</td><td>عميل زيارة</td><td>سارة</td><td>1 منتج</td><td>75 ر.س</td><td>2025/06/07</td><td><span class="badge badge-inactive">مُعادة</span></td></tr>
+            <tr><td>#INV-1043</td><td>خالد الدوسري</td><td>أحمد</td><td>4 منتجات</td><td>1,200 ر.س</td><td>2025/06/07</td><td><span class="badge badge-active">مكتملة</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== CUSTOMERS ===== -->
+    <div class="page-section" id="page-customers">
+      <div class="section-header">
+        <div class="section-title">قاعدة العملاء</div>
+        <button class="topbar-btn primary" onclick="showToast('✅ نموذج إضافة عميل')">+ عميل جديد</button>
+      </div>
+      <div class="filter-bar">
+        <input class="search-input" placeholder="🔍 بحث بالاسم أو رقم الجوال..." type="text">
+      </div>
+      <div class="table-card">
+        <table>
+          <thead><tr><th>الاسم</th><th>الجوال</th><th>عدد الزيارات</th><th>إجمالي المشتريات</th><th>آخر زيارة</th><th>العمليات</th></tr></thead>
+          <tbody>
+            <tr><td>عبدالله الشمري</td><td>0501234567</td><td>12</td><td>4,800 ر.س</td><td>2025/06/08</td><td><div class="action-btns"><button class="btn-sm btn-edit">تفاصيل</button></div></td></tr>
+            <tr><td>نورة الحربي</td><td>0509876543</td><td>7</td><td>2,100 ر.س</td><td>2025/06/08</td><td><div class="action-btns"><button class="btn-sm btn-edit">تفاصيل</button></div></td></tr>
+            <tr><td>فهد المطيري</td><td>0551122334</td><td>24</td><td>18,300 ر.س</td><td>2025/06/08</td><td><div class="action-btns"><button class="btn-sm btn-edit">تفاصيل</button></div></td></tr>
+            <tr><td>خالد الدوسري</td><td>0565544332</td><td>5</td><td>3,200 ر.س</td><td>2025/06/07</td><td><div class="action-btns"><button class="btn-sm btn-edit">تفاصيل</button></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== REPORTS ===== -->
+    <div class="page-section" id="page-reports">
+      <div class="section-header"><div class="section-title">الإحصائيات والتقارير</div></div>
+      <div class="kpi-grid" style="margin-bottom:20px">
+        <div class="kpi-card"><div class="kpi-icon">📅</div><div class="kpi-value">12,840</div><div class="kpi-label">مبيعات اليوم (ر.س)</div></div>
+        <div class="kpi-card"><div class="kpi-icon">📆</div><div class="kpi-value">84,200</div><div class="kpi-label">مبيعات الأسبوع (ر.س)</div></div>
+        <div class="kpi-card"><div class="kpi-icon">🗓️</div><div class="kpi-value">342,500</div><div class="kpi-label">مبيعات الشهر (ر.س)</div></div>
+        <div class="kpi-card"><div class="kpi-icon">📈</div><div class="kpi-value">24%</div><div class="kpi-label">نمو شهري</div><div class="kpi-trend up">▲ أعلى من المستهدف</div></div>
+      </div>
+      <div class="report-grid">
+        <div class="report-card">
+          <div class="report-card-title">📊 أعلى المنتجات مبيعاً</div>
+          <div class="bar-wrap"><div class="bar-label"><span>عود كمبودي</span><span>38%</span></div><div class="bar-track"><div class="bar-fill" style="width:38%"></div></div></div>
+          <div class="bar-wrap"><div class="bar-label"><span>دهن العود</span><span>27%</span></div><div class="bar-track"><div class="bar-fill" style="width:27%"></div></div></div>
+          <div class="bar-wrap"><div class="bar-label"><span>ورد الطائف</span><span>20%</span></div><div class="bar-track"><div class="bar-fill" style="width:20%"></div></div></div>
+          <div class="bar-wrap"><div class="bar-label"><span>بخور الشمس</span><span>15%</span></div><div class="bar-track"><div class="bar-fill" style="width:15%"></div></div></div>
+        </div>
+        <div class="report-card">
+          <div class="report-card-title">👔 أداء الكاشيرين</div>
+          <div class="bar-wrap"><div class="bar-label"><span>أحمد</span><span>52%</span></div><div class="bar-track"><div class="bar-fill" style="width:52%"></div></div></div>
+          <div class="bar-wrap"><div class="bar-label"><span>سارة</span><span>34%</span></div><div class="bar-track"><div class="bar-fill" style="width:34%"></div></div></div>
+          <div class="bar-wrap"><div class="bar-label"><span>محمد</span><span>14%</span></div><div class="bar-track"><div class="bar-fill" style="width:14%"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== EMPLOYEES ===== -->
+    <div class="page-section" id="page-employees">
+      <div class="section-header">
+        <div class="section-title">إدارة الموظفين</div>
+        <button class="topbar-btn primary" onclick="openEmployeeModal()">+ إضافة موظف</button>
+      </div>
+      <div class="filter-bar">
+        <input class="search-input" placeholder="🔍 بحث بالاسم أو الدور..." type="text" oninput="filterEmployees(this.value)">
+        <select class="filter-select" onchange="filterByRole(this.value)">
+          <option value="">كل الأدوار</option>
+          <option value="admin">مدير</option>
+          <option value="cashier">كاشير</option>
+          <option value="inventory">مخزون</option>
+          <option value="viewer">مشاهدة</option>
+        </select>
+        <select class="filter-select">
+          <option>كل الحالات</option>
+          <option>نشط</option>
+          <option>معطّل</option>
+        </select>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead><tr><th>#</th><th>الاسم</th><th>اسم المستخدم</th><th>الدور</th><th>الصلاحيات</th><th>الحالة</th><th>العمليات</th></tr></thead>
+          <tbody id="empTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== SETTINGS ===== -->
+    <div class="page-section" id="page-settings">
+      <div class="section-header"><div class="section-title">الإعدادات</div></div>
+      <div class="report-grid">
+        <div class="report-card">
+          <div class="report-card-title">🏪 بيانات المتجر</div>
+          <div class="form-group"><label>اسم المتجر</label><input class="form-input" value="طيب الحي"></div>
+          <div class="form-group"><label>رقم السجل التجاري</label><input class="form-input" value="1010123456"></div>
+          <div class="form-group"><label>رقم الجوال</label><input class="form-input" value="0501234567"></div>
+          <button class="btn-save" onclick="showToast('✅ تم حفظ بيانات المتجر')">حفظ التغييرات</button>
+        </div>
+        <div class="report-card">
+          <div class="report-card-title">💰 إعدادات المبيعات</div>
+          <div class="form-group"><label>نسبة الضريبة (%)</label><input class="form-input" value="15"></div>
+          <div class="form-group"><label>العملة</label><select class="form-input"><option>ريال سعودي (ر.س)</option><option>درهم إماراتي (د.إ)</option></select></div>
+          <div class="form-group"><label>رسالة الفاتورة</label><input class="form-input" value="شكراً لتسوقكم معنا — طيب الحي"></div>
+          <button class="btn-save" onclick="showToast('✅ تم حفظ إعدادات المبيعات')">حفظ التغييرات</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end content -->
+</div><!-- end main -->
+
+<!-- ===== EMPLOYEE MODAL ===== -->
+<div class="modal-overlay" id="empModal">
+  <div class="modal">
+    <div class="modal-top"></div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title" id="modalTitle">👔 إضافة موظف جديد</div>
+
+    <div class="form-row">
+      <div class="form-group"><label>الاسم الكامل</label><input class="form-input" id="empName" placeholder="محمد علي"></div>
+      <div class="form-group"><label>اسم المستخدم</label><input class="form-input" id="empUsername" placeholder="mohammed_ali"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>كلمة المرور</label><input class="form-input" id="empPassword" type="password" placeholder="••••••••"></div>
+      <div class="form-group"><label>رقم الجوال</label><input class="form-input" id="empPhone" placeholder="05xxxxxxxx"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>الدور الوظيفي</label>
+        <select class="form-input" id="empRole">
+          <option value="cashier">كاشير</option>
+          <option value="inventory">مسؤول مخزون</option>
+          <option value="admin">مدير</option>
+          <option value="viewer">مشاهدة فقط</option>
+        </select>
+      </div>
+      <div class="form-group"><label>الحالة</label>
+        <select class="form-input" id="empStatus">
+          <option value="active">نشط</option>
+          <option value="inactive">معطّل</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>الصلاحيات التفصيلية</label>
+      <div class="permissions-grid" id="permissionsGrid">
+        <div class="perm-item checked" onclick="togglePerm(this)"><input type="checkbox" checked><div class="perm-check"></div><span class="perm-label">🖥️ الكاشير</span></div>
+        <div class="perm-item" onclick="togglePerm(this)"><input type="checkbox"><div class="perm-check"></div><span class="perm-label">📦 المخزون</span></div>
+        <div class="perm-item" onclick="togglePerm(this)"><input type="checkbox"><div class="perm-check"></div><span class="perm-label">📋 الفواتير</span></div>
+        <div class="perm-item" onclick="togglePerm(this)"><input type="checkbox"><div class="perm-check"></div><span class="perm-label">👥 العملاء</span></div>
+        <div class="perm-item" onclick="togglePerm(this)"><input type="checkbox"><div class="perm-check"></div><span class="perm-label">📊 التقارير</span></div>
+        <div class="perm-item" onclick="togglePerm(this)"><input type="checkbox"><div class="perm-check"></div><span class="perm-label">👔 الموظفين</span></div>
+        <div class="perm-item" onclick="togglePerm(this)"><input type="checkbox"><div class="perm-check"></div><span class="perm-label">🔄 الإرجاع</span></div>
+        <div class="perm-item" onclick="togglePerm(this)"><input type="checkbox"><div class="perm-check"></div><span class="perm-label">🏷️ التسعير</span></div>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">إلغاء</button>
+      <button class="btn-save" onclick="saveEmployee()">💾 حفظ الموظف</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== STATE =====
+let employees = [
+  { id:1, name:'Mohamed', username:'admin', role:'admin', phone:'0500000001', status:'active', perms:['كاشير','مخزون','فواتير','عملاء','تقارير','موظفين','إرجاع','تسعير'] },
+  { id:2, name:'أحمد الكاشير', username:'cashier1', role:'cashier', phone:'0512345678', status:'active', perms:['كاشير','فواتير','إرجاع'] },
+  { id:3, name:'سالم المخزون', username:'stock1', role:'inventory', phone:'0523456789', status:'active', perms:['مخزون','فواتير'] },
+  { id:4, name:'سارة الكاشير', username:'sarah_c', role:'cashier', phone:'0534567890', status:'active', perms:['كاشير','فواتير'] },
+  { id:5, name:'عمر المراقب', username:'omar_v', role:'viewer', phone:'0545678901', status:'inactive', perms:['تقارير'] },
+];
+let editingId = null;
+
+// ===== INIT =====
+const user = JSON.parse(localStorage.getItem('oud_user') || '{"name":"مدير","role":"admin"}');
+document.getElementById('topbarUser').textContent = user.name || 'مدير';
+document.getElementById('sidebarRole').textContent = roleLabel(user.role);
+renderEmployees();
+
+// ===== NAVIGATION =====
+function showPage(id, el) {
+  document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if (el) el.classList.add('active');
+  document.querySelector('.topbar-title').innerHTML = getPageTitle(id);
+}
+function getPageTitle(id) {
+  const t = {dashboard:'لوحة <span>التحكم</span>',inventory:'إدارة <span>المخزون</span>',invoices:'سجل <span>الفواتير</span>',customers:'قاعدة <span>العملاء</span>',reports:'<span>الإحصائيات</span>',employees:'إدارة <span>الموظفين</span>',settings:'<span>الإعدادات</span>'};
+  return t[id] || id;
+}
+
+// ===== EMPLOYEES =====
+function roleLabel(r) {
+  const m = {admin:'مدير',cashier:'كاشير',inventory:'مخزون',viewer:'مشاهدة'};
+  return m[r] || r;
+}
+function roleBadge(r) {
+  const m = {admin:'badge-admin',cashier:'badge-cashier',inventory:'badge-inventory',viewer:''};
+  return m[r] || '';
+}
+
+function renderEmployees(list) {
+  const data = list || employees;
+  const tb = document.getElementById('empTable');
+  tb.innerHTML = data.map((e,i) => `
+    <tr>
+      <td>${i+1}</td>
+      <td><b style="color:var(--cream)">${e.name}</b></td>
+      <td style="color:rgba(201,168,76,0.6);font-size:13px">${e.username}</td>
+      <td><span class="badge ${roleBadge(e.role)}">${roleLabel(e.role)}</span></td>
+      <td style="font-size:12px;color:var(--cream-muted)">${e.perms.slice(0,3).join(' · ')}${e.perms.length>3?' +'+( e.perms.length-3):''}</td>
+      <td><span class="badge ${e.status==='active'?'badge-active':'badge-inactive'}">${e.status==='active'?'نشط':'معطّل'}</span></td>
+      <td><div class="action-btns">
+        <button class="btn-sm btn-edit" onclick="editEmployee(${e.id})">✏️ تعديل</button>
+        <button class="btn-sm btn-perm" onclick="showPerms(${e.id})">🔑 صلاحيات</button>
+        ${e.role!=='admin'?`<button class="btn-sm btn-del" onclick="deleteEmployee(${e.id})">🗑️ حذف</button>`:''}
+      </div></td>
+    </tr>
+  `).join('');
+}
+
+function filterEmployees(val) {
+  const f = employees.filter(e => e.name.includes(val) || e.username.includes(val));
+  renderEmployees(f);
+}
+function filterByRole(role) {
+  const f = role ? employees.filter(e => e.role === role) : employees;
+  renderEmployees(f);
+}
+
+function openEmployeeModal(id) {
+  editingId = id || null;
+  const modal = document.getElementById('empModal');
+  if (id) {
+    const emp = employees.find(e => e.id === id);
+    document.getElementById('modalTitle').textContent = '✏️ تعديل بيانات الموظف';
+    document.getElementById('empName').value = emp.name;
+    document.getElementById('empUsername').value = emp.username;
+    document.getElementById('empPassword').value = '';
+    document.getElementById('empPhone').value = emp.phone;
+    document.getElementById('empRole').value = emp.role;
+    document.getElementById('empStatus').value = emp.status;
+    // Set permissions
+    const permLabels = ['كاشير','مخزون','فواتير','عملاء','تقارير','موظفين','إرجاع','تسعير'];
+    document.querySelectorAll('.perm-item').forEach((item,i) => {
+      const pLabel = permLabels[i];
+      if (emp.perms.includes(pLabel)) item.classList.add('checked');
+      else item.classList.remove('checked');
+    });
+  } else {
+    document.getElementById('modalTitle').textContent = '👔 إضافة موظف جديد';
+    ['empName','empUsername','empPassword','empPhone'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('empRole').value = 'cashier';
+    document.getElementById('empStatus').value = 'active';
+    document.querySelectorAll('.perm-item').forEach(item => item.classList.remove('checked'));
+  }
+  modal.classList.add('open');
+}
+
+function editEmployee(id) { openEmployeeModal(id); }
+
+function closeModal() {
+  document.getElementById('empModal').classList.remove('open');
+}
+
+function togglePerm(el) { el.classList.toggle('checked'); }
+
+function saveEmployee() {
+  const name = document.getElementById('empName').value.trim();
+  const username = document.getElementById('empUsername').value.trim();
+  const phone = document.getElementById('empPhone').value.trim();
+  const role = document.getElementById('empRole').value;
+  const status = document.getElementById('empStatus').value;
+  if (!name || !username) { showToast('⚠️ الاسم واسم المستخدم مطلوبان'); return; }
+
+  const permLabels = ['كاشير','مخزون','فواتير','عملاء','تقارير','موظفين','إرجاع','تسعير'];
+  const perms = [];
+  document.querySelectorAll('.perm-item').forEach((item,i) => { if(item.classList.contains('checked')) perms.push(permLabels[i]); });
+
+  if (editingId) {
+    const idx = employees.findIndex(e => e.id === editingId);
+    employees[idx] = { ...employees[idx], name, username, phone, role, status, perms };
+    showToast('✅ تم تحديث بيانات الموظف بنجاح');
+  } else {
+    employees.push({ id: Date.now(), name, username, phone, role, status, perms });
+    showToast('✅ تم إضافة الموظف بنجاح');
+  }
+  renderEmployees();
+  closeModal();
+}
+
+function deleteEmployee(id) {
+  if (!confirm('هل تريد حذف هذا الموظف؟')) return;
+  employees = employees.filter(e => e.id !== id);
+  renderEmployees();
+  showToast('🗑️ تم حذف الموظف');
+}
+
+function showPerms(id) {
+  const emp = employees.find(e => e.id === id);
+  showToast('🔑 صلاحيات ' + emp.name + ': ' + emp.perms.join(', '));
+}
+
+function logout() {
+  localStorage.removeItem('oud_user');
+  window.location.href = 'login.html';
+}
+
+// ===== TOAST =====
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
