@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BikeID — تسجيل الدخول</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f7f8fa;
+  --surface:#ffffff;
+  --border:#e8eaed;
+  --text:#1a1d23;
+  --muted:#6b7280;
+  --accent:#1d6f42;
+  --accent-light:#e8f5ee;
+  --accent-border:#86efac;
+  --red:#dc3545;
+  --radius:12px;
+  --shadow:0 1px 4px rgba(0,0,0,.06),0 4px 20px rgba(0,0,0,.05);
+  --shadow-lg:0 8px 40px rgba(0,0,0,.10);
+}
+html,body{height:100%}
+body{
+  font-family:'Tajawal',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  display:flex;
+  min-height:100vh;
+  direction:rtl;
+}
+
+/* ── SPLIT LAYOUT ── */
+.left-panel{
+  width:420px;
+  flex-shrink:0;
+  background:var(--accent);
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:40px;
+  position:relative;
+  overflow:hidden;
+}
+.left-panel::before{
+  content:'';
+  position:absolute;
+  width:300px;height:300px;
+  background:rgba(255,255,255,.05);
+  border-radius:50%;
+  bottom:-80px;left:-80px;
+}
+.left-panel::after{
+  content:'';
+  position:absolute;
+  width:200px;height:200px;
+  background:rgba(255,255,255,.04);
+  border-radius:50%;
+  top:60px;left:60px;
+}
+
+.panel-logo{
+  display:flex;align-items:center;gap:12px;position:relative;z-index:1;
+}
+.panel-logo-icon{
+  width:44px;height:44px;
+  background:rgba(255,255,255,.15);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;
+  border:1px solid rgba(255,255,255,.2);
+}
+.panel-logo-name{
+  font-size:22px;font-weight:800;color:white;letter-spacing:-.5px;
+}
+.panel-logo-sub{font-size:11px;color:rgba(255,255,255,.6);margin-top:1px;}
+
+.panel-content{position:relative;z-index:1;}
+.panel-title{
+  font-size:28px;font-weight:800;color:white;
+  line-height:1.25;margin-bottom:16px;
+}
+.panel-desc{
+  font-size:14px;color:rgba(255,255,255,.75);
+  line-height:1.8;margin-bottom:32px;
+}
+.panel-features{list-style:none;display:flex;flex-direction:column;gap:14px;}
+.panel-feat{
+  display:flex;align-items:center;gap:12px;
+  font-size:13px;color:rgba(255,255,255,.85);
+}
+.feat-icon{
+  width:32px;height:32px;
+  background:rgba(255,255,255,.12);
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;flex-shrink:0;
+}
+
+.panel-footer{
+  position:relative;z-index:1;
+  font-size:11px;color:rgba(255,255,255,.4);
+}
+
+/* ── RIGHT PANEL ── */
+.right-panel{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:40px 32px;
+}
+
+.auth-box{
+  width:100%;max-width:440px;
+}
+
+/* TABS */
+.auth-tabs{
+  display:flex;
+  background:var(--bg);
+  border-radius:10px;
+  padding:4px;
+  margin-bottom:28px;
+}
+.tab{
+  flex:1;padding:9px;
+  text-align:center;
+  font-size:14px;font-weight:600;
+  color:var(--muted);
+  border-radius:8px;
+  cursor:pointer;
+  transition:all .2s;
+  border:none;background:transparent;
+  font-family:'Tajawal',sans-serif;
+}
+.tab.active{
+  background:var(--surface);
+  color:var(--text);
+  box-shadow:0 1px 4px rgba(0,0,0,.08);
+}
+
+/* FORM */
+.form-title{font-size:22px;font-weight:800;color:var(--text);margin-bottom:6px;}
+.form-sub{font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.6;}
+
+.form-section{display:none;}
+.form-section.active{display:block;}
+
+.field{margin-bottom:16px;}
+.field label{
+  display:block;font-size:13px;font-weight:600;
+  color:var(--text);margin-bottom:6px;
+}
+.field input,.field select{
+  width:100%;
+  padding:11px 14px;
+  border:1.5px solid var(--border);
+  border-radius:9px;
+  font-size:14px;
+  font-family:'Tajawal',sans-serif;
+  color:var(--text);
+  background:var(--surface);
+  transition:border-color .15s,box-shadow .15s;
+  outline:none;
+  direction:rtl;
+}
+.field input:focus,.field select:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(29,111,66,.1);
+}
+.field input::placeholder{color:#b0b7c3;}
+.field input.error{border-color:var(--red);}
+
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+/* ROLE SELECTOR */
+.role-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px;}
+.role-card{
+  border:1.5px solid var(--border);
+  border-radius:10px;padding:14px 12px;
+  text-align:center;cursor:pointer;
+  transition:all .15s;background:var(--surface);
+  position:relative;
+}
+.role-card:hover{border-color:var(--accent);background:var(--accent-light);}
+.role-card.selected{border-color:var(--accent);background:var(--accent-light);}
+.role-card.selected::after{
+  content:'✓';
+  position:absolute;top:6px;left:6px;
+  width:16px;height:16px;
+  background:var(--accent);color:white;
+  border-radius:50%;font-size:9px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  line-height:16px;
+}
+.role-ico{font-size:24px;margin-bottom:6px;}
+.role-name{font-size:12px;font-weight:700;color:var(--text);}
+.role-desc{font-size:10px;color:var(--muted);margin-top:2px;}
+
+/* PASSWORD FIELD */
+.pass-wrap{position:relative;}
+.pass-wrap input{padding-left:44px;}
+.pass-toggle{
+  position:absolute;left:12px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;
+  font-size:16px;color:var(--muted);padding:0;line-height:1;
+}
+
+/* FORGOT */
+.forgot-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.remember{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--muted);cursor:pointer;}
+.remember input{accent-color:var(--accent);width:14px;height:14px;}
+.forgot-link{font-size:13px;color:var(--accent);text-decoration:none;font-weight:600;}
+.forgot-link:hover{text-decoration:underline;}
+
+/* SUBMIT BTN */
+.btn-submit{
+  width:100%;padding:13px;
+  background:var(--accent);color:white;
+  border:none;border-radius:10px;
+  font-size:15px;font-weight:700;
+  font-family:'Tajawal',sans-serif;
+  cursor:pointer;
+  transition:all .15s;
+  margin-bottom:16px;
+}
+.btn-submit:hover{background:#165e38;box-shadow:0 4px 16px rgba(29,111,66,.3);transform:translateY(-1px);}
+.btn-submit:active{transform:translateY(0);}
+
+/* OR DIVIDER */
+.or-div{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.or-line{flex:1;height:1px;background:var(--border);}
+.or-text{font-size:12px;color:var(--muted);}
+
+/* SOCIAL / GOV BTNS */
+.btn-gov{
+  width:100%;padding:11px;
+  background:var(--surface);color:var(--text);
+  border:1.5px solid var(--border);border-radius:10px;
+  font-size:14px;font-weight:600;
+  font-family:'Tajawal',sans-serif;
+  cursor:pointer;
+  transition:all .15s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-gov:hover{border-color:var(--accent);color:var(--accent);}
+
+/* SWITCH TEXT */
+.switch-text{text-align:center;font-size:13px;color:var(--muted);margin-top:20px;}
+.switch-link{color:var(--accent);font-weight:700;cursor:pointer;text-decoration:none;}
+.switch-link:hover{text-decoration:underline;}
+
+/* ALERT */
+.alert{
+  padding:10px 14px;border-radius:8px;
+  font-size:13px;margin-bottom:16px;
+  display:none;align-items:center;gap:8px;
+}
+.alert.error{background:#fdf0f1;color:var(--red);border:1px solid #fecaca;display:flex;}
+.alert.success{background:var(--accent-light);color:var(--accent);border:1px solid var(--accent-border);display:flex;}
+
+/* STEP INDICATOR */
+.steps-indicator{display:flex;align-items:center;gap:6px;margin-bottom:24px;}
+.step-dot{
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;
+  border:1.5px solid var(--border);
+  color:var(--muted);background:var(--surface);
+  transition:all .2s;
+}
+.step-dot.active{background:var(--accent);border-color:var(--accent);color:white;}
+.step-dot.done{background:var(--accent-light);border-color:var(--accent-border);color:var(--accent);}
+.step-line{flex:1;height:1px;background:var(--border);}
+.step-label{font-size:10px;color:var(--muted);margin-right:4px;}
+
+/* PROGRESS BAR */
+.prog-bar{
+  height:3px;background:var(--border);border-radius:2px;
+  margin-bottom:24px;overflow:hidden;
+}
+.prog-fill{
+  height:100%;background:var(--accent);border-radius:2px;
+  transition:width .4s ease;
+}
+
+/* LANG TOGGLE */
+.lang-top{
+  display:flex;justify-content:flex-end;margin-bottom:24px;
+}
+.lang-pills{display:flex;background:var(--bg);border-radius:8px;padding:3px;gap:2px;}
+.lang-pill{
+  padding:4px 12px;border-radius:6px;border:none;
+  background:transparent;font-size:12px;font-weight:700;
+  color:var(--muted);cursor:pointer;transition:all .15s;
+  font-family:'DM Sans',sans-serif;
+}
+.lang-pill.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.1);}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .left-panel{display:none;}
+  .right-panel{padding:24px 16px;}
+}
+
+/* LANG */
+.ar{display:block;}.en{display:none;}
+span.ar,span.en{display:inline;}
+body.lang-en .ar{display:none;} body.lang-en .en{display:block;}
+body.lang-en span.ar{display:none;} body.lang-en span.en{display:inline;}
+body.lang-en{direction:ltr;}
+body.lang-en .right-panel{direction:ltr;}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.auth-box{animation:fadeUp .5s ease both;}
+.form-section.active{animation:fadeUp .3s ease both;}
+</style>
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<!-- LEFT PANEL -->
+<div class="left-panel">
+  <div class="panel-logo">
+    <div class="panel-logo-icon">🏍️</div>
+    <div>
+      <div class="panel-logo-name">BikeID</div>
+      <div class="panel-logo-sub"><span class="ar">نظام هوية الدراجات الذكي</span><span class="en">Smart Bike Identity System</span></div>
+    </div>
+  </div>
+
+  <div class="panel-content">
+    <div class="panel-title">
+      <span class="ar">كل دراجة لها<br>هوية رقمية</span>
+      <span class="en">Every Bike Has a<br>Digital Identity</span>
+    </div>
+    <div class="panel-desc">
+      <span class="ar">منصة وطنية تربط السائق بدراجته — بيانات حية يمسحها المرور والإسعاف في ثوانٍ.</span>
+      <span class="en">A national platform linking every rider to their bike — live data scannable by traffic police and paramedics in seconds.</span>
+    </div>
+    <ul class="panel-features">
+      <li class="panel-feat">
+        <div class="feat-icon">⚡</div>
+        <span class="ar">تحقق فوري بمسح QR بدون تطبيق</span>
+        <span class="en">Instant verification via QR scan</span>
+      </li>
+      <li class="panel-feat">
+        <div class="feat-icon">🚑</div>
+        <span class="ar">بيانات الطوارئ والبيانات الطبية في ثوانٍ</span>
+        <span class="en">Emergency & medical data in seconds</span>
+      </li>
+      <li class="panel-feat">
+        <div class="feat-icon">⚠️</div>
+        <span class="ar">تنبيهات تلقائية عند اقتراب انتهاء الإقامة</span>
+        <span class="en">Auto-alerts before residence expiry</span>
+      </li>
+      <li class="panel-feat">
+        <div class="feat-icon">🏥</div>
+        <span class="ar">ربط مع وزارة الصحة والهوية الرقمية</span>
+        <span class="en">Integrated with MOH & Digital ID</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="panel-footer">
+    <span class="ar">© 2025 BikeID UAE — جميع الحقوق محفوظة</span>
+    <span class="en">© 2025 BikeID UAE — All rights reserved</span>
+  </div>
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="right-panel">
+  <div class="auth-box">
+
+    <!-- LANG TOGGLE -->
+    <div class="lang-top">
+      <div class="lang-pills">
+        <button class="lang-pill active" onclick="setLang('ar')">AR</button>
+        <button class="lang-pill" onclick="setLang('en')">EN</button>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="auth-tabs">
+      <button class="tab active" onclick="switchTab('login')">
+        <span class="ar">تسجيل الدخول</span>
+        <span class="en">Login</span>
+      </button>
+      <button class="tab" onclick="switchTab('register')">
+        <span class="ar">تسجيل جديد</span>
+        <span class="en">Register</span>
+      </button>
+    </div>
+
+    <!-- ══ LOGIN FORM ══ -->
+    <div class="form-section active" id="login-section">
+      <div class="form-title">
+        <span class="ar">مرحبًا بعودتك 👋</span>
+        <span class="en">Welcome back 👋</span>
+      </div>
+      <div class="form-sub">
+        <span class="ar">سجّل دخولك للوصول إلى لوحة التحكم</span>
+        <span class="en">Sign in to access your dashboard</span>
+      </div>
+
+      <div class="alert error" id="login-error">
+        ⚠ <span class="ar">البريد الإلكتروني أو كلمة المرور غير صحيحة</span><span class="en">Invalid email or password</span>
+      </div>
+
+      <!-- ROLE SELECT -->
+      <div class="role-grid" id="login-roles">
+        <div class="role-card selected" onclick="selectRole(this,'admin')">
+          <div class="role-ico">📊</div>
+          <div class="role-name"><span class="ar">إدارة النظام</span><span class="en">System Admin</span></div>
+          <div class="role-desc"><span class="ar">BikeID المركزي</span><span class="en">BikeID Central</span></div>
+        </div>
+        <div class="role-card" onclick="selectRole(this,'company')">
+          <div class="role-ico">🏢</div>
+          <div class="role-name"><span class="ar">شركة توصيل</span><span class="en">Fleet Company</span></div>
+          <div class="role-desc"><span class="ar">إدارة الأسطول</span><span class="en">Fleet management</span></div>
+        </div>
+        <div class="role-card" onclick="selectRole(this,'driver')">
+          <div class="role-ico">🏍️</div>
+          <div class="role-name"><span class="ar">سائق</span><span class="en">Driver</span></div>
+          <div class="role-desc"><span class="ar">ربط الدراجة</span><span class="en">Bike linking</span></div>
+        </div>
+        <div class="role-card" onclick="selectRole(this,'gov')">
+          <div class="role-ico">🏛️</div>
+          <div class="role-name"><span class="ar">جهة حكومية</span><span class="en">Government</span></div>
+          <div class="role-desc"><span class="ar">مرور / داخلية</span><span class="en">Traffic / MOI</span></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label><span class="ar">البريد الإلكتروني</span><span class="en">Email address</span></label>
+        <input type="email" id="login-email" placeholder="example@company.ae" autocomplete="email">
+      </div>
+
+      <div class="field">
+        <label><span class="ar">كلمة المرور</span><span class="en">Password</span></label>
+        <div class="pass-wrap">
+          <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+          <button class="pass-toggle" onclick="togglePass('login-pass',this)">👁️</button>
+        </div>
+      </div>
+
+      <div class="forgot-row">
+        <label class="remember">
+          <input type="checkbox" checked>
+          <span class="ar">تذكرني</span><span class="en">Remember me</span>
+        </label>
+        <a href="#" class="forgot-link" onclick="showForgot()">
+          <span class="ar">نسيت كلمة المرور؟</span>
+          <span class="en">Forgot password?</span>
+        </a>
+      </div>
+
+      <button class="btn-submit" onclick="handleLogin()">
+        <span class="ar">تسجيل الدخول ←</span>
+        <span class="en">Sign In →</span>
+      </button>
+
+      <div class="or-div">
+        <div class="or-line"></div>
+        <span class="or-text"><span class="ar">أو</span><span class="en">or</span></span>
+        <div class="or-line"></div>
+      </div>
+
+      <button class="btn-gov">
+        <span style="font-size:18px">🪪</span>
+        <span class="ar">الدخول عبر الهوية الرقمية</span>
+        <span class="en">Login with Digital ID</span>
+      </button>
+
+      <div class="switch-text">
+        <span class="ar">ليس لديك حساب؟ <span class="switch-link" onclick="switchTab('register')">سجّل الآن</span></span>
+        <span class="en">No account? <span class="switch-link" onclick="switchTab('register')">Register now</span></span>
+      </div>
+    </div>
+
+    <!-- ══ REGISTER FORM ══ -->
+    <div class="form-section" id="register-section">
+      <div class="form-title">
+        <span class="ar">تسجيل شركة جديدة 🏢</span>
+        <span class="en">Register New Company 🏢</span>
+      </div>
+      <div class="form-sub">
+        <span class="ar">أدخل بيانات شركتك للحصول على الاعتماد من النظام</span>
+        <span class="en">Enter your company details to get system accreditation</span>
+      </div>
+
+      <!-- STEP INDICATOR -->
+      <div class="steps-indicator">
+        <div class="step-dot active" id="dot-1">1</div>
+        <div class="step-line"></div>
+        <div class="step-dot" id="dot-2">2</div>
+        <div class="step-line"></div>
+        <div class="step-dot" id="dot-3">3</div>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" id="prog" style="width:33%"></div></div>
+
+      <!-- STEP 1: COMPANY INFO -->
+      <div id="reg-step-1">
+        <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:14px;">
+          <span class="ar">الخطوة 1 — البيانات الأساسية</span>
+          <span class="en">Step 1 — Basic Information</span>
+        </div>
+
+        <div class="field">
+          <label><span class="ar">اسم الشركة (عربي)</span><span class="en">Company Name (Arabic)</span></label>
+          <input type="text" id="co-name-ar" placeholder="شركة التوصيل السريع">
+        </div>
+        <div class="field">
+          <label><span class="ar">اسم الشركة (إنجليزي)</span><span class="en">Company Name (English)</span></label>
+          <input type="text" id="co-name-en" placeholder="Fast Delivery Co.">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label><span class="ar">رقم السجل التجاري</span><span class="en">Trade License No.</span></label>
+            <input type="text" id="co-reg" placeholder="CN-2024-XXXXX">
+          </div>
+          <div class="field">
+            <label><span class="ar">الإمارة</span><span class="en">Emirate</span></label>
+            <select id="co-emirate">
+              <option value=""><span class="ar">اختر...</span></option>
+              <option>أبوظبي</option>
+              <option>دبي</option>
+              <option>الشارقة</option>
+              <option>عجمان</option>
+              <option>أم القيوين</option>
+              <option>رأس الخيمة</option>
+              <option>الفجيرة</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label><span class="ar">العنوان التفصيلي</span><span class="en">Detailed Address</span></label>
+          <input type="text" id="co-address" placeholder="المنطقة، الشارع، رقم المبنى">
+        </div>
+
+        <button class="btn-submit" onclick="nextStep(2)">
+          <span class="ar">التالي — البيانات القانونية ←</span>
+          <span class="en">Next — Legal Data →</span>
+        </button>
+      </div>
+
+      <!-- STEP 2: LEGAL + CONTACT -->
+      <div id="reg-step-2" style="display:none">
+        <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:14px;">
+          <span class="ar">الخطوة 2 — البيانات القانونية والتشغيلية</span>
+          <span class="en">Step 2 — Legal & Operational Data</span>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label><span class="ar">رقم التسجيل الضريبي (TRN)</span><span class="en">Tax Registration No.</span></label>
+            <input type="text" id="co-trn" placeholder="100XXXXXXXXX003">
+          </div>
+          <div class="field">
+            <label><span class="ar">عدد الدراجات (تقريبي)</span><span class="en">Fleet Size (approx.)</span></label>
+            <input type="number" id="co-fleet" placeholder="50">
+          </div>
+        </div>
+        <div class="field">
+          <label><span class="ar">اسم المسؤول عن العمليات</span><span class="en">Operations Manager Name</span></label>
+          <input type="text" id="co-manager" placeholder="محمد خالد العامري">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label><span class="ar">رقم الهاتف</span><span class="en">Phone Number</span></label>
+            <input type="tel" id="co-phone" placeholder="+971 XX XXX XXXX">
+          </div>
+          <div class="field">
+            <label><span class="ar">رقم الطوارئ</span><span class="en">Emergency Number</span></label>
+            <input type="tel" id="co-emergency" placeholder="+971 XX XXX XXXX">
+          </div>
+        </div>
+        <div class="field">
+          <label><span class="ar">البريد الإلكتروني الرسمي</span><span class="en">Official Email</span></label>
+          <input type="email" id="co-email" placeholder="ops@company.ae">
+        </div>
+
+        <div style="display:flex;gap:10px;">
+          <button class="btn-submit" style="background:var(--bg);color:var(--text);border:1.5px solid var(--border);flex:1" onclick="prevStep(1)">
+            <span class="ar">← رجوع</span><span class="en">← Back</span>
+          </button>
+          <button class="btn-submit" style="flex:2" onclick="nextStep(3)">
+            <span class="ar">التالي — بيانات الحساب ←</span>
+            <span class="en">Next — Account Setup →</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 3: ACCOUNT SETUP -->
+      <div id="reg-step-3" style="display:none">
+        <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:14px;">
+          <span class="ar">الخطوة 3 — إنشاء حساب الدخول</span>
+          <span class="en">Step 3 — Create Login Account</span>
+        </div>
+
+        <div class="field">
+          <label><span class="ar">البريد الإلكتروني (للدخول)</span><span class="en">Login Email</span></label>
+          <input type="email" id="acc-email" placeholder="admin@company.ae">
+        </div>
+        <div class="field">
+          <label><span class="ar">كلمة المرور</span><span class="en">Password</span></label>
+          <div class="pass-wrap">
+            <input type="password" id="acc-pass" placeholder="8 أحرف على الأقل">
+            <button class="pass-toggle" onclick="togglePass('acc-pass',this)">👁️</button>
+          </div>
+        </div>
+        <div class="field">
+          <label><span class="ar">تأكيد كلمة المرور</span><span class="en">Confirm Password</span></label>
+          <div class="pass-wrap">
+            <input type="password" id="acc-pass2" placeholder="••••••••">
+            <button class="pass-toggle" onclick="togglePass('acc-pass2',this)">👁️</button>
+          </div>
+        </div>
+
+        <div style="background:var(--accent-light);border:1px solid var(--accent-border);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:var(--accent);line-height:1.7">
+          <span class="ar">📋 بعد التسجيل سيتم مراجعة طلبك من قِبل إدارة BikeID. ستصلك رسالة اعتماد على بريدك الإلكتروني خلال 24-48 ساعة.</span>
+          <span class="en">📋 After registration your request will be reviewed by BikeID admin. You'll receive an approval email within 24-48 hours.</span>
+        </div>
+
+        <div style="display:flex;gap:10px;">
+          <button class="btn-submit" style="background:var(--bg);color:var(--text);border:1.5px solid var(--border);flex:1" onclick="prevStep(2)">
+            <span class="ar">← رجوع</span><span class="en">← Back</span>
+          </button>
+          <button class="btn-submit" style="flex:2" onclick="handleRegister()">
+            <span class="ar">إرسال الطلب ✓</span>
+            <span class="en">Submit Request ✓</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- SUCCESS STATE -->
+      <div id="reg-success" style="display:none;text-align:center;padding:20px 0;">
+        <div style="font-size:56px;margin-bottom:16px;">✅</div>
+        <div style="font-size:20px;font-weight:800;color:var(--text);margin-bottom:8px;">
+          <span class="ar">تم إرسال الطلب بنجاح!</span>
+          <span class="en">Request Submitted!</span>
+        </div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.8;max-width:320px;margin:0 auto 24px;">
+          <span class="ar">طلب تسجيل شركتك في BikeID قيد المراجعة. ستصلك رسالة بريد إلكتروني خلال 24-48 ساعة عند الاعتماد.</span>
+          <span class="en">Your company registration request is under review. You'll receive an email within 24-48 hours upon approval.</span>
+        </div>
+        <button class="btn-submit" style="max-width:200px;margin:0 auto" onclick="switchTab('login')">
+          <span class="ar">العودة للدخول</span>
+          <span class="en">Back to Login</span>
+        </button>
+      </div>
+
+      <div class="switch-text" id="reg-switch-text">
+        <span class="ar">لديك حساب؟ <span class="switch-link" onclick="switchTab('login')">سجّل الدخول</span></span>
+        <span class="en">Have an account? <span class="switch-link" onclick="switchTab('login')">Sign In</span></span>
+      </div>
+    </div>
+
+    <!-- ══ FORGOT PASSWORD ══ -->
+    <div class="form-section" id="forgot-section">
+      <div class="form-title">
+        <span class="ar">استعادة كلمة المرور 🔑</span>
+        <span class="en">Reset Password 🔑</span>
+      </div>
+      <div class="form-sub">
+        <span class="ar">أدخل بريدك الإلكتروني وسنرسل لك رابط الاستعادة</span>
+        <span class="en">Enter your email and we'll send you a reset link</span>
+      </div>
+
+      <div class="alert success" id="forgot-success">
+        ✓ <span class="ar">تم إرسال رابط الاستعادة إلى بريدك الإلكتروني</span><span class="en">Reset link sent to your email</span>
+      </div>
+
+      <div class="field">
+        <label><span class="ar">البريد الإلكتروني</span><span class="en">Email address</span></label>
+        <input type="email" id="forgot-email" placeholder="example@company.ae">
+      </div>
+
+      <button class="btn-submit" onclick="handleForgot()">
+        <span class="ar">إرسال رابط الاستعادة</span>
+        <span class="en">Send Reset Link</span>
+      </button>
+
+      <div class="switch-text">
+        <span class="switch-link" onclick="switchTab('login')">
+          <span class="ar">← العودة لتسجيل الدخول</span>
+          <span class="en">← Back to Login</span>
+        </span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://omdswiccdlqulripikvr.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9tZHN3aWNjZGxxdWxyaXBpa3ZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NTQyNjAsImV4cCI6MjA5MjUzMDI2MH0.r0gX3rGxbWwEYcLn_tGZ6OEzmvCCDuTpdjfZ5PbpsG8";
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// تحقق لو المستخدم مسجل بالفعل
+(async () => {
+  const { data: { user } } = await db.auth.getUser();
+  if (user) {
+    const { data: profile } = await db.from("profiles").select("role").eq("id", user.id).single();
+    if (profile) redirectByRole(profile.role);
+  }
+})();
+
+function redirectByRole(role) {
+  const routes = { admin:"admin.html", company:"company.html", driver:"driver.html", gov:"scan.html", ambulance:"scan.html" };
+  window.location.href = routes[role] || "auth.html";
+}
+
+function setLang(lang) {
+  document.body.classList.toggle("lang-en", lang==="en");
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang==="en" ? "ltr" : "rtl";
+  document.querySelectorAll(".lang-pill").forEach((b,i) => {
+    b.classList.toggle("active", (i===0&&lang==="ar")||(i===1&&lang==="en"));
+  });
+}
+
+function switchTab(tab) {
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.querySelectorAll(".form-section").forEach(s=>s.classList.remove("active"));
+  if (tab==="login") {
+    document.querySelectorAll(".tab")[0].classList.add("active");
+    document.getElementById("login-section").classList.add("active");
+  } else if (tab==="register") {
+    document.querySelectorAll(".tab")[1].classList.add("active");
+    document.getElementById("register-section").classList.add("active");
+    goToStep(1);
+  } else if (tab==="forgot") {
+    document.getElementById("forgot-section").classList.add("active");
+  }
+}
+
+let currentRole = "admin";
+function selectRole(el, role) {
+  document.querySelectorAll("#login-roles .role-card").forEach(c=>c.classList.remove("selected"));
+  el.classList.add("selected");
+  currentRole = role;
+}
+
+function togglePass(id, btn) {
+  const inp = document.getElementById(id);
+  inp.type = inp.type==="password" ? "text" : "password";
+  btn.textContent = inp.type==="password" ? "👁️" : "🙈";
+}
+
+async function handleLogin() {
+  const email = document.getElementById("login-email").value.trim();
+  const pass  = document.getElementById("login-pass").value;
+  const err   = document.getElementById("login-error");
+  err.style.display = "none";
+  if (!email || !pass) { err.style.display="flex"; return; }
+
+  const btn = document.querySelector("#login-section .btn-submit");
+  btn.innerHTML = "<span>جاري الدخول...</span>";
+  btn.disabled = true;
+
+  const { data, error } = await db.auth.signInWithPassword({ email, password: pass });
+  if (error) {
+    err.style.display = "flex";
+    btn.innerHTML = "<span class="ar">تسجيل الدخول ←</span><span class="en">Sign In →</span>";
+    btn.disabled = false;
+    return;
+  }
+  const { data: profile } = await db.from("profiles").select("role").eq("id", data.user.id).single();
+  redirectByRole(profile?.role || "driver");
+}
+
+function showForgot() { switchTab("forgot"); }
+
+async function handleForgot() {
+  const email = document.getElementById("forgot-email").value.trim();
+  if (!email) return;
+  await db.auth.resetPasswordForEmail(email);
+  document.getElementById("forgot-success").style.display = "flex";
+  document.getElementById("forgot-email").value = "";
+}
+
+let currentStep = 1;
+function goToStep(step) {
+  currentStep = step;
+  [1,2,3].forEach(n => {
+    const el = document.getElementById("reg-step-"+n);
+    if (el) el.style.display = n===step ? "block" : "none";
+    const dot = document.getElementById("dot-"+n);
+    if (dot) {
+      dot.classList.remove("active","done");
+      if (n===step) dot.classList.add("active");
+      else if (n<step) dot.classList.add("done");
+    }
+  });
+  const pct = {1:33,2:66,3:100};
+  const prog = document.getElementById("prog");
+  if (prog) prog.style.width = pct[step]+"%";
+}
+function nextStep(step) { goToStep(step); }
+function prevStep(step)  { goToStep(step); }
+
+async function handleRegister() {
+  const email = document.getElementById("acc-email").value.trim();
+  const pass  = document.getElementById("acc-pass").value;
+  const pass2 = document.getElementById("acc-pass2").value;
+  if (!email || !pass || pass !== pass2) return;
+
+  const btn = document.querySelector("#reg-step-3 .btn-submit");
+  btn.innerHTML = "<span>جاري الإرسال...</span>";
+  btn.disabled = true;
+
+  const managerName = document.getElementById("co-manager")?.value || "";
+
+  const { data, error } = await db.auth.signUp({
+    email, password: pass,
+    options: { data: { full_name: managerName, role: "company" } }
+  });
+
+  if (error) {
+    btn.innerHTML = "<span>إرسال الطلب ✓</span>";
+    btn.disabled = false;
+    alert("خطأ: " + error.message);
+    return;
+  }
+
+  const nameAr    = document.getElementById("co-name-ar")?.value || "";
+  const nameEn    = document.getElementById("co-name-en")?.value || "";
+  const license   = document.getElementById("co-reg")?.value || "";
+  const emirate   = document.getElementById("co-emirate")?.value || "";
+  const phone     = document.getElementById("co-phone")?.value || "";
+  const emer      = document.getElementById("co-emergency")?.value || "";
+  const opsEmail  = document.getElementById("co-email")?.value || email;
+
+  if (nameAr) {
+    await db.from("companies").insert({
+      name_ar: nameAr, name_en: nameEn, trade_license: license,
+      emirate, manager_name: managerName, phone, emergency_phone: emer,
+      email: opsEmail, status: "pending"
+    });
+  }
+
+  document.getElementById("reg-step-3").style.display = "none";
+  document.getElementById("reg-success").style.display = "block";
+  document.getElementById("reg-switch-text").style.display = "none";
+  document.querySelector(".steps-indicator").style.display = "none";
+  document.querySelector(".prog-bar").style.display = "none";
+  document.querySelector(".form-title").style.display = "none";
+  document.querySelector(".form-sub").style.display = "none";
+  document.getElementById("ref-num").textContent = "BID-REQ-2025-" + Math.floor(Math.random()*9000+1000);
+}
+
+function copyRef() {
+  const ref = document.getElementById("ref-num").textContent;
+  navigator.clipboard.writeText(ref).then(() => alert("تم النسخ: " + ref));
+}
+</script>
+</body>
+</html>
