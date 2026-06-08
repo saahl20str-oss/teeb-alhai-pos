@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>طيب الحي | نظام إدارة العود والأدهان</title>
-  <!-- Google Fonts: خط عربي أنيق (Cairo) -->
+  <!-- Google Fonts: خط عربي أنيق + English support -->
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Font Awesome 6 -->
+  <!-- Font Awesome 6 (أيقونات احترافية) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * {
@@ -17,45 +17,44 @@
 
     body {
       font-family: 'Cairo', sans-serif;
-      background: #fef9ef;
-      color: #3e2c1f;
-      line-height: 1.4;
-      min-height: 100vh;
+      background-color: #0a0806;  /* خلفية سوداء عميقة راقية */
+      color: #f3e9d2;
+      line-height: 1.5;
     }
 
-    /* خلفية رئيسية فاخرة: أعمدة ونقوش إسلامية خفيفة + نخيل ضبابية */
-    .luxury-bg {
+    /* خلفية سوداء غنية مع لمسة ذهبية ناعمة ونقوش إسلامية خفيفة */
+    .premium-bg {
       position: fixed;
       top: 0;
       right: 0;
       width: 100%;
       height: 100%;
       z-index: -2;
-      background: linear-gradient(135deg, #fef5e7 0%, #f9efdf 100%);
+      background: radial-gradient(circle at 30% 20%, #1e1a14, #030201);
     }
 
-    /* نقش إسلامي خفيف */
-    .islamic-pattern {
+    /* نقش إسلامي ذهبي خفيف جداً على الخلفية السوداء */
+    .islamic-overlay {
       position: fixed;
       top: 0;
       right: 0;
       width: 100%;
       height: 100%;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" opacity="0.08"><path fill="none" stroke="%23c9a96b" stroke-width="1.2" d="M400,100 L450,200 L550,220 L490,310 L510,420 L400,370 L290,420 L310,310 L250,220 L350,200 Z M400,200 L430,260 L510,280 L460,340 L475,410 L400,380 L325,410 L340,340 L290,280 L370,260 Z M400,440 L440,500 L520,520 L470,580 L485,660 L400,620 L315,660 L330,580 L280,520 L360,500 Z"/><circle cx="400" cy="160" r="20" stroke="%23c9a96b" fill="none"/><circle cx="400" cy="500" r="25" stroke="%23c9a96b" fill="none"/><path d="M200,200 L220,180 L250,210 L230,230 Z M600,600 L620,580 L650,610 L630,630 Z" fill="%23c9a96b" opacity="0.5"/></svg>');
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" opacity="0.06"><path fill="none" stroke="%23d4af37" stroke-width="1.5" d="M500,100 L580,230 L730,250 L640,370 L670,530 L500,460 L330,530 L360,370 L270,250 L420,230 Z M500,260 L540,340 L630,360 L570,440 L585,530 L500,500 L415,530 L430,440 L370,360 L460,340 Z M500,580 L545,650 L635,665 L580,740 L595,820 L500,790 L405,820 L420,740 L365,665 L455,650 Z"/><circle cx="500" cy="200" r="22" stroke="%23d4af37" fill="none"/><circle cx="500" cy="620" r="28" stroke="%23d4af37" fill="none"/><path d="M250,250 L280,220 L320,260 L290,290 Z M750,750 L780,720 L820,760 L790,790 Z" fill="%23d4af37" opacity="0.3"/><path d="M150,550 L180,520 L220,560 L190,590 Z M850,450 L880,420 L920,460 L890,490 Z" fill="%23d4af37" opacity="0.25"/></svg>');
       background-repeat: repeat;
-      background-size: 180px;
+      background-size: 220px;
       pointer-events: none;
       z-index: -1;
     }
 
-    /* تأثير النخيل الضبابي */
+    /* تأثير نخيل ضبابي خفيف جداً */
     .palm-mist {
       position: fixed;
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 60%;
-      background: radial-gradient(ellipse at bottom, rgba(210, 180, 140, 0.12) 0%, rgba(250, 240, 220, 0) 70%);
+      height: 45%;
+      background: radial-gradient(ellipse at bottom, rgba(212, 175, 55, 0.05) 0%, rgba(0, 0, 0, 0) 75%);
       pointer-events: none;
       z-index: -1;
     }
@@ -64,7 +63,7 @@
     .main-container {
       max-width: 1300px;
       margin: 0 auto;
-      padding: 2rem 2rem 1rem 2rem;
+      padding: 2rem 2rem 1.5rem;
       position: relative;
       min-height: 100vh;
       display: flex;
@@ -72,7 +71,7 @@
       justify-content: space-between;
     }
 
-    /* Header section */
+    /* Header - أزرار الإعدادات / تسجيل الدخول */
     .top-bar {
       display: flex;
       justify-content: space-between;
@@ -82,37 +81,36 @@
     }
 
     .btn-icon {
-      background: rgba(255, 250, 240, 0.85);
-      backdrop-filter: blur(4px);
-      border: 1px solid rgba(201, 169, 107, 0.5);
+      background: rgba(20, 18, 14, 0.75);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(212, 175, 55, 0.5);
       padding: 0.6rem 1.5rem;
       border-radius: 60px;
       font-family: 'Cairo', sans-serif;
       font-weight: 600;
       font-size: 0.95rem;
-      color: #7a5a3a;
+      color: #efdfb7;
       transition: all 0.25s ease;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
 
     .btn-icon i {
       font-size: 1rem;
-      color: #c9a96b;
+      color: #d4af37;
     }
 
     .btn-icon:hover {
-      background: #fff7ef;
-      border-color: #c9a96b;
-      color: #9b7a4a;
+      background: #2c261e;
+      border-color: #d4af37;
+      color: #fff2d4;
       transform: translateY(-2px);
-      box-shadow: 0 10px 18px -8px rgba(0,0,0,0.08);
     }
 
-    /* القسم المركزي */
+    /* المنطقة المركزية - شعار، نصوص، زر */
     .hero-section {
       flex: 1;
       display: flex;
@@ -123,106 +121,107 @@
       padding: 2rem 1rem 3rem;
     }
 
-    /* شعار دائري ذهبي */
+    /* شعار دائري ذهبي فاخر */
     .logo-circle {
-      width: 140px;
-      height: 140px;
-      background: linear-gradient(145deg, #f9e5c1, #fcf3e2);
+      width: 150px;
+      height: 150px;
+      background: linear-gradient(145deg, #1e1912, #100d08);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       margin-bottom: 1.8rem;
-      box-shadow: 0 20px 35px -12px rgba(110, 70, 20, 0.2), inset 0 1px 2px rgba(255,255,200,0.8), 0 0 0 4px rgba(201,169,107,0.25);
-      border: 1px solid #e9cf9b;
+      box-shadow: 0 25px 35px -12px rgba(0,0,0,0.6), inset 0 1px 2px rgba(212,175,55,0.3), 0 0 0 5px rgba(212,175,55,0.2);
+      border: 1px solid rgba(212,175,55,0.7);
     }
 
     .logo-inner {
-      font-size: 3rem;
+      font-size: 3.2rem;
       font-weight: 800;
-      background: linear-gradient(135deg, #c7a05b, #e7c282, #b88644);
+      background: linear-gradient(135deg, #ecd674, #d4af37, #b58d27);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
     }
 
     .main-title {
-      font-size: 5.2rem;
+      font-size: 5rem;
       font-weight: 800;
       letter-spacing: -0.02em;
-      background: linear-gradient(125deg, #3e2c1f, #8b6946, #ba9a6c);
+      background: linear-gradient(125deg, #f3e9d2, #ecd98c, #d4af37);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      margin-bottom: 0.2rem;
+      margin-bottom: 0.25rem;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
     }
 
     .sub-title {
-      font-size: 2.2rem;
+      font-size: 2rem;
       font-weight: 500;
-      color: #aa8b60;
+      color: #e6cf8b;
       letter-spacing: 1px;
       margin-bottom: 1.2rem;
-      border-bottom: 2px solid rgba(201, 169, 107, 0.3);
+      border-bottom: 2px solid rgba(212, 175, 55, 0.5);
       display: inline-block;
       padding-bottom: 5px;
     }
 
     .description {
-      max-width: 620px;
+      max-width: 680px;
       font-size: 1.18rem;
-      color: #5c4731;
+      color: #e9ddbc;
       font-weight: 450;
-      background: rgba(255, 248, 235, 0.6);
-      backdrop-filter: blur(3px);
-      padding: 0.8rem 1.8rem;
+      background: rgba(15, 12, 8, 0.6);
+      backdrop-filter: blur(6px);
+      padding: 0.8rem 2rem;
       border-radius: 60px;
-      margin: 1.2rem 0 2.2rem;
-      line-height: 1.6;
-      border: 1px solid rgba(221, 190, 120, 0.4);
+      margin: 1rem 0 2rem;
+      line-height: 1.7;
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
 
-    /* الزر الرئيسي */
+    /* زر رئيسي واحد - دخول النظام */
     .btn-primary {
-      background: linear-gradient(105deg, #c9a96b, #e5c792);
+      background: linear-gradient(105deg, #d4af37, #f3da8b);
       border: none;
       padding: 1rem 3rem;
       border-radius: 60px;
       font-size: 1.4rem;
       font-weight: 700;
       font-family: 'Cairo', sans-serif;
-      color: #2e241b;
+      color: #1f1b10;
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-      box-shadow: 0 12px 20px -12px rgba(100, 65, 20, 0.3);
+      box-shadow: 0 12px 25px -8px rgba(0,0,0,0.5);
       display: inline-flex;
       align-items: center;
       gap: 12px;
-      backdrop-filter: blur(2px);
-      border: 1px solid rgba(255, 245, 210, 0.7);
+      border: 1px solid rgba(255, 245, 180, 0.7);
     }
 
     .btn-primary i {
       font-size: 1.3rem;
-      color: #3e2c1f;
+      color: #2d281c;
     }
 
     .btn-primary:hover {
       transform: scale(1.02);
-      background: linear-gradient(105deg, #dbb86a, #efd498);
-      box-shadow: 0 20px 28px -12px #8b6946;
+      background: linear-gradient(105deg, #e2bf4c, #ffea9e);
+      box-shadow: 0 20px 30px -8px #b8860b;
     }
 
-    /* القسم السفلي: الصورة الفاخرة الحقيقية (مبخرة، عود، دهن، زعفران) */
+    /* الصورة الفاخرة الكبيرة - مبخرة، عود، دهن، زعفران */
     .showcase-image {
-      margin: 1rem 0 1rem;
+      margin: 1.8rem 0 1.2rem;
       border-radius: 42px;
       overflow: hidden;
-      box-shadow: 0 25px 40px -15px rgba(0, 0, 0, 0.2);
-      border: 1px solid rgba(230, 200, 130, 0.5);
-      background: #fffaf0;
+      box-shadow: 0 30px 40px -15px rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(212, 175, 55, 0.5);
       transition: all 0.3s;
+      background: #16120c;
     }
 
     .showcase-image img {
@@ -237,19 +236,19 @@
       transform: scale(1.01);
     }
 
-    /* قسم التواصل */
+    /* قسم التواصل - شفاف بلمسة ذهبية */
     .contact-section {
       margin-top: 2rem;
-      background: rgba(255, 252, 240, 0.75);
-      backdrop-filter: blur(6px);
+      background: rgba(10, 8, 5, 0.7);
+      backdrop-filter: blur(8px);
       border-radius: 48px;
       padding: 1.5rem 2rem;
-      border: 1px solid rgba(201, 169, 107, 0.4);
+      border: 1px solid rgba(212, 175, 55, 0.4);
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      gap: 1.5rem;
+      gap: 1.2rem;
     }
 
     .contact-info {
@@ -264,44 +263,45 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      background: rgba(250, 242, 225, 0.7);
-      padding: 0.4rem 1rem;
+      background: rgba(30, 25, 18, 0.7);
+      padding: 0.4rem 1.2rem;
       border-radius: 40px;
       font-size: 0.9rem;
       font-weight: 500;
-      color: #6a4e2c;
+      color: #eedba7;
       transition: 0.2s;
+      border: 0.5px solid rgba(212,175,55,0.3);
     }
 
     .contact-item i {
-      color: #c9a96b;
+      color: #d4af37;
       width: 1.2rem;
       font-size: 1rem;
     }
 
     .contact-item a {
       text-decoration: none;
-      color: #6a4e2c;
+      color: #eedba7;
       font-weight: 500;
       transition: color 0.2s;
     }
 
     .contact-item a:hover {
-      color: #a67c3b;
+      color: #f9e5a2;
     }
 
     .copyright {
       text-align: center;
       font-size: 0.8rem;
-      color: #9b8468;
+      color: #b89f68;
       margin-top: 0.8rem;
-      padding-top: 0.8rem;
-      border-top: 1px dashed rgba(201, 169, 107, 0.4);
+      padding-top: 0.6rem;
+      border-top: 1px dashed rgba(212, 175, 55, 0.4);
       width: 100%;
       font-weight: 400;
     }
 
-    /* تنسيق الجوال */
+    /* استجابة للجوال */
     @media (max-width: 800px) {
       .main-container {
         padding: 1.2rem;
@@ -321,8 +321,8 @@
         padding: 0.8rem 2rem;
       }
       .logo-circle {
-        width: 110px;
-        height: 110px;
+        width: 115px;
+        height: 115px;
       }
       .contact-section {
         flex-direction: column;
@@ -333,7 +333,7 @@
 
     @media (max-width: 550px) {
       .main-title {
-        font-size: 2.6rem;
+        font-size: 2.7rem;
       }
       .sub-title {
         font-size: 1.3rem;
@@ -343,7 +343,7 @@
       }
     }
 
-    /* تأثير دخول أنيق */
+    /* تأثير fade-up */
     .fade-up {
       animation: fadeUp 0.7s ease-out;
     }
@@ -351,22 +351,29 @@
     @keyframes fadeUp {
       from {
         opacity: 0;
-        transform: translateY(18px);
+        transform: translateY(20px);
       }
       to {
         opacity: 1;
         transform: translateY(0);
       }
     }
+
+    /* تحسين روابط واتساب وبريد */
+    .contact-item a[href^="tel"]:hover, 
+    .contact-item a[href^="mailto"]:hover {
+      text-decoration: underline;
+      color: #f5e3b0;
+    }
   </style>
 </head>
 <body>
-  <div class="luxury-bg"></div>
-  <div class="islamic-pattern"></div>
+  <div class="premium-bg"></div>
+  <div class="islamic-overlay"></div>
   <div class="palm-mist"></div>
 
   <div class="main-container">
-    <!-- الشريط العلوي: إعدادات (يمين) + تسجيل الدخول (يسار) -->
+    <!-- أعلى الصفحة: إعدادات (يمين) + تسجيل الدخول / إنشاء حساب (يسار) -->
     <div class="top-bar fade-up">
       <div class="btn-settings">
         <button class="btn-icon" id="settingsBtn">
@@ -382,7 +389,7 @@
       </div>
     </div>
 
-    <!-- المحتوى المركزي -->
+    <!-- منتصف الصفحة (شعار، عنوان، نظام إدارة) -->
     <div class="hero-section fade-up">
       <div class="logo-circle">
         <div class="logo-inner">طيب</div>
@@ -397,21 +404,21 @@
       </button>
     </div>
 
-    <!-- الصورة الفاخرة الحقيقية (مبخرة، عود طبيعي، دهن عود، زعفران، زجاجات عطور) -->
+    <!-- الصورة الفاخرة الكبيرة (مبخرة، عود طبيعي، دهن عود، زعفران، زجاجات عطور) - تتناسب مع الخلفية السوداء الذهبية -->
     <div class="showcase-image fade-up">
       <img 
         src="https://images.pexels.com/photos/5564494/pexels-photo-5564494.jpeg" 
         alt="مبخرة عربية فاخرة، قطع عود طبيعي، دهن عود، زعفران وزجاجات عطور - طيب الحي"
         style="width:100%; display:block; border-radius:42px;"
       >
-      <!-- ملاحظة: الصورة من Pexels (ترخيص مجاني للاستخدام التجاري) وتعكس الأجواء الخليجية الفاخرة بدون نصوص أو عروض أسعار -->
+      <!-- الصورة معتمدة من Pexels (ترخيص تجاري) وتنقل فخامة العطور والعود -->
     </div>
 
-    <!-- قسم التواصل + حقوق الملكية -->
+    <!-- قسم التواصل والبيانات الإضافية (الموقع، الهاتف، واتساب، بريد، انستغرام، تيك توك) -->
     <div class="contact-section fade-up">
       <div class="contact-info">
         <div class="contact-item"><i class="fas fa-map-marker-alt"></i> الإمارات العربية المتحدة</div>
-        <div class="contact-item"><i class="fas fa-phone-alt"></i> <a href="tel:+971XXXXXXXX">+971 4 123 4567</a></div>
+        <div class="contact-item"><i class="fas fa-phone-alt"></i> <a href="tel:+971501234567">+971 50 123 4567</a></div>
         <div class="contact-item"><i class="fab fa-whatsapp"></i> <a href="https://wa.me/971501234567" target="_blank">واتساب</a></div>
         <div class="contact-item"><i class="fas fa-envelope"></i> <a href="mailto:info@tayebalhay.com">info@tayebalhay.com</a></div>
         <div class="contact-item"><i class="fab fa-instagram"></i> <a href="#">@tayeb_alhay</a></div>
@@ -424,17 +431,19 @@
   </div>
 
   <script>
-    // روابط الأزرار حسب المطلوب: زر دخول النظام + زر تسجيل الدخول/إنشاء حساب يوجهان إلى صفحة الدخول.
-    // زر الإعدادات يمكن تطويره لاحقًا (يظهر رسالة حالياً)
+    // --- منطق الأزرار وفق المطلوب: 
+    // زر "دخول النظام" و "تسجيل الدخول / إنشاء حساب" يوجهان إلى صفحة تسجيل الدخول الموحدة.
+    // زر "الإعدادات" يمكنه فتح صفحة إعدادات النظام أو رسالة توضيحية.
     
     const loginBtn = document.getElementById('loginSignupBtn');
     const enterSystemBtn = document.getElementById('enterSystemBtn');
     const settingsBtn = document.getElementById('settingsBtn');
     
-    // رابط صفحة تسجيل الدخول (لنظام الإدارة المتكامل)
-    const LOGIN_PAGE_URL = 'login.html';   // غيّره إلى المسار الحقيقي للنظام
+    // رابط صفحة الدخول (نظام إدارة متكامل) - يمكن تحديثه حسب المسار الفعلي للمشروع
+    const LOGIN_PAGE_URL = 'login.html';   // هذا المسار افتراضي، غيِّره إلى الرابط الفعلي لنظام الإدارة
     
     function redirectToLogin() {
+      // محاكاة الانتقال إلى صفحة الدخول الموحدة
       window.location.href = LOGIN_PAGE_URL;
     }
     
@@ -455,14 +464,16 @@
     if (settingsBtn) {
       settingsBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        // يمكن تعديل هذا لاحقاً لفتح صفحة إعدادات النظام الحقيقية
-        alert('لوحة الإعدادات: تخصيص النظام، إدارة الصلاحيات، إعدادات المتجر (قريباً).');
+        // توجيه إلى صفحة إعدادات النظام أو عرض إشعار (حسب متطلبات العميل)
+        // يمكن تعديل هذا ليتوافق مع لوحة تحكم الإدارة
+        alert('⚙️ الإعدادات الخاصة بنظام إدارة طيب الحي.\nسيتم نقلك إلى لوحة الضبط قريباً.');
+        // لو أردت رابط حقيقي مستقبلاً: window.location.href = '/admin/settings';
       });
     }
-    
-    // تأثيرات بسيطة
-    document.querySelectorAll('.fade-up').forEach((el, index) => {
-      el.style.animationDelay = `${index * 0.08}s`;
+
+    // تحسين التأثيرات البصرية
+    document.querySelectorAll('.fade-up').forEach((el, i) => {
+      el.style.animationDelay = `${i * 0.08}s`;
     });
   </script>
 </body>
