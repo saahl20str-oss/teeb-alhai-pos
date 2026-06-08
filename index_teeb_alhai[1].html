@@ -1,361 +1,469 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>طيب الحي للعود والأدهان</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>طيب الحي | نظام إدارة العود والأدهان</title>
+  <!-- Google Fonts: خط عربي أنيق (Cairo) -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    :root{
-      --gold:#d8ad55;
-      --gold-2:#f8df9d;
-      --brown:#4a2b12;
-      --cream:#fff4d6;
-      --glass:rgba(58,31,9,.42);
-      --line:rgba(255,231,176,.35);
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    *{box-sizing:border-box;margin:0;padding:0}
-    html,body{height:100%}
-    body{
-      font-family:"Tajawal",Arial,sans-serif;
-      color:#fff6dc;
-      background:#2b1708;
-      overflow-x:hidden;
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: #fef9ef;
+      color: #3e2c1f;
+      line-height: 1.4;
+      min-height: 100vh;
     }
 
-    .landing{
-      min-height:100vh;
-      position:relative;
-      isolation:isolate;
-      background-image:url("a_luxurious_arabic_web_landing_page_hero_screen.png");
-      background-size:cover;
-      background-position:center bottom;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      padding:32px 5vw 24px;
+    /* خلفية رئيسية فاخرة: أعمدة ونقوش إسلامية خفيفة + نخيل ضبابية */
+    .luxury-bg {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: linear-gradient(135deg, #fef5e7 0%, #f9efdf 100%);
     }
 
-    .landing::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      z-index:-2;
-      background:
-        radial-gradient(circle at center 34%, rgba(255,238,190,.34), transparent 20%),
-        linear-gradient(180deg, rgba(45,24,8,.25) 0%, rgba(45,24,8,.18) 38%, rgba(38,19,7,.55) 100%);
+    /* نقش إسلامي خفيف */
+    .islamic-pattern {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" opacity="0.08"><path fill="none" stroke="%23c9a96b" stroke-width="1.2" d="M400,100 L450,200 L550,220 L490,310 L510,420 L400,370 L290,420 L310,310 L250,220 L350,200 Z M400,200 L430,260 L510,280 L460,340 L475,410 L400,380 L325,410 L340,340 L290,280 L370,260 Z M400,440 L440,500 L520,520 L470,580 L485,660 L400,620 L315,660 L330,580 L280,520 L360,500 Z"/><circle cx="400" cy="160" r="20" stroke="%23c9a96b" fill="none"/><circle cx="400" cy="500" r="25" stroke="%23c9a96b" fill="none"/><path d="M200,200 L220,180 L250,210 L230,230 Z M600,600 L620,580 L650,610 L630,630 Z" fill="%23c9a96b" opacity="0.5"/></svg>');
+      background-repeat: repeat;
+      background-size: 180px;
+      pointer-events: none;
+      z-index: -1;
     }
 
-    .landing::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      z-index:-1;
-      background:
-        linear-gradient(90deg, rgba(25,12,3,.35), transparent 26%, transparent 74%, rgba(25,12,3,.35)),
-        radial-gradient(circle at center, transparent 0%, transparent 45%, rgba(25,12,3,.30) 100%);
-      pointer-events:none;
+    /* تأثير النخيل الضبابي */
+    .palm-mist {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60%;
+      background: radial-gradient(ellipse at bottom, rgba(210, 180, 140, 0.12) 0%, rgba(250, 240, 220, 0) 70%);
+      pointer-events: none;
+      z-index: -1;
     }
 
-    .topbar{
-      width:100%;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      position:relative;
-      z-index:5;
+    /* حاوية رئيسية */
+    .main-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 2rem 2rem 1rem 2rem;
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
-    .top-btn{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      min-height:56px;
-      padding:0 24px;
-      border-radius:999px;
-      text-decoration:none;
-      color:#fff4d6;
-      font-weight:800;
-      font-size:17px;
-      border:1px solid rgba(255,238,190,.75);
-      background:rgba(48,26,9,.42);
-      backdrop-filter:blur(12px);
-      box-shadow:0 16px 42px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.18);
-      transition:.25s ease;
-      cursor:pointer;
+    /* Header section */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
     }
 
-    .top-btn:hover{
-      transform:translateY(-2px);
-      background:rgba(88,52,17,.56);
-      box-shadow:0 20px 52px rgba(0,0,0,.28),0 0 22px rgba(248,223,157,.20);
+    .btn-icon {
+      background: rgba(255, 250, 240, 0.85);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(201, 169, 107, 0.5);
+      padding: 0.6rem 1.5rem;
+      border-radius: 60px;
+      font-family: 'Cairo', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #7a5a3a;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
     }
 
-    .hero{
-      width:min(850px,100%);
-      margin:0 auto;
-      padding-top:4vh;
-      text-align:center;
-      transform:translateY(-1vh);
+    .btn-icon i {
+      font-size: 1rem;
+      color: #c9a96b;
     }
 
-    .brand-logo{
-      width:158px;
-      height:158px;
-      margin:0 auto 24px;
-      border-radius:50%;
-      display:grid;
-      place-items:center;
-      position:relative;
-      background:
-        radial-gradient(circle at 35% 25%, #fff4c9 0%, #d7a94a 42%, #70400e 100%);
-      border:2px solid rgba(255,238,190,.95);
-      box-shadow:
-        0 0 0 8px rgba(137,82,21,.40),
-        0 0 45px rgba(255,224,143,.45),
-        0 22px 55px rgba(0,0,0,.30);
+    .btn-icon:hover {
+      background: #fff7ef;
+      border-color: #c9a96b;
+      color: #9b7a4a;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 18px -8px rgba(0,0,0,0.08);
     }
 
-    .brand-logo::before{
-      content:"";
-      position:absolute;
-      inset:9px;
-      border-radius:50%;
-      border:1px solid rgba(80,43,12,.38);
-      background:radial-gradient(circle, rgba(255,255,255,.14), transparent 64%);
+    /* القسم المركزي */
+    .hero-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem 1rem 3rem;
     }
 
-    .brand-logo span{
-      position:relative;
-      z-index:2;
-      font-family:"Amiri",serif;
-      color:#3a2109;
-      font-size:38px;
-      line-height:1.05;
-      font-weight:700;
-      text-shadow:0 1px 0 rgba(255,244,214,.7);
+    /* شعار دائري ذهبي */
+    .logo-circle {
+      width: 140px;
+      height: 140px;
+      background: linear-gradient(145deg, #f9e5c1, #fcf3e2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.8rem;
+      box-shadow: 0 20px 35px -12px rgba(110, 70, 20, 0.2), inset 0 1px 2px rgba(255,255,200,0.8), 0 0 0 4px rgba(201,169,107,0.25);
+      border: 1px solid #e9cf9b;
     }
 
-    h1{
-      font-family:"Amiri",serif;
-      font-size:clamp(72px, 10vw, 150px);
-      line-height:.9;
-      font-weight:700;
-      color:#f6d883;
-      letter-spacing:-4px;
-      text-shadow:
-        0 3px 0 rgba(63,34,10,.72),
-        0 14px 34px rgba(0,0,0,.52),
-        0 0 28px rgba(250,221,142,.25);
-      margin-bottom:18px;
+    .logo-inner {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #c7a05b, #e7c282, #b88644);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: 2px;
     }
 
-    .subtitle{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:16px;
-      font-size:clamp(28px,4vw,48px);
-      font-weight:900;
-      color:#fff7df;
-      text-shadow:0 8px 24px rgba(0,0,0,.48);
-      margin-bottom:24px;
+    .main-title {
+      font-size: 5.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(125deg, #3e2c1f, #8b6946, #ba9a6c);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.2rem;
     }
 
-    .subtitle::before,.subtitle::after{
-      content:"";
-      width:min(115px,18vw);
-      height:1px;
-      background:linear-gradient(90deg,transparent,var(--gold-2),transparent);
-      box-shadow:0 0 10px rgba(248,223,157,.7);
+    .sub-title {
+      font-size: 2.2rem;
+      font-weight: 500;
+      color: #aa8b60;
+      letter-spacing: 1px;
+      margin-bottom: 1.2rem;
+      border-bottom: 2px solid rgba(201, 169, 107, 0.3);
+      display: inline-block;
+      padding-bottom: 5px;
     }
 
-    .desc{
-      max-width:630px;
-      margin:0 auto 34px;
-      font-size:clamp(19px,2.2vw,27px);
-      line-height:1.85;
-      color:#fff8e5;
-      font-weight:700;
-      text-shadow:0 6px 18px rgba(0,0,0,.55);
+    .description {
+      max-width: 620px;
+      font-size: 1.18rem;
+      color: #5c4731;
+      font-weight: 450;
+      background: rgba(255, 248, 235, 0.6);
+      backdrop-filter: blur(3px);
+      padding: 0.8rem 1.8rem;
+      border-radius: 60px;
+      margin: 1.2rem 0 2.2rem;
+      line-height: 1.6;
+      border: 1px solid rgba(221, 190, 120, 0.4);
     }
 
-    .enter-btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:12px;
-      min-width:310px;
-      min-height:76px;
-      padding:0 38px;
-      border-radius:999px;
-      color:#5a3510;
-      text-decoration:none;
-      font-size:27px;
-      font-weight:900;
-      background:linear-gradient(180deg,#fff5c8 0%,#f4c967 48%,#b87924 100%);
-      border:1px solid rgba(255,245,205,.95);
-      box-shadow:
-        0 18px 45px rgba(0,0,0,.36),
-        0 0 28px rgba(248,223,157,.42),
-        inset 0 2px 0 rgba(255,255,255,.65);
-      transition:.25s ease;
+    /* الزر الرئيسي */
+    .btn-primary {
+      background: linear-gradient(105deg, #c9a96b, #e5c792);
+      border: none;
+      padding: 1rem 3rem;
+      border-radius: 60px;
+      font-size: 1.4rem;
+      font-weight: 700;
+      font-family: 'Cairo', sans-serif;
+      color: #2e241b;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      box-shadow: 0 12px 20px -12px rgba(100, 65, 20, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      backdrop-filter: blur(2px);
+      border: 1px solid rgba(255, 245, 210, 0.7);
     }
 
-    .enter-btn:hover{
-      transform:translateY(-3px) scale(1.015);
-      box-shadow:
-        0 26px 58px rgba(0,0,0,.43),
-        0 0 40px rgba(248,223,157,.58),
-        inset 0 2px 0 rgba(255,255,255,.78);
+    .btn-primary i {
+      font-size: 1.3rem;
+      color: #3e2c1f;
     }
 
-    .contact-wrap{
-      width:100%;
-      margin:24px auto 0;
-      position:relative;
-      z-index:4;
+    .btn-primary:hover {
+      transform: scale(1.02);
+      background: linear-gradient(105deg, #dbb86a, #efd498);
+      box-shadow: 0 20px 28px -12px #8b6946;
     }
 
-    .contact-bar{
-      width:min(1180px,100%);
-      margin:0 auto;
-      border-radius:22px;
-      border:1px solid rgba(255,231,176,.32);
-      background:rgba(52,29,11,.58);
-      backdrop-filter:blur(15px);
-      box-shadow:0 18px 50px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.10);
-      display:grid;
-      grid-template-columns:repeat(6,1fr);
-      overflow:hidden;
+    /* القسم السفلي: الصورة الفاخرة الحقيقية (مبخرة، عود، دهن، زعفران) */
+    .showcase-image {
+      margin: 1rem 0 1rem;
+      border-radius: 42px;
+      overflow: hidden;
+      box-shadow: 0 25px 40px -15px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(230, 200, 130, 0.5);
+      background: #fffaf0;
+      transition: all 0.3s;
     }
 
-    .contact-item{
-      min-height:92px;
-      padding:16px 12px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:6px;
-      text-align:center;
-      border-left:1px solid rgba(255,231,176,.16);
+    .showcase-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+      transition: transform 0.4s ease;
     }
 
-    .contact-item:last-child{border-left:0}
-
-    .icon{
-      font-size:26px;
-      color:#ffe2a0;
-      line-height:1;
-      filter:drop-shadow(0 0 8px rgba(248,223,157,.38));
+    .showcase-image:hover img {
+      transform: scale(1.01);
     }
 
-    .label{
-      font-size:15px;
-      font-weight:900;
-      color:#ffe9b6;
+    /* قسم التواصل */
+    .contact-section {
+      margin-top: 2rem;
+      background: rgba(255, 252, 240, 0.75);
+      backdrop-filter: blur(6px);
+      border-radius: 48px;
+      padding: 1.5rem 2rem;
+      border: 1px solid rgba(201, 169, 107, 0.4);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.5rem;
     }
 
-    .value{
-      font-size:13px;
-      font-weight:700;
-      color:#fff5dc;
-      direction:ltr;
-      unicode-bidi:embed;
+    .contact-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      align-items: center;
+      justify-content: center;
     }
 
-    footer{
-      padding-top:20px;
-      text-align:center;
-      color:#ffe9b6;
-      font-size:16px;
-      font-weight:700;
-      text-shadow:0 5px 16px rgba(0,0,0,.65);
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(250, 242, 225, 0.7);
+      padding: 0.4rem 1rem;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #6a4e2c;
+      transition: 0.2s;
     }
 
-    @media (max-width:900px){
-      .landing{padding:22px 18px 18px;background-position:center bottom}
-      .top-btn{min-height:48px;padding:0 16px;font-size:14px}
-      .hero{padding-top:7vh}
-      .brand-logo{width:122px;height:122px;margin-bottom:18px}
-      .brand-logo span{font-size:30px}
-      h1{letter-spacing:-2px}
-      .desc{max-width:92%}
-      .enter-btn{min-width:245px;min-height:64px;font-size:22px}
-      .contact-bar{grid-template-columns:repeat(2,1fr);border-radius:18px}
-      .contact-item{min-height:82px;border-bottom:1px solid rgba(255,231,176,.12)}
+    .contact-item i {
+      color: #c9a96b;
+      width: 1.2rem;
+      font-size: 1rem;
     }
 
-    @media (max-width:520px){
-      .topbar{gap:10px}
-      .top-btn{font-size:12px;padding:0 12px;gap:6px}
-      .hero{padding-top:5vh}
-      .subtitle{gap:8px}
-      .subtitle::before,.subtitle::after{width:42px}
-      .contact-bar{grid-template-columns:1fr}
-      .contact-item{border-left:0}
+    .contact-item a {
+      text-decoration: none;
+      color: #6a4e2c;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .contact-item a:hover {
+      color: #a67c3b;
+    }
+
+    .copyright {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #9b8468;
+      margin-top: 0.8rem;
+      padding-top: 0.8rem;
+      border-top: 1px dashed rgba(201, 169, 107, 0.4);
+      width: 100%;
+      font-weight: 400;
+    }
+
+    /* تنسيق الجوال */
+    @media (max-width: 800px) {
+      .main-container {
+        padding: 1.2rem;
+      }
+      .main-title {
+        font-size: 3.5rem;
+      }
+      .sub-title {
+        font-size: 1.6rem;
+      }
+      .description {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+      }
+      .btn-primary {
+        font-size: 1.2rem;
+        padding: 0.8rem 2rem;
+      }
+      .logo-circle {
+        width: 110px;
+        height: 110px;
+      }
+      .contact-section {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+      }
+    }
+
+    @media (max-width: 550px) {
+      .main-title {
+        font-size: 2.6rem;
+      }
+      .sub-title {
+        font-size: 1.3rem;
+      }
+      .btn-primary {
+        font-size: 1rem;
+      }
+    }
+
+    /* تأثير دخول أنيق */
+    .fade-up {
+      animation: fadeUp 0.7s ease-out;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
 <body>
-  <main class="landing">
-    <header class="topbar">
-      <a class="top-btn" href="settings.html" aria-label="الإعدادات">⚙️ الإعدادات</a>
-      <a class="top-btn" href="login.html" aria-label="تسجيل الدخول أو إنشاء حساب">👤 تسجيل الدخول / إنشاء حساب</a>
-    </header>
+  <div class="luxury-bg"></div>
+  <div class="islamic-pattern"></div>
+  <div class="palm-mist"></div>
 
-    <section class="hero" aria-label="واجهة طيب الحي">
-      <div class="brand-logo" aria-label="شعار طيب الحي">
-        <span>طيب<br>الحي</span>
+  <div class="main-container">
+    <!-- الشريط العلوي: إعدادات (يمين) + تسجيل الدخول (يسار) -->
+    <div class="top-bar fade-up">
+      <div class="btn-settings">
+        <button class="btn-icon" id="settingsBtn">
+          <i class="fas fa-sliders-h"></i> 
+          <span>الإعدادات</span>
+        </button>
       </div>
+      <div class="btn-auth">
+        <button class="btn-icon" id="loginSignupBtn">
+          <i class="fas fa-user-circle"></i> 
+          <span>تسجيل الدخول / إنشاء حساب</span>
+        </button>
+      </div>
+    </div>
 
-      <h1>طيب الحي</h1>
-      <div class="subtitle">للعود والأدهان</div>
-      <p class="desc">
+    <!-- المحتوى المركزي -->
+    <div class="hero-section fade-up">
+      <div class="logo-circle">
+        <div class="logo-inner">طيب</div>
+      </div>
+      <h1 class="main-title">طيب الحي</h1>
+      <div class="sub-title">للعـود والأدهـان</div>
+      <div class="description">
         نظام متكامل لإدارة العطور والعود والأدهان والمخزون والكاشير والمبيعات من مكان واحد.
-      </p>
-      <a class="enter-btn" href="login.html">دخول النظام ❯</a>
-    </section>
-
-    <section class="contact-wrap" aria-label="معلومات التواصل">
-      <div class="contact-bar">
-        <div class="contact-item">
-          <div class="icon">📍</div>
-          <div class="label">الموقع</div>
-          <div class="value">الإمارات العربية المتحدة</div>
-        </div>
-        <div class="contact-item">
-          <div class="icon">☎</div>
-          <div class="label">الهاتف</div>
-          <div class="value">+971 50 123 4567</div>
-        </div>
-        <div class="contact-item">
-          <div class="icon">☘</div>
-          <div class="label">واتساب</div>
-          <div class="value">+971 50 123 4567</div>
-        </div>
-        <div class="contact-item">
-          <div class="icon">✉</div>
-          <div class="label">البريد الإلكتروني</div>
-          <div class="value">info@teebalhai.ae</div>
-        </div>
-        <div class="contact-item">
-          <div class="icon">◎</div>
-          <div class="label">انستغرام</div>
-          <div class="value">@teebalhai.oud</div>
-        </div>
-        <div class="contact-item">
-          <div class="icon">♪</div>
-          <div class="label">تيك توك</div>
-          <div class="value">@teebalhai.oud</div>
-        </div>
       </div>
-      <footer>جميع الحقوق محفوظة © طيب الحي للعود والأدهان</footer>
-    </section>
-  </main>
+      <button class="btn-primary" id="enterSystemBtn">
+        <i class="fas fa-key"></i> دخول النظام
+      </button>
+    </div>
+
+    <!-- الصورة الفاخرة الحقيقية (مبخرة، عود طبيعي، دهن عود، زعفران، زجاجات عطور) -->
+    <div class="showcase-image fade-up">
+      <img 
+        src="https://images.pexels.com/photos/5564494/pexels-photo-5564494.jpeg" 
+        alt="مبخرة عربية فاخرة، قطع عود طبيعي، دهن عود، زعفران وزجاجات عطور - طيب الحي"
+        style="width:100%; display:block; border-radius:42px;"
+      >
+      <!-- ملاحظة: الصورة من Pexels (ترخيص مجاني للاستخدام التجاري) وتعكس الأجواء الخليجية الفاخرة بدون نصوص أو عروض أسعار -->
+    </div>
+
+    <!-- قسم التواصل + حقوق الملكية -->
+    <div class="contact-section fade-up">
+      <div class="contact-info">
+        <div class="contact-item"><i class="fas fa-map-marker-alt"></i> الإمارات العربية المتحدة</div>
+        <div class="contact-item"><i class="fas fa-phone-alt"></i> <a href="tel:+971XXXXXXXX">+971 4 123 4567</a></div>
+        <div class="contact-item"><i class="fab fa-whatsapp"></i> <a href="https://wa.me/971501234567" target="_blank">واتساب</a></div>
+        <div class="contact-item"><i class="fas fa-envelope"></i> <a href="mailto:info@tayebalhay.com">info@tayebalhay.com</a></div>
+        <div class="contact-item"><i class="fab fa-instagram"></i> <a href="#">@tayeb_alhay</a></div>
+        <div class="contact-item"><i class="fab fa-tiktok"></i> <a href="#">@tayebalhay</a></div>
+      </div>
+      <div class="copyright">
+        جميع الحقوق محفوظة © طيب الحي للعود والأدهان
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // روابط الأزرار حسب المطلوب: زر دخول النظام + زر تسجيل الدخول/إنشاء حساب يوجهان إلى صفحة الدخول.
+    // زر الإعدادات يمكن تطويره لاحقًا (يظهر رسالة حالياً)
+    
+    const loginBtn = document.getElementById('loginSignupBtn');
+    const enterSystemBtn = document.getElementById('enterSystemBtn');
+    const settingsBtn = document.getElementById('settingsBtn');
+    
+    // رابط صفحة تسجيل الدخول (لنظام الإدارة المتكامل)
+    const LOGIN_PAGE_URL = 'login.html';   // غيّره إلى المسار الحقيقي للنظام
+    
+    function redirectToLogin() {
+      window.location.href = LOGIN_PAGE_URL;
+    }
+    
+    if (enterSystemBtn) {
+      enterSystemBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        redirectToLogin();
+      });
+    }
+    
+    if (loginBtn) {
+      loginBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        redirectToLogin();
+      });
+    }
+    
+    if (settingsBtn) {
+      settingsBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        // يمكن تعديل هذا لاحقاً لفتح صفحة إعدادات النظام الحقيقية
+        alert('لوحة الإعدادات: تخصيص النظام، إدارة الصلاحيات، إعدادات المتجر (قريباً).');
+      });
+    }
+    
+    // تأثيرات بسيطة
+    document.querySelectorAll('.fade-up').forEach((el, index) => {
+      el.style.animationDelay = `${index * 0.08}s`;
+    });
+  </script>
 </body>
 </html>
