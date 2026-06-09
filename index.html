@@ -42,14 +42,19 @@ body {
   background-attachment: fixed;
 }
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-background: rgba(255,255,255,.03);
-      pointer-events: none;
-      z-index: 0;
-    }
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0,0,0,.30);
+
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+
+    pointer-events: none;
+    z-index: 0;
+}
 
     .settings-btn {
       position: fixed;
@@ -134,17 +139,24 @@ background: rgba(255,255,255,.03);
       font-size: 13px;
     }
 
-    .card {
-      background: var(--card);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--border);
-      border-radius: 30px;
-      padding: 42px;
-      text-align: right;
-      box-shadow:
-        0 40px 110px rgba(0,0,0,.27),
-        inset 0 1px 0 rgba(255,255,255,.9);
-    }
+.card {
+  background: rgba(255,255,255,.96);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  border: 1px solid rgba(199,154,43,.35);
+
+  border-radius: 30px;
+
+  padding: 42px;
+
+  text-align: right;
+
+  box-shadow:
+    0 35px 90px rgba(0,0,0,.38),
+    inset 0 1px 0 rgba(255,255,255,.95);
+}
 
     .tabs {
       display: grid;
