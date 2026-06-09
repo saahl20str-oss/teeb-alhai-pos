@@ -6,805 +6,307 @@
 <title>طيب الحي — لوحة التحكم</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  /* ═══════════════════════════════════════════
-     TOKENS
-  ═══════════════════════════════════════════ */
-  :root {
-    --gold:      #C9A84C;
-    --gold-dim:  #a8893a;
-    --gold-pale: #f0e4c0;
-    --dark:      #1C1208;
-    --dark-2:    #2e2010;
-    --cream:     #F8F3EA;
-    --cream-2:   #f0e8d8;
-    --text:      #2a1e0e;
-    --text-2:    #6b5535;
-    --text-3:    #a0896a;
-    --border:    #ddd0b8;
-    --white:     #ffffff;
-    --red:       #c0392b;
-    --red-pale:  #fdf0ee;
-    --green:     #2e7d5c;
-    --green-pale:#eef6f2;
-    --radius:    10px;
-    --shadow:    0 1px 3px rgba(28,18,8,.08), 0 4px 12px rgba(28,18,8,.06);
-  }
-
-  /* ═══════════════════════════════════════════
-     RESET & BASE
-  ═══════════════════════════════════════════ */
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { font-size: 15px; }
-  body {
-    font-family: 'Tajawal', sans-serif;
-    background: var(--cream);
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-  a { text-decoration: none; color: inherit; }
-  button { font-family: inherit; cursor: pointer; border: none; background: none; }
-
-  /* ═══════════════════════════════════════════
-     TOPBAR
-  ═══════════════════════════════════════════ */
-  .topbar {
-    background: var(--dark);
-    padding: 0 28px;
-    height: 58px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    border-bottom: 1px solid #3a2a14;
-  }
-  .topbar-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .topbar-brand svg { width: 32px; height: 32px; }
-  .brand-name {
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--gold);
-    letter-spacing: .02em;
-  }
-  .brand-sub {
-    font-size: .7rem;
-    color: var(--text-3);
-    margin-top: -2px;
-  }
-  .topbar-nav {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .nav-btn {
-    padding: 6px 14px;
-    border-radius: 6px;
-    font-size: .85rem;
-    color: #c8b89a;
-    transition: background .15s, color .15s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .nav-btn:hover { background: #2e2010; color: var(--gold); }
-  .nav-btn.active { background: var(--gold); color: var(--dark); font-weight: 600; }
-  .topbar-actions {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .user-pill {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: #2e2010;
-    border-radius: 20px;
-    padding: 4px 12px 4px 6px;
-  }
-  .user-avatar {
-    width: 26px; height: 26px;
-    background: var(--gold);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: .75rem;
-    font-weight: 700;
-    color: var(--dark);
-  }
-  .user-name { font-size: .8rem; color: #c8b89a; }
-  .logout-btn {
-    font-size: .8rem;
-    color: var(--text-3);
-    padding: 4px 10px;
-    border-radius: 6px;
-    transition: background .15s, color .15s;
-  }
-  .logout-btn:hover { background: #2e2010; color: #e07070; }
-
-  /* ═══════════════════════════════════════════
-     PAGE LAYOUT
-  ═══════════════════════════════════════════ */
-  .page {
-    flex: 1;
-    padding: 28px 32px;
-    max-width: 1320px;
-    width: 100%;
-    margin: 0 auto;
-  }
-  .page-header {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    margin-bottom: 28px;
-  }
-  .page-title { font-size: 1.5rem; font-weight: 700; color: var(--dark); }
-  .page-date {
-    font-size: .82rem;
-    color: var(--text-3);
-    font-family: 'IBM Plex Mono', monospace;
-  }
-
-  /* ═══════════════════════════════════════════
-     STAT CARDS ROW
-  ═══════════════════════════════════════════ */
-  .stats-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-  .stat-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px 22px;
-    box-shadow: var(--shadow);
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    position: relative;
-    overflow: hidden;
-  }
-  .stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0; right: 0;
-    width: 3px;
-    height: 100%;
-    background: var(--gold);
-    opacity: 0;
-    transition: opacity .2s;
-  }
-  .stat-card:hover::before { opacity: 1; }
-  .stat-label {
-    font-size: .78rem;
-    color: var(--text-3);
-    font-weight: 500;
-  }
-  .stat-value {
-    font-size: 1.65rem;
-    font-weight: 700;
-    color: var(--dark);
-    font-family: 'IBM Plex Mono', monospace;
-    line-height: 1.1;
-  }
-  .stat-value .currency {
-    font-size: .9rem;
-    font-family: 'Tajawal', sans-serif;
-    color: var(--text-2);
-    margin-right: 3px;
-  }
-  .stat-footer {
-    font-size: .75rem;
-    color: var(--text-3);
-    margin-top: 2px;
-  }
-  .stat-footer.up { color: var(--green); }
-  .stat-footer.down { color: var(--red); }
-  .stat-icon {
-    position: absolute;
-    top: 18px;
-    left: 18px;
-    width: 36px; height: 36px;
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.1rem;
-    opacity: .15;
-  }
-
-  /* ═══════════════════════════════════════════
-     MAIN GRID
-  ═══════════════════════════════════════════ */
-  .main-grid {
-    display: grid;
-    grid-template-columns: 1fr 360px;
-    gap: 20px;
-  }
-  .panel {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    overflow: hidden;
-  }
-  .panel-head {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .panel-title {
-    font-size: .92rem;
-    font-weight: 700;
-    color: var(--dark);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .panel-title-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--gold);
-  }
-  .panel-link {
-    font-size: .78rem;
-    color: var(--gold-dim);
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 6px;
-    transition: background .15s;
-  }
-  .panel-link:hover { background: var(--gold-pale); }
-
-  /* ═══════════════════════════════════════════
-     INVOICES TABLE
-  ═══════════════════════════════════════════ */
-  .inv-table { width: 100%; border-collapse: collapse; }
-  .inv-table th {
-    text-align: right;
-    padding: 10px 16px;
-    font-size: .75rem;
-    font-weight: 600;
-    color: var(--text-3);
-    background: var(--cream);
-    border-bottom: 1px solid var(--border);
-    white-space: nowrap;
-  }
-  .inv-table td {
-    padding: 12px 16px;
-    font-size: .85rem;
-    border-bottom: 1px solid #f0e8d8;
-    vertical-align: middle;
-  }
-  .inv-table tr:last-child td { border-bottom: none; }
-  .inv-table tr:hover td { background: var(--cream); }
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: .72rem;
-    font-weight: 600;
-  }
-  .badge-sale { background: var(--green-pale); color: var(--green); }
-  .badge-buy  { background: #f0f3ff; color: #4a5ab0; }
-  .badge-refund { background: var(--red-pale); color: var(--red); }
-  .inv-id {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: .78rem;
-    color: var(--text-3);
-  }
-
-  /* ═══════════════════════════════════════════
-     SIDE PANELS
-  ═══════════════════════════════════════════ */
-  .side-col { display: flex; flex-direction: column; gap: 20px; }
-
-  /* LOW STOCK LIST */
-  .stock-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 20px;
-    border-bottom: 1px solid #f0e8d8;
-    transition: background .12s;
-  }
-  .stock-item:last-child { border-bottom: none; }
-  .stock-item:hover { background: var(--cream); }
-  .stock-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .dot-critical { background: var(--red); }
-  .dot-low { background: #e67e22; }
-  .dot-ok { background: var(--green); }
-  .stock-name {
-    flex: 1;
-    font-size: .85rem;
-    font-weight: 500;
-  }
-  .stock-qty {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: .8rem;
-    font-weight: 600;
-  }
-  .stock-qty.critical { color: var(--red); }
-  .stock-qty.low { color: #e67e22; }
-
-  /* QUICK ACTIONS */
-  .quick-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    padding: 16px;
-  }
-  .qa-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 18px 12px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--cream);
-    font-size: .82rem;
-    font-weight: 600;
-    color: var(--text-2);
-    transition: all .15s;
-    cursor: pointer;
-  }
-  .qa-btn:hover {
-    background: var(--gold-pale);
-    border-color: var(--gold);
-    color: var(--dark);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(201,168,76,.15);
-  }
-  .qa-btn span { font-size: 1.5rem; }
-
-  /* ═══════════════════════════════════════════
-     EMPTY STATES
-  ═══════════════════════════════════════════ */
-  .empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 48px 24px;
-    text-align: center;
-    gap: 12px;
-  }
-  .empty-icon {
-    width: 56px; height: 56px;
-    border-radius: 14px;
-    background: var(--cream-2);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.6rem;
-    color: var(--text-3);
-    margin-bottom: 4px;
-  }
-  .empty-title { font-size: .95rem; font-weight: 700; color: var(--text-2); }
-  .empty-desc { font-size: .8rem; color: var(--text-3); max-width: 260px; line-height: 1.6; }
-  .empty-cta {
-    margin-top: 4px;
-    padding: 7px 18px;
-    background: var(--gold);
-    color: var(--dark);
-    border-radius: 7px;
-    font-size: .82rem;
-    font-weight: 700;
-    transition: background .15s;
-  }
-  .empty-cta:hover { background: var(--gold-dim); }
-
-  /* ═══════════════════════════════════════════
-     EXPENSES SUMMARY
-  ═══════════════════════════════════════════ */
-  .expense-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 20px;
-    border-bottom: 1px solid #f0e8d8;
-    font-size: .85rem;
-  }
-  .expense-row:last-child { border-bottom: none; }
-  .expense-cat { color: var(--text-2); }
-  .expense-amt {
-    font-family: 'IBM Plex Mono', monospace;
-    font-weight: 600;
-    color: var(--red);
-    font-size: .82rem;
-  }
-
-  /* ═══════════════════════════════════════════
-     RESPONSIVE
-  ═══════════════════════════════════════════ */
-  @media (max-width: 1100px) {
-    .main-grid { grid-template-columns: 1fr; }
-    .side-col { flex-direction: row; flex-wrap: wrap; }
-    .side-col .panel { flex: 1 1 300px; }
-  }
-  @media (max-width: 860px) {
-    .stats-row { grid-template-columns: repeat(2, 1fr); }
-    .page { padding: 20px 16px; }
-    .topbar-nav { display: none; }
-  }
-  @media (max-width: 480px) {
-    .stats-row { grid-template-columns: 1fr; }
-  }
+:root{--gold:#C9A84C;--gold-lt:#f0e4c0;--dark:#1C1208;--dark2:#2e2010;--cream:#F8F3EA;--cream2:#f0e8d8;--text:#2a1e0e;--text2:#6b5535;--text3:#a0896a;--border:#ddd0b8;--white:#fff;--red:#c0392b;--green:#2e7d5c;--R:10px;--SH:0 1px 4px rgba(28,18,8,.08),0 4px 14px rgba(28,18,8,.06)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+.nav{background:var(--dark);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:50;border-bottom:1px solid #3a2a14}
+.nav-brand{display:flex;align-items:center;gap:10px}
+.nav-logo{width:34px;height:34px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;overflow:hidden}
+.nav-logo img{width:100%;height:100%;object-fit:contain}
+.nav-name{font-size:.95rem;font-weight:700;color:var(--gold)}
+.nav-links{display:flex;gap:2px}
+.nav-link{padding:6px 14px;border-radius:6px;font-size:.84rem;color:#c8b89a;transition:.15s}
+.nav-link:hover{background:var(--dark2);color:var(--gold)}
+.nav-link.active{background:var(--gold);color:var(--dark);font-weight:700}
+.nav-right{display:flex;align-items:center;gap:8px}
+.nav-settings-btn{width:34px;height:34px;border-radius:8px;background:var(--dark2);color:var(--gold);font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:.15s;cursor:pointer}
+.nav-settings-btn:hover{background:var(--gold);color:var(--dark)}
+.nav-user{font-size:.82rem;color:#c8b89a;background:var(--dark2);padding:4px 12px;border-radius:16px}
+.nav-logout{font-size:.78rem;color:var(--text3);padding:4px 10px;border-radius:6px;transition:.15s;cursor:pointer}
+.nav-logout:hover{color:#e07070;background:var(--dark2)}
+.page{max-width:1280px;margin:0 auto;padding:28px}
+.page-hd{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:24px}
+.page-title{font-size:1.4rem;font-weight:700}
+.page-date{font-size:.78rem;color:var(--text3);font-family:'IBM Plex Mono',monospace}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.stat{background:var(--white);border:1px solid var(--border);border-radius:var(--R);padding:18px 20px;box-shadow:var(--SH)}
+.stat-lbl{font-size:.74rem;color:var(--text3);margin-bottom:6px}
+.stat-val{font-size:1.5rem;font-weight:700;font-family:'IBM Plex Mono',monospace;color:var(--dark)}
+.stat-val small{font-size:.8rem;font-family:'Tajawal',sans-serif;color:var(--text2);margin-right:3px}
+.stat-note{font-size:.72rem;color:var(--text3);margin-top:4px}
+.stat-note.g{color:var(--green)}.stat-note.r{color:var(--red)}
+.grid2{display:grid;grid-template-columns:1fr 330px;gap:16px}
+.panel{background:var(--white);border:1px solid var(--border);border-radius:var(--R);box-shadow:var(--SH);overflow:hidden}
+.ph{padding:13px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.ph-title{font-size:.88rem;font-weight:700;display:flex;align-items:center;gap:7px}
+.ph-dot{width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.ph-link{font-size:.76rem;color:var(--gold);font-weight:600;padding:3px 8px;border-radius:5px;transition:.15s}
+.ph-link:hover{background:var(--gold-lt)}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:right;padding:9px 14px;font-size:.71rem;font-weight:600;color:var(--text3);background:var(--cream);border-bottom:1px solid var(--border)}
+.tbl td{padding:10px 14px;font-size:.83rem;border-bottom:1px solid #f0e8d8;vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--cream)}
+.badge{display:inline-flex;padding:2px 8px;border-radius:4px;font-size:.68rem;font-weight:700}
+.b-sale{background:#eef6f2;color:var(--green)}.b-buy{background:#eef0fa;color:#4a5ab0}
+.mono{font-family:'IBM Plex Mono',monospace;font-size:.78rem}
+.side{display:flex;flex-direction:column;gap:14px}
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:14px}
+.q-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;border-radius:8px;border:1px solid var(--border);background:var(--cream);font-size:.78rem;font-weight:600;color:var(--text2);transition:.15s;cursor:pointer}
+.q-btn:hover{background:var(--gold-lt);border-color:var(--gold);color:var(--dark);transform:translateY(-1px)}
+.q-btn .ic{font-size:1.3rem}
+.srow{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid #f0e8d8;font-size:.82rem}
+.srow:last-child{border-bottom:none}
+.sdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sdot.r{background:var(--red)}.sdot.o{background:#e67e22}
+.sname{flex:1}
+.sqty{font-family:'IBM Plex Mono',monospace;font-size:.76rem;font-weight:700}
+.sqty.r{color:var(--red)}.sqty.o{color:#e67e22}
+.empty{display:flex;flex-direction:column;align-items:center;gap:8px;padding:40px 18px;text-align:center}
+.empty-ic{font-size:1.8rem;width:50px;height:50px;background:var(--cream2);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:4px}
+.empty-t{font-size:.88rem;font-weight:700;color:var(--text2)}
+.empty-d{font-size:.76rem;color:var(--text3);line-height:1.6;max-width:230px}
+.empty-cta{margin-top:6px;padding:7px 18px;background:var(--gold);color:var(--dark);border-radius:7px;font-size:.8rem;font-weight:700;cursor:pointer;border:none;font-family:'Tajawal',sans-serif;transition:.15s}
+.empty-cta:hover{background:#b8933e}
+/* DRAWER */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;opacity:0;pointer-events:none;transition:.25s}
+.overlay.open{opacity:1;pointer-events:all}
+.drawer{position:fixed;top:0;left:0;height:100%;width:390px;max-width:96vw;background:var(--white);z-index:101;transform:translateX(-100%);transition:.3s cubic-bezier(.4,0,.2,1);overflow-y:auto}
+.drawer.open{transform:translateX(0)}
+.dh{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);background:var(--dark);position:sticky;top:0;z-index:2}
+.dh-title{font-size:.98rem;font-weight:700;color:var(--gold)}
+.dh-close{width:30px;height:30px;border-radius:6px;background:var(--dark2);color:#c8b89a;font-size:.95rem;display:flex;align-items:center;justify-content:center;transition:.15s;cursor:pointer}
+.dh-close:hover{background:var(--gold);color:var(--dark)}
+.d-body{padding:20px}
+.d-sec{margin-bottom:20px}
+.d-sec-title{font-size:.72rem;font-weight:700;color:var(--text3);letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+.d-row{margin-bottom:12px}
+.d-lbl{display:block;font-size:.8rem;font-weight:600;color:var(--text2);margin-bottom:4px}
+.d-inp{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:7px;font-size:.87rem;font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);transition:.15s;direction:rtl}
+.d-inp:focus{outline:none;border-color:var(--gold);background:var(--white)}
+.logo-wrap{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.logo-box{width:72px;height:72px;border:2px dashed var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;transition:.15s;flex-shrink:0}
+.logo-box:hover{border-color:var(--gold)}
+.logo-box img{width:100%;height:100%;object-fit:contain}
+.logo-hint{font-size:.75rem;color:var(--text3);line-height:1.5}
+.save-btn{width:100%;padding:11px;background:var(--gold);color:var(--dark);border-radius:8px;font-size:.93rem;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer;transition:.15s;border:none;margin-top:6px}
+.save-btn:hover{background:#b8933e}
+@media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.nav-links{display:none}.page{padding:16px}}
+@media(max-width:480px){.stats{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<!-- ═══════════════ TOPBAR ═══════════════ -->
-<header class="topbar">
-  <div class="topbar-brand">
-    <!-- Logo SVG inline -->
-    <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="32" height="32" rx="8" fill="#2e2010"/>
-      <path d="M16 5C12 5 9 8 9 12c0 3 1.5 5.5 4 7l-1 3h8l-1-3c2.5-1.5 4-4 4-7 0-4-3-7-7-7z" fill="#C9A84C" opacity=".9"/>
-      <rect x="12" y="25" width="8" height="2" rx="1" fill="#C9A84C" opacity=".5"/>
-    </svg>
-    <div>
-      <div class="brand-name">طيب الحي</div>
-      <div class="brand-sub">نظام إدارة المتجر</div>
-    </div>
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="nav-logo" id="navLogo">🕌</div>
+    <span class="nav-name" id="navName">طيب الحي</span>
   </div>
-
-  <nav class="topbar-nav">
-    <a href="dashboard.html" class="nav-btn active">📊 الرئيسية</a>
-    <a href="cashier.html" class="nav-btn">💰 الكاشير</a>
-    <a href="inventory.html" class="nav-btn">📦 المخزون</a>
-    <a href="add_product.html" class="nav-btn">➕ إضافة منتج</a>
-  </nav>
-
-  <div class="topbar-actions">
-    <div class="user-pill">
-      <div class="user-avatar" id="userAvatar">م</div>
-      <span class="user-name" id="userName">مدير</span>
-    </div>
-    <button class="logout-btn" onclick="logout()">خروج</button>
+  <div class="nav-links">
+    <a href="dashboard.html" class="nav-link active">الرئيسية</a>
+    <a href="cashier.html" class="nav-link">الكاشير</a>
+    <a href="inventory.html" class="nav-link">المخزون</a>
   </div>
-</header>
+  <div class="nav-right">
+    <button class="nav-settings-btn" onclick="openSettings()" title="الإعدادات">⚙</button>
+    <span class="nav-user" id="navUser">—</span>
+    <button class="nav-logout" onclick="logout()">خروج</button>
+  </div>
+</nav>
 
-<!-- ═══════════════ PAGE ═══════════════ -->
 <main class="page">
-  <div class="page-header">
+  <div class="page-hd">
     <h1 class="page-title">لوحة التحكم</h1>
-    <span class="page-date" id="todayDate">—</span>
+    <span class="page-date" id="todayDate"></span>
   </div>
 
-  <!-- STATS ROW -->
-  <div class="stats-row">
-    <div class="stat-card">
-      <div class="stat-icon" style="background:var(--green)">💵</div>
-      <div class="stat-label">مبيعات اليوم</div>
-      <div class="stat-value" id="todaySales">—<span class="currency">ر.س</span></div>
-      <div class="stat-footer" id="todaySalesCount">لا توجد مبيعات اليوم</div>
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-lbl">مبيعات اليوم</div>
+      <div class="stat-val" id="s1">0<small id="c1">ر.س</small></div>
+      <div class="stat-note" id="s1n">لا توجد مبيعات</div>
     </div>
-    <div class="stat-card">
-      <div class="stat-icon" style="background:var(--gold)">📦</div>
-      <div class="stat-label">قيمة المخزون</div>
-      <div class="stat-value" id="inventoryValue">—<span class="currency">ر.س</span></div>
-      <div class="stat-footer" id="inventoryCount">لا توجد منتجات</div>
+    <div class="stat">
+      <div class="stat-lbl">قيمة المخزون</div>
+      <div class="stat-val" id="s2">0<small id="c2">ر.س</small></div>
+      <div class="stat-note" id="s2n">لا توجد منتجات</div>
     </div>
-    <div class="stat-card">
-      <div class="stat-icon" style="background:#4a5ab0">🛒</div>
-      <div class="stat-label">مشتريات الشهر</div>
-      <div class="stat-value" id="monthPurchases">—<span class="currency">ر.س</span></div>
-      <div class="stat-footer" id="monthPurchasesCount">—</div>
+    <div class="stat">
+      <div class="stat-lbl">مشتريات الشهر</div>
+      <div class="stat-val" id="s3">0<small id="c3">ر.س</small></div>
+      <div class="stat-note" id="s3n">—</div>
     </div>
-    <div class="stat-card">
-      <div class="stat-icon" style="background:var(--red)">⚠️</div>
-      <div class="stat-label">منتجات تحت الحد</div>
-      <div class="stat-value" id="lowStockCount" style="color:var(--red)">—</div>
-      <div class="stat-footer" id="lowStockLabel">—</div>
+    <div class="stat">
+      <div class="stat-lbl">تنبيهات المخزون</div>
+      <div class="stat-val" id="s4" style="color:var(--red)">0</div>
+      <div class="stat-note g" id="s4n">المخزون بخير</div>
     </div>
   </div>
 
-  <!-- MAIN GRID -->
-  <div class="main-grid">
-    <!-- LEFT: RECENT INVOICES -->
+  <div class="grid2">
     <div class="panel">
-      <div class="panel-head">
-        <div class="panel-title">
-          <div class="panel-title-dot"></div>
-          آخر الفواتير
-        </div>
-        <a href="cashier.html" class="panel-link">فتح الكاشير ←</a>
+      <div class="ph">
+        <div class="ph-title"><div class="ph-dot"></div>آخر الفواتير</div>
+        <a href="cashier.html" class="ph-link">فتح الكاشير ←</a>
       </div>
-      <div id="invoicesContainer">
-        <!-- filled by JS -->
-      </div>
+      <div id="invContainer"></div>
     </div>
 
-    <!-- RIGHT COL -->
-    <div class="side-col">
-      <!-- QUICK ACTIONS -->
+    <div class="side">
       <div class="panel">
-        <div class="panel-head">
-          <div class="panel-title">
-            <div class="panel-title-dot"></div>
-            اختصارات سريعة
-          </div>
-        </div>
-        <div class="quick-actions">
-          <button class="qa-btn" onclick="location.href='cashier.html'">
-            <span>💰</span>بيع
-          </button>
-          <button class="qa-btn" onclick="location.href='cashier.html?mode=buy'">
-            <span>🛒</span>شراء
-          </button>
-          <button class="qa-btn" onclick="location.href='add_product.html'">
-            <span>➕</span>منتج جديد
-          </button>
-          <button class="qa-btn" onclick="location.href='inventory.html'">
-            <span>📦</span>المخزون
-          </button>
+        <div class="ph"><div class="ph-title"><div class="ph-dot"></div>اختصارات</div></div>
+        <div class="quick">
+          <button class="q-btn" onclick="location.href='cashier.html?tab=sale'"><span class="ic">💰</span>بيع</button>
+          <button class="q-btn" onclick="location.href='cashier.html?tab=buy'"><span class="ic">🛒</span>استلام بضاعة</button>
+          <button class="q-btn" onclick="location.href='inventory.html'"><span class="ic">📦</span>المخزون</button>
+          <button class="q-btn" onclick="openSettings()"><span class="ic">⚙</span>الإعدادات</button>
         </div>
       </div>
-
-      <!-- LOW STOCK -->
       <div class="panel">
-        <div class="panel-head">
-          <div class="panel-title">
-            <div class="panel-title-dot" style="background:var(--red)"></div>
-            تنبيهات المخزون
-          </div>
-          <a href="inventory.html" class="panel-link">الكل ←</a>
+        <div class="ph">
+          <div class="ph-title"><div class="ph-dot" style="background:var(--red)"></div>تنبيهات المخزون</div>
+          <a href="inventory.html" class="ph-link">الكل ←</a>
         </div>
-        <div id="lowStockContainer">
-          <!-- filled by JS -->
-        </div>
-      </div>
-
-      <!-- EXPENSES THIS MONTH -->
-      <div class="panel">
-        <div class="panel-head">
-          <div class="panel-title">
-            <div class="panel-title-dot" style="background:var(--red)"></div>
-            مصروفات الشهر
-          </div>
-        </div>
-        <div id="expensesContainer">
-          <!-- filled by JS -->
-        </div>
+        <div id="lowContainer"></div>
       </div>
     </div>
   </div>
 </main>
 
+<!-- SETTINGS DRAWER -->
+<div class="overlay" id="overlay" onclick="closeSettings()"></div>
+<div class="drawer" id="drawer">
+  <div class="dh">
+    <span class="dh-title">⚙ إعدادات المتجر</span>
+    <button class="dh-close" onclick="closeSettings()">✕</button>
+  </div>
+  <div class="d-body">
+    <div class="d-sec">
+      <div class="d-sec-title">هوية المتجر</div>
+      <div class="d-row">
+        <label class="d-lbl">شعار المتجر</label>
+        <div class="logo-wrap">
+          <div class="logo-box" id="logoBox" onclick="document.getElementById('logoInp').click()">
+            <span style="color:var(--text3);font-size:.7rem;text-align:center">اضغط<br>للرفع</span>
+          </div>
+          <div>
+            <div class="logo-hint">يُستخدم في الفواتير والنافبار<br>PNG أو JPG مناسب</div>
+            <button onclick="removeLogo()" style="font-size:.72rem;color:var(--red);margin-top:6px;cursor:pointer">حذف الشعار</button>
+          </div>
+        </div>
+        <input type="file" id="logoInp" accept="image/*" style="display:none" onchange="handleLogo(this)">
+      </div>
+      <div class="d-row"><label class="d-lbl">اسم المتجر</label><input class="d-inp" id="cfg_name" placeholder="طيب الحي للعود والأدهان"></div>
+      <div class="d-row"><label class="d-lbl">العنوان</label><input class="d-inp" id="cfg_addr" placeholder="المنطقة، المدينة"></div>
+      <div class="d-row"><label class="d-lbl">رقم الهاتف</label><input class="d-inp" id="cfg_phone" placeholder="05xxxxxxxx" dir="ltr"></div>
+    </div>
+    <div class="d-sec">
+      <div class="d-sec-title">العملة والضريبة</div>
+      <div class="d-row">
+        <label class="d-lbl">العملة</label>
+        <select class="d-inp" id="cfg_cur">
+          <option value="ر.س">ريال سعودي — ر.س</option>
+          <option value="د.إ">درهم إماراتي — د.إ</option>
+          <option value="د.ك">دينار كويتي — د.ك</option>
+          <option value="ر.ع">ريال عماني — ر.ع</option>
+          <option value="د.ب">دينار بحريني — د.ب</option>
+          <option value="ر.ق">ريال قطري — ر.ق</option>
+        </select>
+      </div>
+      <div class="d-row"><label class="d-lbl">نسبة الضريبة %</label><input class="d-inp" id="cfg_tax" type="number" min="0" max="100" placeholder="15"></div>
+    </div>
+    <div class="d-sec">
+      <div class="d-sec-title">المخزون</div>
+      <div class="d-row"><label class="d-lbl">حد التنبيه المنخفض (وحدة)</label><input class="d-inp" id="cfg_low" type="number" min="1" placeholder="5"></div>
+    </div>
+    <button class="save-btn" onclick="saveSettings()">حفظ الإعدادات</button>
+  </div>
+</div>
+
+<script src="sync.js"></script>
 <script>
-// ═══════════════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════════════
-function getData(key) {
-  try { return JSON.parse(localStorage.getItem(key)) || []; } catch { return []; }
-}
-function fmtNum(n) {
-  return Number(n || 0).toLocaleString('ar-SA', { maximumFractionDigits: 2 });
-}
-function isToday(ts) {
-  const d = new Date(ts), t = new Date();
-  return d.getFullYear() === t.getFullYear() &&
-         d.getMonth()    === t.getMonth() &&
-         d.getDate()     === t.getDate();
-}
-function isThisMonth(ts) {
-  const d = new Date(ts), t = new Date();
-  return d.getFullYear() === t.getFullYear() && d.getMonth() === t.getMonth();
-}
-function arabicDate(d = new Date()) {
-  return d.toLocaleDateString('ar-SA-u-nu-latn', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+DB.requireAuth();
+const user = DB.getUser();
+document.getElementById('navUser').textContent = user?.name || user?.username || 'مدير';
+document.getElementById('todayDate').textContent = DB.today();
+
+function logout(){ localStorage.removeItem(DB.KEYS.user); location.href='index.html'; }
+
+function applyNav(){
+  const s = DB.getSettings();
+  document.getElementById('navName').textContent = s.store_name || 'طيب الحي';
+  const cur = s.currency;
+  ['c1','c2','c3'].forEach(id=>{ document.getElementById(id).textContent=' '+cur; });
+  const logo = document.getElementById('navLogo');
+  if(s.logo) logo.innerHTML=`<img src="${s.logo}">`;
+  else logo.innerHTML='🕌';
 }
 
-// ═══════════════════════════════════════════
-// AUTH CHECK
-// ═══════════════════════════════════════════
-(function() {
-  const user = JSON.parse(localStorage.getItem('oud_user') || 'null');
-  if (!user) { location.href = 'index.html'; return; }
-  document.getElementById('userName').textContent = user.name || user.username || 'مدير';
-  document.getElementById('userAvatar').textContent = (user.name || user.username || 'م')[0];
-})();
-
-function logout() {
-  localStorage.removeItem('oud_user');
-  location.href = 'index.html';
+function loadDash(){
+  applyNav();
+  const s=DB.getSettings(), products=DB.getProducts(), invoices=DB.getInvoices(), cur=s.currency, low=s.low_stock_qty;
+  const todaySales=invoices.filter(i=>i.type==='sale'&&DB.isToday(i.created_at));
+  const todayAmt=todaySales.reduce((a,i)=>a+Number(i.total||0),0);
+  document.getElementById('s1').innerHTML=DB.fmt(todayAmt)+`<small> ${cur}</small>`;
+  document.getElementById('s1n').textContent=todaySales.length?`${todaySales.length} فاتورة اليوم`:'لا توجد مبيعات';
+  const invVal=products.reduce((a,p)=>a+(Number(p.cost||0)*Number(p.qty||0)),0);
+  document.getElementById('s2').innerHTML=DB.fmt(invVal)+`<small> ${cur}</small>`;
+  document.getElementById('s2n').textContent=products.length?`${products.length} صنف`:'لا توجد منتجات';
+  const mP=invoices.filter(i=>i.type==='purchase'&&DB.isThisMonth(i.created_at));
+  document.getElementById('s3').innerHTML=DB.fmt(mP.reduce((a,i)=>a+Number(i.total||0),0))+`<small> ${cur}</small>`;
+  document.getElementById('s3n').textContent=mP.length?`${mP.length} عملية`:'لا مشتريات هذا الشهر';
+  const lowItems=products.filter(p=>Number(p.qty||0)<=low);
+  document.getElementById('s4').textContent=lowItems.length;
+  const s4n=document.getElementById('s4n');
+  s4n.textContent=lowItems.length?'تحتاج إعادة تعبئة':'المخزون بخير';
+  s4n.className='stat-note '+(lowItems.length?'r':'g');
+  renderInvoices(invoices); renderLow(products,low);
 }
 
-// ═══════════════════════════════════════════
-// DATE
-// ═══════════════════════════════════════════
-document.getElementById('todayDate').textContent = arabicDate();
-
-// ═══════════════════════════════════════════
-// LOAD DATA
-// ═══════════════════════════════════════════
-function loadDashboard() {
-  const products = getData('tayyib_products');
-  const invoices = getData('tayyib_invoices');
-  const expenses = getData('tayyib_expenses');
-  const settings = getData('tayyib_settings');
-  const lowThreshold = (settings[0] && settings[0].lowStockThreshold) || 5;
-
-  // ─── TODAY SALES ─────────────────────────
-  const todaySales = invoices.filter(inv => inv.type === 'sale' && isToday(inv.date || inv.created_at));
-  const todayTotal = todaySales.reduce((s, inv) => s + Number(inv.total || 0), 0);
-  document.getElementById('todaySales').innerHTML = `${fmtNum(todayTotal)}<span class="currency">ر.س</span>`;
-  document.getElementById('todaySalesCount').textContent =
-    todaySales.length ? `${todaySales.length} فاتورة اليوم` : 'لا توجد مبيعات اليوم';
-  document.getElementById('todaySalesCount').className =
-    'stat-footer' + (todaySales.length ? '' : '');
-
-  // ─── INVENTORY VALUE ─────────────────────
-  const invValue = products.reduce((s, p) => s + (Number(p.cost || p.buy_price || 0) * Number(p.qty || p.quantity || 0)), 0);
-  document.getElementById('inventoryValue').innerHTML = `${fmtNum(invValue)}<span class="currency">ر.س</span>`;
-  document.getElementById('inventoryCount').textContent =
-    products.length ? `${products.length} صنف في المخزون` : 'لا توجد منتجات';
-
-  // ─── MONTH PURCHASES ─────────────────────
-  const monthPurch = invoices.filter(inv => inv.type === 'purchase' && isThisMonth(inv.date || inv.created_at));
-  const monthPurchTotal = monthPurch.reduce((s, inv) => s + Number(inv.total || 0), 0);
-  document.getElementById('monthPurchases').innerHTML = `${fmtNum(monthPurchTotal)}<span class="currency">ر.س</span>`;
-  document.getElementById('monthPurchasesCount').textContent =
-    monthPurch.length ? `${monthPurch.length} فاتورة هذا الشهر` : 'لا مشتريات هذا الشهر';
-
-  // ─── LOW STOCK COUNT ─────────────────────
-  const lowProducts = products.filter(p => Number(p.qty || p.quantity || 0) <= lowThreshold);
-  document.getElementById('lowStockCount').textContent = lowProducts.length || '0';
-  document.getElementById('lowStockLabel').textContent =
-    lowProducts.length ? 'تحتاج إعادة تعبئة' : 'المخزون بخير';
-  document.getElementById('lowStockLabel').className =
-    'stat-footer' + (lowProducts.length ? ' down' : ' up');
-
-  // ─── INVOICES TABLE ──────────────────────
-  renderInvoices(invoices);
-
-  // ─── LOW STOCK LIST ──────────────────────
-  renderLowStock(products, lowThreshold);
-
-  // ─── EXPENSES ────────────────────────────
-  renderExpenses(expenses);
+function renderInvoices(invoices){
+  const el=document.getElementById('invContainer'); const list=invoices.slice(0,10);
+  if(!list.length){ el.innerHTML=`<div class="empty"><div class="empty-ic">🧾</div><div class="empty-t">لا توجد فواتير بعد</div><div class="empty-d">ابدأ أول عملية من الكاشير وستظهر هنا</div><button class="empty-cta" onclick="location.href='cashier.html'">فتح الكاشير</button></div>`; return; }
+  const lbl={sale:'بيع',purchase:'شراء',refund:'مرتجع'}, cls={sale:'b-sale',purchase:'b-buy',refund:'b-sale'};
+  el.innerHTML=`<table class="tbl"><thead><tr><th>رقم</th><th>النوع</th><th>التاريخ</th><th>أصناف</th><th>الإجمالي</th></tr></thead><tbody>${list.map(i=>`<tr><td class="mono">#${String(i.id||'').slice(-5)}</td><td><span class="badge ${cls[i.type]||'b-sale'}">${lbl[i.type]||i.type}</span></td><td style="color:var(--text3);font-size:.76rem">${DB.shortDate(i.created_at)}</td><td style="color:var(--text2)">${i.items?.length||'—'}</td><td class="mono">${DB.fmt(i.total)}</td></tr>`).join('')}</tbody></table>`;
 }
 
-// ═══════════════════════════════════════════
-// RENDER INVOICES
-// ═══════════════════════════════════════════
-function renderInvoices(invoices) {
-  const container = document.getElementById('invoicesContainer');
-  const recent = [...invoices]
-    .sort((a, b) => new Date(b.date || b.created_at) - new Date(a.date || a.created_at))
-    .slice(0, 8);
-
-  if (!recent.length) {
-    container.innerHTML = `
-      <div class="empty">
-        <div class="empty-icon">🧾</div>
-        <div class="empty-title">لا توجد فواتير بعد</div>
-        <div class="empty-desc">ابدأ أول عملية بيع أو شراء من الكاشير وستظهر هنا تلقائياً</div>
-        <a href="cashier.html" class="empty-cta">فتح الكاشير</a>
-      </div>`;
-    return;
-  }
-
-  const typeMap = { sale: 'badge-sale', purchase: 'badge-buy', refund: 'badge-refund' };
-  const typeLabel = { sale: 'مبيعة', purchase: 'شراء', refund: 'مرتجع' };
-
-  container.innerHTML = `
-    <table class="inv-table">
-      <thead>
-        <tr>
-          <th>رقم الفاتورة</th>
-          <th>النوع</th>
-          <th>التاريخ</th>
-          <th>الأصناف</th>
-          <th>الإجمالي</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${recent.map(inv => {
-          const d = new Date(inv.date || inv.created_at);
-          const dateStr = isNaN(d) ? '—' :
-            d.toLocaleDateString('ar-SA-u-nu-latn', { month:'short', day:'numeric' }) +
-            ' ' + d.toLocaleTimeString('ar-SA-u-nu-latn', { hour:'2-digit', minute:'2-digit' });
-          const type = inv.type || 'sale';
-          const items = inv.items ? inv.items.length : '—';
-          return `
-            <tr>
-              <td><span class="inv-id">#${String(inv.id || inv.invoice_number || '—').slice(-6)}</span></td>
-              <td><span class="badge ${typeMap[type] || 'badge-sale'}">${typeLabel[type] || type}</span></td>
-              <td style="color:var(--text-3);font-size:.8rem">${dateStr}</td>
-              <td style="color:var(--text-2)">${items}</td>
-              <td style="font-family:'IBM Plex Mono',monospace;font-weight:600">${fmtNum(inv.total)} <span style="font-family:'Tajawal';font-size:.75rem;color:var(--text-3)">ر.س</span></td>
-            </tr>`;
-        }).join('')}
-      </tbody>
-    </table>`;
+function renderLow(products,low){
+  const el=document.getElementById('lowContainer'); const items=products.filter(p=>Number(p.qty||0)<=low).sort((a,b)=>Number(a.qty||0)-Number(b.qty||0)).slice(0,8);
+  if(!items.length){ el.innerHTML=`<div class="empty" style="padding:26px 16px"><div class="empty-ic" style="background:#eef6f2;color:var(--green)">✓</div><div class="empty-t">المخزون بخير</div><div class="empty-d">لا منتجات تحت الحد المحدد</div></div>`; return; }
+  el.innerHTML=items.map(p=>{ const q=Number(p.qty||0),c=q===0?'r':'o'; return `<div class="srow"><div class="sdot ${c}"></div><div class="sname">${p.name}</div><div class="sqty ${c}">${q===0?'نفد':q+' وحدة'}</div></div>`; }).join('');
 }
 
-// ═══════════════════════════════════════════
-// RENDER LOW STOCK
-// ═══════════════════════════════════════════
-function renderLowStock(products, threshold) {
-  const container = document.getElementById('lowStockContainer');
-  const low = products
-    .filter(p => Number(p.qty || p.quantity || 0) <= threshold)
-    .sort((a, b) => Number(a.qty || a.quantity || 0) - Number(b.qty || b.quantity || 0))
-    .slice(0, 7);
-
-  if (!low.length) {
-    container.innerHTML = `
-      <div class="empty" style="padding:32px 16px">
-        <div class="empty-icon" style="background:var(--green-pale);color:var(--green)">✓</div>
-        <div class="empty-title">المخزون بخير</div>
-        <div class="empty-desc">لا توجد منتجات تحت الحد الأدنى</div>
-      </div>`;
-    return;
-  }
-
-  container.innerHTML = low.map(p => {
-    const qty = Number(p.qty || p.quantity || 0);
-    const isCritical = qty === 0;
-    return `
-      <div class="stock-item">
-        <div class="stock-dot ${isCritical ? 'dot-critical' : 'dot-low'}"></div>
-        <div class="stock-name">${p.name || 'منتج بدون اسم'}</div>
-        <div class="stock-qty ${isCritical ? 'critical' : 'low'}">${qty === 0 ? 'نفد' : qty + ' وحدة'}</div>
-      </div>`;
-  }).join('');
+function openSettings(){
+  const s=DB.getSettings();
+  document.getElementById('cfg_name').value=s.store_name||'';
+  document.getElementById('cfg_addr').value=s.address||'';
+  document.getElementById('cfg_phone').value=s.phone||'';
+  document.getElementById('cfg_cur').value=s.currency||'ر.س';
+  document.getElementById('cfg_tax').value=s.tax_rate||15;
+  document.getElementById('cfg_low').value=s.low_stock_qty||5;
+  const lb=document.getElementById('logoBox');
+  lb.innerHTML=s.logo?`<img src="${s.logo}">`:`<span style="color:var(--text3);font-size:.7rem;text-align:center">اضغط<br>للرفع</span>`;
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
 }
-
-// ═══════════════════════════════════════════
-// RENDER EXPENSES
-// ═══════════════════════════════════════════
-function renderExpenses(expenses) {
-  const container = document.getElementById('expensesContainer');
-  const monthExp = expenses.filter(e => isThisMonth(e.date || e.created_at));
-
-  if (!monthExp.length) {
-    container.innerHTML = `
-      <div class="empty" style="padding:28px 16px">
-        <div class="empty-icon">📒</div>
-        <div class="empty-title">لا مصروفات مسجلة</div>
-        <div class="empty-desc">لم تُسجَّل أي مصروفات هذا الشهر</div>
-      </div>`;
-    return;
-  }
-
-  // group by category
-  const byCategory = {};
-  monthExp.forEach(e => {
-    const cat = e.category || 'عام';
-    byCategory[cat] = (byCategory[cat] || 0) + Number(e.amount || 0);
-  });
-
-  const total = Object.values(byCategory).reduce((s, v) => s + v, 0);
-  container.innerHTML = Object.entries(byCategory).map(([cat, amt]) => `
-    <div class="expense-row">
-      <span class="expense-cat">${cat}</span>
-      <span class="expense-amt">${fmtNum(amt)} ر.س</span>
-    </div>`).join('') +
-    `<div class="expense-row" style="border-top:1px solid var(--border);margin-top:4px;font-weight:700">
-      <span>الإجمالي</span>
-      <span class="expense-amt">${fmtNum(total)} ر.س</span>
-    </div>`;
+function closeSettings(){ document.getElementById('overlay').classList.remove('open'); document.getElementById('drawer').classList.remove('open'); }
+function handleLogo(inp){ const f=inp.files[0]; if(!f) return; const r=new FileReader(); r.onload=e=>{ document.getElementById('logoBox').innerHTML=`<img src="${e.target.result}">`; window._tmpLogo=e.target.result; }; r.readAsDataURL(f); }
+function removeLogo(){ window._tmpLogo=null; const s=DB.getSettings(); s.logo=null; DB.saveSettings(s); document.getElementById('logoBox').innerHTML=`<span style="color:var(--text3);font-size:.7rem;text-align:center">اضغط<br>للرفع</span>`; }
+function saveSettings(){
+  const s=DB.getSettings();
+  s.store_name=document.getElementById('cfg_name').value.trim()||s.store_name;
+  s.address=document.getElementById('cfg_addr').value.trim();
+  s.phone=document.getElementById('cfg_phone').value.trim();
+  s.currency=document.getElementById('cfg_cur').value;
+  s.tax_rate=Number(document.getElementById('cfg_tax').value)||15;
+  s.low_stock_qty=Number(document.getElementById('cfg_low').value)||5;
+  if(window._tmpLogo) s.logo=window._tmpLogo;
+  DB.saveSettings(s); window._tmpLogo=null;
+  closeSettings(); toast('تم حفظ الإعدادات'); loadDash();
 }
-
-// ═══════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════
-loadDashboard();
+loadDash();
 </script>
 </body>
 </html>
