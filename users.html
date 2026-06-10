@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>طيب الحي — إدارة الموظفين</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-lt:#f0e4c0;--gold-dim:#b8933e;--dark:#1C1208;--dark2:#2e2010;--dark3:#3a2a14;--cream:#F8F3EA;--cream2:#f0e8d8;--text:#2a1e0e;--text2:#6b5535;--text3:#a0896a;--border:#ddd0b8;--white:#fff;--red:#c0392b;--red-lt:#fdf0ee;--green:#2e7d5c;--green-lt:#eef6f2;--R:10px;--SH:0 1px 3px rgba(28,18,8,.07),0 3px 10px rgba(28,18,8,.05)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
+a{text-decoration:none;color:inherit}button{font-family:inherit;cursor:pointer;border:none;background:none}
+.nav{background:var(--dark);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:50;border-bottom:1px solid var(--dark3)}
+.nav-brand{display:flex;align-items:center;gap:10px}
+.nav-logo{width:34px;height:34px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;overflow:hidden}
+.nav-logo img{width:100%;height:100%;object-fit:contain}
+.nav-name{font-size:.95rem;font-weight:700;color:var(--gold)}
+.nav-links{display:flex;gap:2px}
+.nav-link{padding:6px 14px;border-radius:6px;font-size:.84rem;color:#c8b89a;transition:.15s}
+.nav-link:hover{background:var(--dark2);color:var(--gold)}
+.nav-link.active{background:var(--gold);color:var(--dark);font-weight:700}
+.nav-user{font-size:.8rem;color:#c8b89a;background:var(--dark2);padding:4px 12px;border-radius:16px}
+.nav-logout{font-size:.76rem;color:var(--text3);padding:4px 10px;border-radius:6px;transition:.15s;cursor:pointer}
+.nav-logout:hover{color:#e07070;background:var(--dark2)}
+.page{max-width:1100px;margin:0 auto;padding:26px 26px}
+.page-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:10px}
+.page-title{font-size:1.3rem;font-weight:900}
+.add-btn{display:flex;align-items:center;gap:7px;padding:9px 18px;background:var(--dark);color:var(--gold);border-radius:8px;font-size:.88rem;font-weight:700;transition:.15s}
+.add-btn:hover{background:var(--dark2)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.user-card{background:var(--white);border:1px solid var(--border);border-radius:var(--R);box-shadow:var(--SH);padding:18px 18px 14px;transition:.15s}
+.user-card:hover{border-color:var(--gold);transform:translateY(-1px)}
+.uc-top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.uc-avatar{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;flex-shrink:0}
+.av-admin{background:var(--dark);color:var(--gold)}
+.av-staff{background:var(--gold-lt);color:var(--dark)}
+.uc-name{font-size:.95rem;font-weight:700}
+.uc-role{font-size:.73rem;color:var(--text3);margin-top:2px}
+.uc-status{margin-right:auto;display:flex;align-items:center}
+.status-dot{width:8px;height:8px;border-radius:50%}
+.dot-on{background:var(--green)}.dot-off{background:#ccc}
+.status-lbl{font-size:.72rem;color:var(--text3);margin-right:5px}
+.uc-perms{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.perm-tag{padding:2px 8px;border-radius:4px;font-size:.68rem;font-weight:600;background:var(--cream2);color:var(--text2)}
+.perm-tag.admin-tag{background:var(--dark);color:var(--gold)}
+.uc-actions{display:flex;gap:8px;border-top:1px solid var(--border);padding-top:12px}
+.uc-btn{flex:1;padding:7px;border-radius:7px;font-size:.8rem;font-weight:600;font-family:'Tajawal',sans-serif;cursor:pointer;transition:.15s;border:none}
+.uc-btn.edit{background:var(--cream2);color:var(--text2)}
+.uc-btn.edit:hover{background:var(--gold-lt);color:var(--dark)}
+.uc-btn.toggle-off{background:var(--red-lt);color:var(--red)}
+.uc-btn.toggle-on{background:var(--green-lt);color:var(--green)}
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:.2s}
+.modal-bg.open{opacity:1;pointer-events:all}
+.modal{background:var(--white);border-radius:14px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.3)}
+.mh{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--dark);position:sticky;top:0}
+.mh-title{font-size:.95rem;font-weight:700;color:var(--gold)}
+.mh-close{width:28px;height:28px;border-radius:6px;background:var(--dark2);color:#c8b89a;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s}
+.mh-close:hover{background:var(--gold);color:var(--dark)}
+.m-body{padding:22px}
+.f-row{margin-bottom:14px}
+.f-lbl{display:block;font-size:.79rem;font-weight:600;color:var(--text2);margin-bottom:5px}
+.f-inp{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.88rem;font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);direction:rtl;transition:.15s}
+.f-inp:focus{outline:none;border-color:var(--gold);background:var(--white)}
+.form-row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+/* PERMISSIONS SECTION */
+.perm-section{border:1px solid var(--border);border-radius:9px;overflow:hidden;margin-bottom:14px}
+.perm-group-hd{padding:9px 14px;background:var(--cream2);font-size:.75rem;font-weight:700;color:var(--text2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.perm-group-hd button{font-size:.7rem;color:var(--gold);font-weight:600;cursor:pointer;padding:2px 8px;border-radius:4px;background:none;border:none;transition:.15s}
+.perm-group-hd button:hover{background:var(--gold-lt)}
+.perm-item{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid #f0e8d8}
+.perm-item:last-child{border-bottom:none}
+.perm-item label{font-size:.83rem;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:8px;flex:1}
+.toggle{position:relative;width:38px;height:21px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.toggle-track{position:absolute;inset:0;background:#ddd;border-radius:21px;transition:.25s;cursor:pointer}
+.toggle input:checked+.toggle-track{background:var(--gold)}
+.toggle-thumb{position:absolute;top:3px;right:3px;width:15px;height:15px;background:#fff;border-radius:50%;transition:.25s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle input:checked~.toggle-thumb{right:calc(100% - 18px)}
+.role-select{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.88rem;font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);cursor:pointer}
+.role-select:focus{outline:none;border-color:var(--gold)}
+.save-btn{width:100%;padding:11px;background:var(--gold);color:var(--dark);border-radius:9px;font-size:.93rem;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer;border:none;transition:.15s;margin-top:6px}
+.save-btn:hover{background:var(--gold-dim)}
+.del-btn{width:100%;padding:9px;background:none;color:var(--red);border:1px solid var(--red);border-radius:8px;font-size:.84rem;font-weight:600;cursor:pointer;font-family:'Tajawal',sans-serif;transition:.15s;margin-top:8px}
+.del-btn:hover{background:var(--red-lt)}
+.admin-note{background:var(--dark);color:var(--gold);border-radius:8px;padding:10px 14px;font-size:.78rem;line-height:1.6;margin-bottom:14px}
+@media(max-width:700px){.nav-links{display:none}.page{padding:14px}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="nav-logo" id="navLogo">🕌</div>
+    <span class="nav-name" id="navName">طيب الحي</span>
+  </div>
+  <div class="nav-links">
+    <a href="dashboard.html" class="nav-link">الرئيسية</a>
+    <a href="cashier.html" class="nav-link">الكاشير</a>
+    <a href="inventory.html" class="nav-link">المخزون</a>
+    <a href="reports.html" class="nav-link">التقارير</a>
+    <a href="customers.html" class="nav-link">العملاء</a>
+    <a href="users.html" class="nav-link active">الموظفون</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <span class="nav-user" id="navUser">—</span>
+    <button class="nav-logout" onclick="logout()">خروج</button>
+  </div>
+</nav>
+
+<main class="page">
+  <div class="page-hd">
+    <h1 class="page-title">👥 إدارة الموظفين والصلاحيات</h1>
+    <button class="add-btn" onclick="openModal()">+ إضافة موظف</button>
+  </div>
+  <div class="grid" id="usersGrid"></div>
+</main>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <div class="mh">
+      <span class="mh-title" id="modalTitle">إضافة موظف جديد</span>
+      <button class="mh-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="m-body">
+      <div id="adminNote" class="admin-note" style="display:none">
+        ⭐ هذا الحساب مدير — يملك جميع الصلاحيات تلقائياً
+      </div>
+      <div class="form-row2">
+        <div class="f-row"><label class="f-lbl">الاسم الكامل *</label><input class="f-inp" id="m_name" placeholder="مثال: أحمد محمد"></div>
+        <div class="f-row"><label class="f-lbl">اسم المستخدم *</label><input class="f-inp" id="m_username" placeholder="ahmed" dir="ltr"></div>
+      </div>
+      <div class="form-row2">
+        <div class="f-row"><label class="f-lbl">كلمة المرور *</label><input class="f-inp" id="m_pass" type="password" placeholder="••••••••"></div>
+        <div class="f-row"><label class="f-lbl">الدور</label>
+          <select class="role-select" id="m_role" onchange="handleRoleChange()">
+            <option value="staff">موظف</option>
+            <option value="supervisor">مشرف</option>
+            <option value="admin">مدير</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="permSection">
+        <div style="font-size:.8rem;font-weight:700;color:var(--text2);margin-bottom:10px">الصلاحيات</div>
+        <div id="permGroups"></div>
+      </div>
+
+      <button class="save-btn" onclick="saveUser()">حفظ الموظف</button>
+      <button class="del-btn" id="delBtn" onclick="deleteUser()" style="display:none">حذف الحساب</button>
+    </div>
+  </div>
+</div>
+
+<script src="sync.js"></script>
+<script>
+DB.requireAuth();
+DB.requirePerm('manage_users');
+const user = DB.getUser();
+document.getElementById('navUser').textContent = user?.name || '—';
+(function(){ const s=DB.getSettings(); document.getElementById('navName').textContent=s.store_name||'طيب الحي'; if(s.logo) document.getElementById('navLogo').innerHTML=`<img src="${s.logo}">`; })();
+function logout(){ localStorage.removeItem(DB.KEYS.user); location.href='index.html'; }
+
+let editingId = null;
+
+function renderGrid(){
+  const el = document.getElementById('usersGrid');
+  const accounts = DB.getAccounts();
+  if(!accounts.length){ el.innerHTML=`<div style="padding:40px;color:var(--text3);font-size:.9rem">لا يوجد موظفون بعد</div>`; return; }
+  el.innerHTML = accounts.map(a => {
+    const isAdmin = a.role === 'admin';
+    const permsLabels = isAdmin
+      ? ['جميع الصلاحيات']
+      : PERMISSIONS.filter(p => a.permissions?.[p.key]).map(p => p.label);
+    const shown = permsLabels.slice(0,4);
+    const extra = permsLabels.length - shown.length;
+    return `<div class="user-card">
+      <div class="uc-top">
+        <div class="uc-avatar ${isAdmin?'av-admin':'av-staff'}">${(a.name||'م')[0]}</div>
+        <div>
+          <div class="uc-name">${a.name}</div>
+          <div class="uc-role">${a.username} · ${roleLabel(a.role)}</div>
+        </div>
+        <div class="uc-status">
+          <div class="status-dot ${a.active?'dot-on':'dot-off'}"></div>
+          <span class="status-lbl">${a.active?'نشط':'موقوف'}</span>
+        </div>
+      </div>
+      <div class="uc-perms">
+        ${shown.map(l=>`<span class="perm-tag ${isAdmin?'admin-tag':''}">${l}</span>`).join('')}
+        ${extra>0?`<span class="perm-tag">+${extra} أخرى</span>`:''}
+        ${permsLabels.length===0?`<span style="font-size:.74rem;color:var(--text3)">لا صلاحيات محددة</span>`:''}
+      </div>
+      <div class="uc-actions">
+        <button class="uc-btn edit" onclick="openModal('${a.username}')">✏ تعديل</button>
+        <button class="uc-btn ${a.active?'toggle-off':'toggle-on'}" onclick="toggleActive('${a.username}')">${a.active?'إيقاف':'تفعيل'}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function roleLabel(r){ return {admin:'مدير',supervisor:'مشرف',staff:'موظف'}[r]||r; }
+
+function buildPermGroups(currentPerms={}){
+  const groups = {};
+  PERMISSIONS.forEach(p => { if(!groups[p.group]) groups[p.group]=[]; groups[p.group].push(p); });
+  return Object.entries(groups).map(([grp, perms]) => `
+    <div class="perm-section">
+      <div class="perm-group-hd">
+        <span>${grp}</span>
+        <button onclick="toggleGroup('${grp}',true)">تحديد الكل</button>
+        <button onclick="toggleGroup('${grp}',false)" style="margin-right:4px">إلغاء الكل</button>
+      </div>
+      ${perms.map(p => `
+        <div class="perm-item">
+          <label for="p_${p.key}">${p.label}</label>
+          <div class="toggle">
+            <input type="checkbox" id="p_${p.key}" ${currentPerms[p.key]?'checked':''}>
+            <div class="toggle-track" onclick="document.getElementById('p_${p.key}').click()"></div>
+            <div class="toggle-thumb"></div>
+          </div>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+function toggleGroup(grp, val){
+  PERMISSIONS.filter(p=>p.group===grp).forEach(p=>{
+    const el = document.getElementById('p_'+p.key);
+    if(el) el.checked = val;
+  });
+}
+
+function handleRoleChange(){
+  const role = document.getElementById('m_role').value;
+  const ps   = document.getElementById('permSection');
+  const note = document.getElementById('adminNote');
+  if(role==='admin'){ ps.style.display='none'; note.style.display='block'; }
+  else { ps.style.display='block'; note.style.display='none'; }
+  // Pre-set supervisor defaults
+  if(role==='supervisor' && !editingId){
+    ['view_dashboard','cashier_sale','cashier_buy','cashier_discount','inventory_view','customers_view','view_reports'].forEach(k=>{
+      const el=document.getElementById('p_'+k); if(el) el.checked=true;
+    });
+  }
+}
+
+function openModal(username=null){
+  editingId = username;
+  const a = username ? DB.getAccount(username) : null;
+  document.getElementById('modalTitle').textContent = a ? 'تعديل: '+a.name : 'إضافة موظف جديد';
+  document.getElementById('m_name').value     = a?.name||'';
+  document.getElementById('m_username').value = a?.username||'';
+  document.getElementById('m_pass').value     = '';
+  document.getElementById('m_role').value     = a?.role||'staff';
+  document.getElementById('m_username').readOnly = !!a;
+  document.getElementById('delBtn').style.display = (a && a.role!=='admin') ? 'block' : 'none';
+  document.getElementById('permGroups').innerHTML = buildPermGroups(a?.permissions||{});
+  handleRoleChange();
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){ document.getElementById('modal').classList.remove('open'); editingId=null; }
+
+function saveUser(){
+  const name     = document.getElementById('m_name').value.trim();
+  const username = document.getElementById('m_username').value.trim().toLowerCase();
+  const pass     = document.getElementById('m_pass').value;
+  const role     = document.getElementById('m_role').value;
+  if(!name){ toast('أدخل الاسم الكامل','error'); return; }
+  if(!username){ toast('أدخل اسم المستخدم','error'); return; }
+  const accounts = DB.getAccounts();
+  if(!editingId && accounts.find(a=>a.username===username)){ toast('اسم المستخدم موجود بالفعل','error'); return; }
+  // collect permissions
+  const permissions = {};
+  PERMISSIONS.forEach(p=>{ const el=document.getElementById('p_'+p.key); if(el&&el.checked) permissions[p.key]=true; });
+  if(editingId){
+    const idx = accounts.findIndex(a=>a.username===editingId);
+    if(idx>=0){
+      accounts[idx] = { ...accounts[idx], name, role, permissions };
+      if(pass) accounts[idx].password = pass;
+    }
+  } else {
+    if(!pass){ toast('أدخل كلمة المرور','error'); return; }
+    accounts.push({ id:'USR-'+Date.now(), username, password:pass, name, role, permissions, active:true, created_at:Date.now() });
+  }
+  DB.saveAccounts(accounts);
+  closeModal(); renderGrid();
+  toast(editingId?'تم تحديث بيانات الموظف':'تم إضافة الموظف بنجاح');
+}
+
+function toggleActive(username){
+  const accounts = DB.getAccounts();
+  const idx = accounts.findIndex(a=>a.username===username);
+  if(idx>=0 && accounts[idx].role!=='admin'){
+    accounts[idx].active = !accounts[idx].active;
+    DB.saveAccounts(accounts);
+    renderGrid();
+    toast(accounts[idx].active?'تم تفعيل الحساب':'تم إيقاف الحساب');
+  }
+}
+
+function deleteUser(){
+  if(!editingId) return;
+  if(!confirm('هل أنت متأكد من حذف هذا الحساب؟')) return;
+  DB.saveAccounts(DB.getAccounts().filter(a=>a.username!==editingId));
+  closeModal(); renderGrid();
+  toast('تم حذف الحساب','warning');
+}
+
+renderGrid();
+</script>
+</body>
+</html>
