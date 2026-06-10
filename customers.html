@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>طيب الحي — دفتر العملاء</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-lt:#f0e4c0;--gold-dim:#b8933e;--dark:#1C1208;--dark2:#2e2010;--dark3:#3a2a14;--cream:#F8F3EA;--cream2:#f0e8d8;--text:#2a1e0e;--text2:#6b5535;--text3:#a0896a;--border:#ddd0b8;--white:#fff;--red:#c0392b;--red-lt:#fdf0ee;--green:#2e7d5c;--green-lt:#eef6f2;--R:10px;--SH:0 1px 3px rgba(28,18,8,.07),0 3px 10px rgba(28,18,8,.05)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
+a{text-decoration:none;color:inherit}button{font-family:inherit;cursor:pointer;border:none;background:none}
+.nav{background:var(--dark);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:50;border-bottom:1px solid var(--dark3)}
+.nav-brand{display:flex;align-items:center;gap:10px}
+.nav-logo{width:34px;height:34px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;overflow:hidden}
+.nav-logo img{width:100%;height:100%;object-fit:contain}
+.nav-name{font-size:.95rem;font-weight:700;color:var(--gold)}
+.nav-links{display:flex;gap:2px}
+.nav-link{padding:6px 14px;border-radius:6px;font-size:.84rem;color:#c8b89a;transition:.15s}
+.nav-link:hover{background:var(--dark2);color:var(--gold)}
+.nav-link.active{background:var(--gold);color:var(--dark);font-weight:700}
+.nav-user{font-size:.8rem;color:#c8b89a;background:var(--dark2);padding:4px 12px;border-radius:16px}
+.nav-logout{font-size:.76rem;color:var(--text3);padding:4px 10px;border-radius:6px;transition:.15s;cursor:pointer}
+.nav-logout:hover{color:#e07070;background:var(--dark2)}
+.page{max-width:1200px;margin:0 auto;padding:26px}
+.page-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.page-title{font-size:1.3rem;font-weight:900}
+.hd-right{display:flex;align-items:center;gap:10px}
+.add-btn{display:flex;align-items:center;gap:7px;padding:9px 18px;background:var(--dark);color:var(--gold);border-radius:8px;font-size:.88rem;font-weight:700;transition:.15s}
+.add-btn:hover{background:var(--dark2)}
+/* STATS */
+.stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.stat{background:var(--white);border:1px solid var(--border);border-radius:var(--R);padding:14px 18px;box-shadow:var(--SH)}
+.stat-lbl{font-size:.72rem;color:var(--text3);margin-bottom:4px}
+.stat-val{font-size:1.3rem;font-weight:700;font-family:'IBM Plex Mono',monospace;color:var(--dark)}
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:1fr 340px;gap:16px;align-items:start}
+/* SEARCH BAR */
+.search-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.search-inp{flex:1;min-width:180px;padding:9px 14px;border:1px solid var(--border);border-radius:8px;font-size:.88rem;background:var(--white);direction:rtl;font-family:'Tajawal',sans-serif;transition:.15s}
+.search-inp:focus{outline:none;border-color:var(--gold)}
+/* CUSTOMER LIST */
+.cust-list{background:var(--white);border:1px solid var(--border);border-radius:var(--R);box-shadow:var(--SH);overflow:hidden}
+.cust-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #f0e8d8;cursor:pointer;transition:.12s}
+.cust-row:last-child{border-bottom:none}
+.cust-row:hover{background:var(--cream)}
+.cust-row.selected{background:var(--gold-lt);border-right:3px solid var(--gold)}
+.cust-avatar{width:40px;height:40px;border-radius:10px;background:var(--cream2);display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;color:var(--text2);flex-shrink:0}
+.cust-name{font-size:.88rem;font-weight:700}
+.cust-phone{font-size:.74rem;color:var(--text3);font-family:'IBM Plex Mono',monospace;margin-top:2px}
+.cust-meta{margin-right:auto;text-align:left}
+.cust-total{font-family:'IBM Plex Mono',monospace;font-size:.8rem;font-weight:700;color:var(--green)}
+.cust-count{font-size:.68rem;color:var(--text3)}
+/* DETAIL PANEL */
+.detail-panel{background:var(--white);border:1px solid var(--border);border-radius:var(--R);box-shadow:var(--SH);overflow:hidden;position:sticky;top:70px}
+.dp-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--dark)}
+.dp-title{font-size:.9rem;font-weight:700;color:var(--gold)}
+.dp-btns{display:flex;gap:6px}
+.dp-btn{padding:5px 12px;border-radius:6px;font-size:.76rem;font-weight:600;font-family:'Tajawal',sans-serif;cursor:pointer;border:none;transition:.15s}
+.dp-btn.edit{background:var(--gold);color:var(--dark)}
+.dp-btn.edit:hover{background:var(--gold-dim)}
+.dp-btn.del{background:var(--dark2);color:#e07070}
+.dp-btn.del:hover{background:var(--red-lt);color:var(--red)}
+.dp-body{padding:16px}
+.dp-avatar-big{width:60px;height:60px;border-radius:14px;background:var(--cream2);display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:700;color:var(--text2);margin:0 auto 12px}
+.dp-cname{text-align:center;font-size:1rem;font-weight:700;margin-bottom:4px}
+.dp-phone{text-align:center;font-size:.8rem;color:var(--text3);font-family:'IBM Plex Mono',monospace;margin-bottom:14px}
+.kv{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0e8d8;font-size:.83rem}
+.kv:last-child{border-bottom:none}
+.kv-k{color:var(--text3)}.kv-v{font-weight:600}
+.inv-mini{border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-top:10px}
+.inv-mini-row{display:flex;align-items:center;gap:8px;padding:8px 11px;border-bottom:1px solid #f0e8d8;font-size:.8rem}
+.inv-mini-row:last-child{border-bottom:none}
+.whatsapp-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:10px;background:#25D366;color:#fff;border-radius:8px;font-size:.86rem;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer;border:none;margin-top:12px;transition:.15s}
+.whatsapp-btn:hover{background:#1ebe5d}
+.empty-detail{display:flex;flex-direction:column;align-items:center;gap:8px;padding:40px 16px;text-align:center}
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:.2s}
+.modal-bg.open{opacity:1;pointer-events:all}
+.modal{background:var(--white);border-radius:14px;width:100%;max-width:460px;box-shadow:0 24px 60px rgba(0,0,0,.3);overflow:hidden}
+.mh{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--dark)}
+.mh-title{font-size:.95rem;font-weight:700;color:var(--gold)}
+.mh-close{width:28px;height:28px;border-radius:6px;background:var(--dark2);color:#c8b89a;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s}
+.mh-close:hover{background:var(--gold);color:var(--dark)}
+.m-body{padding:22px}
+.f-row{margin-bottom:13px}
+.f-lbl{display:block;font-size:.79rem;font-weight:600;color:var(--text2);margin-bottom:5px}
+.f-inp{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.88rem;font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);direction:rtl;transition:.15s}
+.f-inp:focus{outline:none;border-color:var(--gold);background:var(--white)}
+.form2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.save-btn{width:100%;padding:11px;background:var(--gold);color:var(--dark);border-radius:9px;font-size:.93rem;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer;border:none;transition:.15s}
+.save-btn:hover{background:var(--gold-dim)}
+.del-btn{width:100%;padding:9px;background:none;color:var(--red);border:1px solid var(--red);border-radius:8px;font-size:.84rem;font-weight:600;cursor:pointer;font-family:'Tajawal',sans-serif;transition:.15s;margin-top:8px}
+.del-btn:hover{background:var(--red-lt)}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.stats3{grid-template-columns:1fr 1fr}.nav-links{display:none}.page{padding:14px}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="nav-logo" id="navLogo">🕌</div>
+    <span class="nav-name" id="navName">طيب الحي</span>
+  </div>
+  <div class="nav-links">
+    <a href="dashboard.html" class="nav-link">الرئيسية</a>
+    <a href="cashier.html" class="nav-link">الكاشير</a>
+    <a href="inventory.html" class="nav-link">المخزون</a>
+    <a href="reports.html" class="nav-link">التقارير</a>
+    <a href="customers.html" class="nav-link active">العملاء</a>
+    <a href="users.html" class="nav-link">الموظفون</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <span class="nav-user" id="navUser">—</span>
+    <button class="nav-logout" onclick="logout()">خروج</button>
+  </div>
+</nav>
+
+<main class="page">
+  <div class="page-hd">
+    <h1 class="page-title">📒 دفتر العملاء</h1>
+    <div class="hd-right">
+      <button class="add-btn" onclick="openModal()">+ عميل جديد</button>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats3">
+    <div class="stat"><div class="stat-lbl">إجمالي العملاء</div><div class="stat-val" id="st_total">0</div></div>
+    <div class="stat"><div class="stat-lbl">إجمالي المشتريات</div><div class="stat-val" id="st_sales">0</div></div>
+    <div class="stat"><div class="stat-lbl">متوسط قيمة الفاتورة</div><div class="stat-val" id="st_avg">0</div></div>
+  </div>
+
+  <div class="layout">
+    <!-- LEFT: LIST -->
+    <div>
+      <div class="search-bar">
+        <input class="search-inp" id="searchInp" placeholder="ابحث بالاسم أو الهاتف…" oninput="renderList()">
+      </div>
+      <div class="cust-list" id="custList"></div>
+    </div>
+
+    <!-- RIGHT: DETAIL -->
+    <div class="detail-panel" id="detailPanel">
+      <div class="dp-head"><span class="dp-title">بيانات العميل</span></div>
+      <div id="detailBody">
+        <div class="empty-detail">
+          <div style="font-size:2rem">👤</div>
+          <div style="font-size:.88rem;color:var(--text3)">اختر عميلاً لعرض تفاصيله</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <div class="mh">
+      <span class="mh-title" id="modalTitle">إضافة عميل جديد</span>
+      <button class="mh-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="m-body">
+      <div class="form2">
+        <div class="f-row"><label class="f-lbl">الاسم *</label><input class="f-inp" id="m_name" placeholder="اسم العميل"></div>
+        <div class="f-row"><label class="f-lbl">رقم الهاتف</label><input class="f-inp" id="m_phone" placeholder="05xxxxxxxx" dir="ltr"></div>
+      </div>
+      <div class="f-row"><label class="f-lbl">البريد الإلكتروني</label><input class="f-inp" id="m_email" placeholder="email@example.com" dir="ltr"></div>
+      <div class="f-row"><label class="f-lbl">العنوان</label><input class="f-inp" id="m_addr" placeholder="المنطقة، المدينة"></div>
+      <div class="f-row"><label class="f-lbl">ملاحظات</label><textarea class="f-inp" id="m_notes" rows="2" placeholder="ملاحظات خاصة بالعميل" style="resize:none"></textarea></div>
+      <button class="save-btn" onclick="saveCustomer()">حفظ العميل</button>
+      <button class="del-btn" id="delBtn" onclick="deleteCustomer()" style="display:none">حذف العميل</button>
+    </div>
+  </div>
+</div>
+
+<script src="sync.js"></script>
+<script>
+DB.requireAuth();
+DB.requirePerm('customers_view');
+const user = DB.getUser();
+document.getElementById('navUser').textContent = user?.name||'—';
+(function(){ const s=DB.getSettings(); document.getElementById('navName').textContent=s.store_name||'طيب الحي'; if(s.logo) document.getElementById('navLogo').innerHTML=`<img src="${s.logo}">`; })();
+function logout(){ localStorage.removeItem(DB.KEYS.user); location.href='index.html'; }
+
+let selectedId = null, editingId = null;
+
+function calcCustomerStats(cid){
+  const invoices = DB.getInvoices().filter(i => i.type==='sale' && i.customer_id===cid);
+  const total = invoices.reduce((a,i)=>a+Number(i.total||0),0);
+  return { count: invoices.length, total, invoices };
+}
+
+function renderStats(){
+  const s   = DB.getSettings();
+  const cur = s.currency||'د.إ';
+  const customers = DB.getCustomers();
+  const allInvs = DB.getInvoices().filter(i=>i.type==='sale'&&i.customer_id);
+  const total = allInvs.reduce((a,i)=>a+Number(i.total||0),0);
+  document.getElementById('st_total').textContent = customers.length;
+  document.getElementById('st_sales').textContent = DB.fmt(total)+' '+cur;
+  document.getElementById('st_avg').textContent   = allInvs.length ? DB.fmt(total/allInvs.length)+' '+cur : '0';
+}
+
+function renderList(){
+  const el     = document.getElementById('custList');
+  const search = document.getElementById('searchInp').value.toLowerCase();
+  const s      = DB.getSettings();
+  const cur    = s.currency||'د.إ';
+  let list     = DB.getCustomers();
+  if(search) list = list.filter(c=>(c.name||'').toLowerCase().includes(search)||(c.phone||'').includes(search));
+  list.sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+  if(!list.length){
+    el.innerHTML=`<div style="padding:40px;text-align:center;color:var(--text3);font-size:.86rem">${search?'لا نتائج مطابقة':'لا عملاء بعد — أضف أول عميل'}</div>`;
+    return;
+  }
+  el.innerHTML = list.map(c=>{
+    const st = calcCustomerStats(c.id);
+    return `<div class="cust-row ${c.id===selectedId?'selected':''}" onclick="selectCustomer('${c.id}')">
+      <div class="cust-avatar">${(c.name||'ع')[0]}</div>
+      <div>
+        <div class="cust-name">${c.name}</div>
+        <div class="cust-phone">${c.phone||'—'}</div>
+      </div>
+      <div class="cust-meta">
+        <div class="cust-total">${DB.fmt(st.total)} ${cur}</div>
+        <div class="cust-count">${st.count} فاتورة</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function selectCustomer(id){
+  selectedId = id;
+  const c  = DB.getCustomer(id);
+  const s  = DB.getSettings();
+  const cur= s.currency||'د.إ';
+  if(!c) return;
+  const st = calcCustomerStats(id);
+  const dpBody = document.getElementById('detailBody');
+  const canEdit = DB.can('customers_edit');
+  dpBody.innerHTML = `
+    <div style="padding:16px">
+      <div class="dp-avatar-big">${(c.name||'ع')[0]}</div>
+      <div class="dp-cname">${c.name}</div>
+      <div class="dp-phone">${c.phone||'لا هاتف'}</div>
+      ${canEdit?`<div style="display:flex;gap:7px;margin-bottom:14px"><button class="dp-btn edit" onclick="openModal('${id}')">✏ تعديل</button><button class="dp-btn del" onclick="deleteById('${id}')">حذف</button></div>`:''}
+      <div class="kv"><span class="kv-k">البريد</span><span class="kv-v">${c.email||'—'}</span></div>
+      <div class="kv"><span class="kv-k">العنوان</span><span class="kv-v">${c.address||'—'}</span></div>
+      <div class="kv"><span class="kv-k">عميل منذ</span><span class="kv-v">${DB.fullDate(c.created_at)}</span></div>
+      <div class="kv"><span class="kv-k">إجمالي الفواتير</span><span class="kv-v" style="color:var(--green)">${DB.fmt(st.total)} ${cur}</span></div>
+      <div class="kv"><span class="kv-k">عدد المشتريات</span><span class="kv-v">${st.count}</span></div>
+      ${c.notes?`<div style="margin-top:10px;padding:10px 12px;background:var(--cream2);border-radius:8px;font-size:.8rem;color:var(--text2)">${c.notes}</div>`:''}
+      ${st.invoices.length?`
+        <div style="font-size:.78rem;font-weight:700;color:var(--text3);margin:14px 0 7px">آخر المشتريات</div>
+        <div class="inv-mini">
+          ${st.invoices.slice(0,5).map(i=>`
+            <div class="inv-mini-row">
+              <div style="flex:1"><div style="font-weight:600">#${String(i.id).slice(-5)}</div><div style="color:var(--text3);font-size:.7rem">${DB.shortDate(i.created_at)}</div></div>
+              <div style="font-family:'IBM Plex Mono';font-weight:700;font-size:.8rem">${DB.fmt(i.total)} ${cur}</div>
+            </div>`).join('')}
+        </div>`:''}
+      ${c.phone?`<button class="whatsapp-btn" onclick="sendWhatsApp('${c.phone}','${c.name}')">💬 إرسال رسالة واتساب</button>`:''}
+    </div>`;
+  renderList(); // re-render to highlight selected
+}
+
+function sendWhatsApp(phone, name){
+  const s = DB.getSettings();
+  const msg = encodeURIComponent(`السلام عليكم ${name}،\nشكراً لتعاملكم مع ${s.store_name||'طيب الحي'} 🕌`);
+  const clean = phone.replace(/[^\d+]/g,'');
+  window.open(`https://wa.me/${clean}?text=${msg}`,'_blank');
+}
+
+// MODAL
+function openModal(id=null){
+  editingId = id;
+  const c = id ? DB.getCustomer(id) : null;
+  document.getElementById('modalTitle').textContent = c ? 'تعديل: '+c.name : 'إضافة عميل جديد';
+  document.getElementById('m_name').value  = c?.name||'';
+  document.getElementById('m_phone').value = c?.phone||'';
+  document.getElementById('m_email').value = c?.email||'';
+  document.getElementById('m_addr').value  = c?.address||'';
+  document.getElementById('m_notes').value = c?.notes||'';
+  document.getElementById('delBtn').style.display = c ? 'block':'none';
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){ document.getElementById('modal').classList.remove('open'); editingId=null; }
+
+function saveCustomer(){
+  const name = document.getElementById('m_name').value.trim();
+  if(!name){ toast('أدخل اسم العميل','error'); return; }
+  const c = {
+    id:      editingId || 'CUS-'+Date.now(),
+    name,
+    phone:   document.getElementById('m_phone').value.trim(),
+    email:   document.getElementById('m_email').value.trim(),
+    address: document.getElementById('m_addr').value.trim(),
+    notes:   document.getElementById('m_notes').value.trim(),
+  };
+  DB.upsertCustomer(c);
+  closeModal(); renderAll();
+  toast(editingId?'تم تحديث بيانات العميل':'تم إضافة العميل');
+  if(!editingId) selectCustomer(c.id);
+}
+
+function deleteCustomer(){ if(editingId) deleteById(editingId, true); }
+function deleteById(id, fromModal=false){
+  if(!confirm('حذف هذا العميل؟')) return;
+  DB.deleteCustomer(id);
+  if(fromModal) closeModal();
+  if(selectedId===id){ selectedId=null; document.getElementById('detailBody').innerHTML=`<div class="empty-detail"><div style="font-size:2rem">👤</div><div style="font-size:.88rem;color:var(--text3)">اختر عميلاً لعرض تفاصيله</div></div>`; }
+  renderAll(); toast('تم حذف العميل','warning');
+}
+
+function renderAll(){ renderStats(); renderList(); }
+renderAll();
+</script>
+</body>
+</html>
