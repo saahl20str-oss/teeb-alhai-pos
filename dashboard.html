@@ -4,16 +4,29 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>طيب الحي — لوحة التحكم</title>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--gold:#C9A84C;--gold-lt:#f0e4c0;--dark:#1C1208;--dark2:#2e2010;--cream:#F8F3EA;--cream2:#f0e8d8;--text:#2a1e0e;--text2:#6b5535;--text3:#a0896a;--border:#ddd0b8;--white:#fff;--red:#c0392b;--green:#2e7d5c;--R:10px;--SH:0 1px 4px rgba(28,18,8,.08),0 4px 14px rgba(28,18,8,.06)}
+:root{
+  --gold:#C9A84C;--gold-lt:#f0e4c0;--gold-dim:#b8933e;
+  --dark:#1C1208;--dark2:#2e2010;--dark3:#3a2a14;
+  --cream:#F8F3EA;--cream2:#f0e8d8;--cream3:#e8dcc8;
+  --text:#2a1e0e;--text2:#6b5535;--text3:#a0896a;
+  --border:#ddd0b8;--white:#fff;
+  --red:#c0392b;--red-lt:#fdf0ee;
+  --green:#2e7d5c;--green-lt:#eef6f2;
+  --blue:#4a5ab0;--blue-lt:#eef0fa;
+  --orange:#c0680a;--orange-lt:#fff4e8;
+  --R:10px;--SH:0 1px 3px rgba(28,18,8,.07),0 3px 10px rgba(28,18,8,.05);
+}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
 a{text-decoration:none;color:inherit}
 button{font-family:inherit;cursor:pointer;border:none;background:none}
-.nav{background:var(--dark);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:50;border-bottom:1px solid #3a2a14}
+
+/* ══ NAV ══ */
+.nav{background:var(--dark);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:80;border-bottom:1px solid var(--dark3)}
 .nav-brand{display:flex;align-items:center;gap:10px}
-.nav-logo{width:34px;height:34px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;overflow:hidden}
+.nav-logo{width:34px;height:34px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;overflow:hidden;flex-shrink:0}
 .nav-logo img{width:100%;height:100%;object-fit:contain}
 .nav-name{font-size:.95rem;font-weight:700;color:var(--gold)}
 .nav-links{display:flex;gap:2px}
@@ -21,84 +34,181 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .nav-link:hover{background:var(--dark2);color:var(--gold)}
 .nav-link.active{background:var(--gold);color:var(--dark);font-weight:700}
 .nav-right{display:flex;align-items:center;gap:8px}
-.nav-settings-btn{width:34px;height:34px;border-radius:8px;background:var(--dark2);color:var(--gold);font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:.15s;cursor:pointer}
-.nav-settings-btn:hover{background:var(--gold);color:var(--dark)}
-.nav-user{font-size:.82rem;color:#c8b89a;background:var(--dark2);padding:4px 12px;border-radius:16px}
-.nav-logout{font-size:.78rem;color:var(--text3);padding:4px 10px;border-radius:6px;transition:.15s;cursor:pointer}
+.nav-set-btn{width:32px;height:32px;border-radius:7px;background:var(--dark2);color:var(--gold);font-size:1rem;display:flex;align-items:center;justify-content:center;transition:.15s;cursor:pointer}
+.nav-set-btn:hover{background:var(--gold);color:var(--dark)}
+.nav-user{font-size:.8rem;color:#c8b89a;background:var(--dark2);padding:4px 12px;border-radius:16px;cursor:default}
+.nav-logout{font-size:.76rem;color:var(--text3);padding:4px 10px;border-radius:6px;transition:.15s;cursor:pointer}
 .nav-logout:hover{color:#e07070;background:var(--dark2)}
-.page{max-width:1280px;margin:0 auto;padding:28px}
-.page-hd{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:24px}
-.page-title{font-size:1.4rem;font-weight:700}
-.page-date{font-size:.78rem;color:var(--text3);font-family:'IBM Plex Mono',monospace}
+
+/* ══ PAGE ══ */
+.page{max-width:1320px;margin:0 auto;padding:22px 26px}
+
+/* ══ TOP BAR ══ */
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap}
+.page-title{font-size:1.35rem;font-weight:900;color:var(--dark)}
+.top-bar-right{display:flex;align-items:center;gap:10px}
+.date-pill{font-size:.76rem;color:var(--text3);font-family:'IBM Plex Mono',monospace;background:var(--white);border:1px solid var(--border);padding:5px 12px;border-radius:20px}
+.quick-scan-btn{display:flex;align-items:center;gap:7px;padding:7px 16px;background:var(--dark);color:var(--gold);border-radius:8px;font-size:.84rem;font-weight:700;transition:.15s}
+.quick-scan-btn:hover{background:var(--dark2)}
+
+/* ══ STATS ROW ══ */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
-.stat{background:var(--white);border:1px solid var(--border);border-radius:var(--R);padding:18px 20px;box-shadow:var(--SH)}
-.stat-lbl{font-size:.74rem;color:var(--text3);margin-bottom:6px}
-.stat-val{font-size:1.5rem;font-weight:700;font-family:'IBM Plex Mono',monospace;color:var(--dark)}
-.stat-val small{font-size:.8rem;font-family:'Tajawal',sans-serif;color:var(--text2);margin-right:3px}
-.stat-note{font-size:.72rem;color:var(--text3);margin-top:4px}
-.stat-note.g{color:var(--green)}.stat-note.r{color:var(--red)}
-.grid2{display:grid;grid-template-columns:1fr 330px;gap:16px}
+.stat{background:var(--white);border:1px solid var(--border);border-radius:var(--R);padding:16px 18px 14px;box-shadow:var(--SH);cursor:pointer;transition:.18s;position:relative;overflow:hidden}
+.stat::after{content:'';position:absolute;bottom:0;right:0;width:0;height:2px;background:var(--gold);transition:.25s}
+.stat:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 4px 18px rgba(201,168,76,.14)}
+.stat:hover::after{width:100%}
+.stat-lbl{font-size:.72rem;color:var(--text3);margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.stat-lbl-ic{width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:.75rem}
+.stat-val{font-size:1.45rem;font-weight:700;font-family:'IBM Plex Mono',monospace;color:var(--dark);line-height:1.1}
+.stat-val small{font-size:.78rem;font-family:'Tajawal',sans-serif;color:var(--text3);margin-right:2px}
+.stat-note{font-size:.7rem;color:var(--text3);margin-top:5px}
+.stat-note.g{color:var(--green)}.stat-note.r{color:var(--red)}.stat-note.o{color:var(--orange)}
+.stat-arrow{position:absolute;top:14px;left:14px;font-size:.7rem;color:var(--text3);opacity:.5}
+.stat:hover .stat-arrow{opacity:1;color:var(--gold)}
+
+/* ══ MAIN GRID ══ */
+.grid-main{display:grid;grid-template-columns:1fr 340px;gap:18px;align-items:start}
+
+/* ══ PANEL ══ */
 .panel{background:var(--white);border:1px solid var(--border);border-radius:var(--R);box-shadow:var(--SH);overflow:hidden}
-.ph{padding:13px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.ph-title{font-size:.88rem;font-weight:700;display:flex;align-items:center;gap:7px}
-.ph-dot{width:7px;height:7px;border-radius:50%;background:var(--gold)}
-.ph-link{font-size:.76rem;color:var(--gold);font-weight:600;padding:3px 8px;border-radius:5px;transition:.15s}
+.ph{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ph-left{display:flex;align-items:center;gap:8px;flex:1}
+.ph-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0}
+.ph-title{font-size:.88rem;font-weight:700}
+.ph-count{font-size:.7rem;color:var(--text3);background:var(--cream2);padding:1px 7px;border-radius:10px}
+.ph-link{font-size:.76rem;color:var(--gold);font-weight:600;padding:3px 9px;border-radius:5px;transition:.15s;white-space:nowrap}
 .ph-link:hover{background:var(--gold-lt)}
+.ph-actions{display:flex;align-items:center;gap:6px}
+
+/* ══ INVOICES TABLE ══ */
+.inv-search{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;gap:8px}
+.inv-search input{flex:1;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:.82rem;background:var(--cream);direction:rtl;font-family:'Tajawal',sans-serif}
+.inv-search input:focus{outline:none;border-color:var(--gold)}
+.inv-search select{padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:.82rem;background:var(--cream);color:var(--text2);font-family:'Tajawal',sans-serif}
 .tbl{width:100%;border-collapse:collapse}
-.tbl th{text-align:right;padding:9px 14px;font-size:.71rem;font-weight:600;color:var(--text3);background:var(--cream);border-bottom:1px solid var(--border)}
-.tbl td{padding:10px 14px;font-size:.83rem;border-bottom:1px solid #f0e8d8;vertical-align:middle}
+.tbl th{text-align:right;padding:8px 13px;font-size:.69rem;font-weight:700;color:var(--text3);background:var(--cream);border-bottom:1px solid var(--border);white-space:nowrap}
+.tbl td{padding:10px 13px;font-size:.82rem;border-bottom:1px solid #f0e8d8;vertical-align:middle}
 .tbl tr:last-child td{border-bottom:none}
-.tbl tr:hover td{background:var(--cream)}
-.badge{display:inline-flex;padding:2px 8px;border-radius:4px;font-size:.68rem;font-weight:700}
-.b-sale{background:#eef6f2;color:var(--green)}.b-buy{background:#eef0fa;color:#4a5ab0}
-.mono{font-family:'IBM Plex Mono',monospace;font-size:.78rem}
+.tbl tbody tr{cursor:pointer;transition:.1s}
+.tbl tbody tr:hover td{background:var(--cream)}
+.badge{display:inline-flex;padding:2px 7px;border-radius:4px;font-size:.68rem;font-weight:700}
+.b-sale{background:var(--green-lt);color:var(--green)}
+.b-buy{background:var(--blue-lt);color:var(--blue)}
+.b-refund{background:var(--red-lt);color:var(--red)}
+.mono{font-family:'IBM Plex Mono',monospace;font-size:.77rem}
+
+/* ══ SIDE COLUMN ══ */
 .side{display:flex;flex-direction:column;gap:14px}
-.quick{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:14px}
-.q-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;border-radius:8px;border:1px solid var(--border);background:var(--cream);font-size:.78rem;font-weight:600;color:var(--text2);transition:.15s;cursor:pointer}
-.q-btn:hover{background:var(--gold-lt);border-color:var(--gold);color:var(--dark);transform:translateY(-1px)}
-.q-btn .ic{font-size:1.3rem}
-.srow{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid #f0e8d8;font-size:.82rem}
+
+/* ══ QUICK ACTIONS ══ */
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px}
+.qa{display:flex;flex-direction:column;align-items:center;gap:5px;padding:14px 8px;border-radius:8px;border:1px solid var(--border);background:var(--cream);font-size:.76rem;font-weight:600;color:var(--text2);transition:.15s;cursor:pointer}
+.qa:hover{background:var(--gold-lt);border-color:var(--gold);color:var(--dark);transform:translateY(-1px)}
+.qa .ic{font-size:1.3rem}
+
+/* ══ LOW STOCK ══ */
+.srow{display:flex;align-items:center;gap:9px;padding:9px 14px;border-bottom:1px solid #f0e8d8;cursor:pointer;transition:.1s}
 .srow:last-child{border-bottom:none}
+.srow:hover{background:var(--cream)}
 .sdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.sdot.r{background:var(--red)}.sdot.o{background:#e67e22}
-.sname{flex:1}
+.sdot.r{background:var(--red)}.sdot.o{background:#e67e22}.sdot.g{background:var(--green)}
+.sname{flex:1;font-size:.82rem;font-weight:500}
 .sqty{font-family:'IBM Plex Mono',monospace;font-size:.76rem;font-weight:700}
 .sqty.r{color:var(--red)}.sqty.o{color:#e67e22}
-.empty{display:flex;flex-direction:column;align-items:center;gap:8px;padding:40px 18px;text-align:center}
-.empty-ic{font-size:1.8rem;width:50px;height:50px;background:var(--cream2);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:4px}
-.empty-t{font-size:.88rem;font-weight:700;color:var(--text2)}
-.empty-d{font-size:.76rem;color:var(--text3);line-height:1.6;max-width:230px}
-.empty-cta{margin-top:6px;padding:7px 18px;background:var(--gold);color:var(--dark);border-radius:7px;font-size:.8rem;font-weight:700;cursor:pointer;border:none;font-family:'Tajawal',sans-serif;transition:.15s}
-.empty-cta:hover{background:#b8933e}
-/* DRAWER */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;opacity:0;pointer-events:none;transition:.25s}
-.overlay.open{opacity:1;pointer-events:all}
-.drawer{position:fixed;top:0;left:0;height:100%;width:390px;max-width:96vw;background:var(--white);z-index:101;transform:translateX(-100%);transition:.3s cubic-bezier(.4,0,.2,1);overflow-y:auto}
+
+/* ══ MINI CHART (pure CSS bars) ══ */
+.chart-wrap{padding:14px 16px}
+.chart-label{font-size:.7rem;color:var(--text3);margin-bottom:10px;display:flex;justify-content:space-between}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.bar-lbl{font-size:.72rem;color:var(--text2);width:50px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{flex:1;height:8px;background:var(--cream2);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;background:var(--gold);transition:.4s}
+.bar-val{font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--text3);width:52px;text-align:left}
+
+/* ══ SCAN MODAL ══ */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:.2s}
+.modal-bg.open{opacity:1;pointer-events:all}
+.modal{background:var(--white);border-radius:14px;width:100%;max-width:480px;box-shadow:0 24px 60px rgba(0,0,0,.28);overflow:hidden}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--dark);border-bottom:1px solid var(--dark3)}
+.modal-title{font-size:.95rem;font-weight:700;color:var(--gold)}
+.modal-close{width:28px;height:28px;border-radius:6px;background:var(--dark2);color:#c8b89a;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s}
+.modal-close:hover{background:var(--gold);color:var(--dark)}
+.modal-body{padding:22px}
+.scan-hint{font-size:.78rem;color:var(--text3);background:var(--cream2);padding:10px 14px;border-radius:8px;line-height:1.65;margin-bottom:16px}
+.big-scan-inp{width:100%;padding:14px 16px;border:2px solid var(--border);border-radius:10px;font-size:1rem;font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);direction:ltr;transition:.2s;text-align:center}
+.big-scan-inp:focus{outline:none;border-color:var(--gold);background:var(--white)}
+.scan-result{margin-top:16px;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:none}
+.scan-result.show{display:block}
+.sr-header{padding:12px 16px;background:var(--green-lt);border-bottom:1px solid #c8e8d8;display:flex;align-items:center;gap:10px}
+.sr-img{width:48px;height:48px;border-radius:7px;background:var(--cream2);object-fit:contain}
+.sr-name{font-size:.92rem;font-weight:700}
+.sr-meta{font-size:.74rem;color:var(--text3);margin-top:2px}
+.sr-body{padding:12px 16px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sr-field label{font-size:.68rem;color:var(--text3);display:block;margin-bottom:2px}
+.sr-field input{width:100%;padding:7px 9px;border:1px solid var(--border);border-radius:6px;font-size:.84rem;font-family:'Tajawal',sans-serif;background:var(--cream)}
+.sr-field input:focus{outline:none;border-color:var(--gold)}
+.sr-actions{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px}
+.btn-primary{flex:1;padding:10px;background:var(--dark);color:var(--gold);border-radius:8px;font-size:.88rem;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer;transition:.15s;border:none}
+.btn-primary:hover{background:var(--dark2)}
+.btn-sec{padding:10px 16px;background:var(--cream);color:var(--text2);border:1px solid var(--border);border-radius:8px;font-size:.84rem;font-weight:600;font-family:'Tajawal',sans-serif;cursor:pointer;transition:.15s}
+.btn-sec:hover{background:var(--cream2)}
+.not-found{margin-top:16px;text-align:center;padding:20px;background:var(--red-lt);border-radius:10px;display:none}
+.not-found.show{display:block}
+.not-found p{font-size:.84rem;color:var(--red);margin-bottom:10px}
+
+/* ══ DETAIL DRAWER ══ */
+.drawer-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:150;opacity:0;pointer-events:none;transition:.2s}
+.drawer-bg.open{opacity:1;pointer-events:all}
+.drawer{position:fixed;top:0;left:0;height:100%;width:480px;max-width:96vw;background:var(--white);z-index:151;transform:translateX(-100%);transition:.3s cubic-bezier(.4,0,.2,1);overflow-y:auto}
 .drawer.open{transform:translateX(0)}
-.dh{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);background:var(--dark);position:sticky;top:0;z-index:2}
-.dh-title{font-size:.98rem;font-weight:700;color:var(--gold)}
-.dh-close{width:30px;height:30px;border-radius:6px;background:var(--dark2);color:#c8b89a;font-size:.95rem;display:flex;align-items:center;justify-content:center;transition:.15s;cursor:pointer}
+.dh{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--dark);border-bottom:1px solid var(--dark3);position:sticky;top:0;z-index:2}
+.dh-title{font-size:.95rem;font-weight:700;color:var(--gold)}
+.dh-close{width:28px;height:28px;border-radius:6px;background:var(--dark2);color:#c8b89a;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s}
 .dh-close:hover{background:var(--gold);color:var(--dark)}
 .d-body{padding:20px}
-.d-sec{margin-bottom:20px}
-.d-sec-title{font-size:.72rem;font-weight:700;color:var(--text3);letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid var(--border)}
-.d-row{margin-bottom:12px}
-.d-lbl{display:block;font-size:.8rem;font-weight:600;color:var(--text2);margin-bottom:4px}
-.d-inp{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:7px;font-size:.87rem;font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);transition:.15s;direction:rtl}
-.d-inp:focus{outline:none;border-color:var(--gold);background:var(--white)}
-.logo-wrap{display:flex;align-items:center;gap:12px;margin-bottom:8px}
-.logo-box{width:72px;height:72px;border:2px dashed var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;transition:.15s;flex-shrink:0}
+.d-section{margin-bottom:20px}
+.d-section-title{font-size:.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.d-kv{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #f0e8d8;font-size:.84rem}
+.d-kv:last-child{border-bottom:none}
+.d-kv-k{color:var(--text3)}
+.d-kv-v{font-weight:600;color:var(--text)}
+.d-list{border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.d-list-row{display:flex;align-items:center;gap:10px;padding:9px 13px;border-bottom:1px solid #f0e8d8;font-size:.82rem}
+.d-list-row:last-child{border-bottom:none}
+.d-list-row:hover{background:var(--cream)}
+.d-list-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+/* ══ SETTINGS DRAWER ══ */
+.settings-drawer{position:fixed;top:0;left:0;height:100%;width:380px;max-width:96vw;background:var(--white);z-index:201;transform:translateX(-100%);transition:.3s cubic-bezier(.4,0,.2,1);overflow-y:auto}
+.settings-drawer.open{transform:translateX(0)}
+.sd-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;opacity:0;pointer-events:none;transition:.2s}
+.sd-overlay.open{opacity:1;pointer-events:all}
+.f-row{margin-bottom:12px}
+.f-lbl{display:block;font-size:.78rem;font-weight:600;color:var(--text2);margin-bottom:4px}
+.f-inp{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:7px;font-size:.86rem;font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);direction:rtl}
+.f-inp:focus{outline:none;border-color:var(--gold);background:var(--white)}
+.save-btn{width:100%;padding:11px;background:var(--gold);color:var(--dark);border-radius:8px;font-size:.92rem;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer;border:none;transition:.15s}
+.save-btn:hover{background:var(--gold-dim)}
+.logo-box{width:70px;height:70px;border:2px dashed var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;transition:.15s}
 .logo-box:hover{border-color:var(--gold)}
 .logo-box img{width:100%;height:100%;object-fit:contain}
-.logo-hint{font-size:.75rem;color:var(--text3);line-height:1.5}
-.save-btn{width:100%;padding:11px;background:var(--gold);color:var(--dark);border-radius:8px;font-size:.93rem;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer;transition:.15s;border:none;margin-top:6px}
-.save-btn:hover{background:#b8933e}
-@media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.nav-links{display:none}.page{padding:16px}}
+
+/* ══ EMPTY ══ */
+.empty{display:flex;flex-direction:column;align-items:center;gap:8px;padding:38px 18px;text-align:center}
+.empty-ic{font-size:1.8rem;width:48px;height:48px;background:var(--cream2);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:2px}
+.empty-t{font-size:.88rem;font-weight:700;color:var(--text2)}
+.empty-d{font-size:.74rem;color:var(--text3);line-height:1.6;max-width:220px}
+.empty-cta{margin-top:6px;padding:7px 18px;background:var(--gold);color:var(--dark);border-radius:7px;font-size:.8rem;font-weight:700;cursor:pointer;border:none;font-family:'Tajawal',sans-serif}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:1000px){.grid-main{grid-template-columns:1fr}.side{flex-direction:row;flex-wrap:wrap}.side .panel{flex:1 1 260px}}
+@media(max-width:860px){.stats{grid-template-columns:repeat(2,1fr)}.nav-links{display:none}.page{padding:14px 14px}}
 @media(max-width:480px){.stats{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav class="nav">
   <div class="nav-brand">
     <div class="nav-logo" id="navLogo">🕌</div>
@@ -110,116 +220,210 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
     <a href="inventory.html" class="nav-link">المخزون</a>
   </div>
   <div class="nav-right">
-    <button class="nav-settings-btn" onclick="openSettings()" title="الإعدادات">⚙</button>
+    <button class="nav-set-btn" onclick="openSettings()" title="الإعدادات">⚙</button>
     <span class="nav-user" id="navUser">—</span>
     <button class="nav-logout" onclick="logout()">خروج</button>
   </div>
 </nav>
 
+<!-- PAGE -->
 <main class="page">
-  <div class="page-hd">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
     <h1 class="page-title">لوحة التحكم</h1>
-    <span class="page-date" id="todayDate"></span>
+    <div class="top-bar-right">
+      <span class="date-pill" id="todayDate"></span>
+      <button class="quick-scan-btn" onclick="openScanModal()">
+        <span>▦</span> مسح باركود سريع
+      </button>
+    </div>
   </div>
 
+  <!-- STATS -->
   <div class="stats">
-    <div class="stat">
-      <div class="stat-lbl">مبيعات اليوم</div>
-      <div class="stat-val" id="s1">0<small id="c1">ر.س</small></div>
-      <div class="stat-note" id="s1n">لا توجد مبيعات</div>
+    <div class="stat" onclick="openDrawer('sales')">
+      <div class="stat-arrow">↗</div>
+      <div class="stat-lbl"><span class="stat-lbl-ic" style="background:var(--green-lt);color:var(--green)">💰</span>مبيعات اليوم</div>
+      <div class="stat-val" id="s1">0<small id="c1"> د.إ</small></div>
+      <div class="stat-note" id="s1n">اضغط للتفاصيل</div>
     </div>
-    <div class="stat">
-      <div class="stat-lbl">قيمة المخزون</div>
-      <div class="stat-val" id="s2">0<small id="c2">ر.س</small></div>
-      <div class="stat-note" id="s2n">لا توجد منتجات</div>
+    <div class="stat" onclick="openDrawer('inventory')">
+      <div class="stat-arrow">↗</div>
+      <div class="stat-lbl"><span class="stat-lbl-ic" style="background:var(--gold-lt);color:var(--gold-dim)">📦</span>قيمة المخزون</div>
+      <div class="stat-val" id="s2">0<small id="c2"> د.إ</small></div>
+      <div class="stat-note" id="s2n">اضغط للتفاصيل</div>
     </div>
-    <div class="stat">
-      <div class="stat-lbl">مشتريات الشهر</div>
-      <div class="stat-val" id="s3">0<small id="c3">ر.س</small></div>
-      <div class="stat-note" id="s3n">—</div>
+    <div class="stat" onclick="openDrawer('purchases')">
+      <div class="stat-arrow">↗</div>
+      <div class="stat-lbl"><span class="stat-lbl-ic" style="background:var(--blue-lt);color:var(--blue)">🛒</span>مشتريات الشهر</div>
+      <div class="stat-val" id="s3">0<small id="c3"> د.إ</small></div>
+      <div class="stat-note" id="s3n">اضغط للتفاصيل</div>
     </div>
-    <div class="stat">
-      <div class="stat-lbl">تنبيهات المخزون</div>
+    <div class="stat" onclick="openDrawer('lowstock')">
+      <div class="stat-arrow">↗</div>
+      <div class="stat-lbl"><span class="stat-lbl-ic" style="background:var(--red-lt);color:var(--red)">⚠</span>تنبيهات المخزون</div>
       <div class="stat-val" id="s4" style="color:var(--red)">0</div>
-      <div class="stat-note g" id="s4n">المخزون بخير</div>
+      <div class="stat-note g" id="s4n">اضغط للتفاصيل</div>
     </div>
   </div>
 
-  <div class="grid2">
+  <!-- MAIN GRID -->
+  <div class="grid-main">
+
+    <!-- LEFT: INVOICES PANEL -->
     <div class="panel">
       <div class="ph">
-        <div class="ph-title"><div class="ph-dot"></div>آخر الفواتير</div>
-        <a href="cashier.html" class="ph-link">فتح الكاشير ←</a>
-      </div>
-      <div id="invContainer"></div>
-    </div>
-
-    <div class="side">
-      <div class="panel">
-        <div class="ph"><div class="ph-title"><div class="ph-dot"></div>اختصارات</div></div>
-        <div class="quick">
-          <button class="q-btn" onclick="location.href='cashier.html?tab=sale'"><span class="ic">💰</span>بيع</button>
-          <button class="q-btn" onclick="location.href='cashier.html?tab=buy'"><span class="ic">🛒</span>استلام بضاعة</button>
-          <button class="q-btn" onclick="location.href='inventory.html'"><span class="ic">📦</span>المخزون</button>
-          <button class="q-btn" onclick="openSettings()"><span class="ic">⚙</span>الإعدادات</button>
+        <div class="ph-left">
+          <div class="ph-dot"></div>
+          <span class="ph-title">آخر الفواتير</span>
+          <span class="ph-count" id="invCount">0</span>
+        </div>
+        <div class="ph-actions">
+          <a href="cashier.html" class="ph-link">الكاشير ←</a>
         </div>
       </div>
+      <div class="inv-search">
+        <input id="invSearch" placeholder="بحث برقم الفاتورة أو المنتج…" oninput="renderInvoices()">
+        <select id="invFilter" onchange="renderInvoices()" style="min-width:90px">
+          <option value="">الكل</option>
+          <option value="sale">مبيعات</option>
+          <option value="purchase">مشتريات</option>
+        </select>
+      </div>
+      <div id="invContainer" style="max-height:380px;overflow-y:auto"></div>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="side">
+
+      <!-- QUICK ACTIONS -->
+      <div class="panel">
+        <div class="ph"><div class="ph-left"><div class="ph-dot"></div><span class="ph-title">اختصارات</span></div></div>
+        <div class="quick-grid">
+          <button class="qa" onclick="location.href='cashier.html?tab=sale'"><span class="ic">💰</span>بيع</button>
+          <button class="qa" onclick="location.href='cashier.html?tab=buy'"><span class="ic">🛒</span>استلام بضاعة</button>
+          <button class="qa" onclick="location.href='inventory.html'"><span class="ic">📦</span>المخزون</button>
+          <button class="qa" onclick="openSettings()"><span class="ic">⚙</span>الإعدادات</button>
+        </div>
+      </div>
+
+      <!-- LOW STOCK -->
       <div class="panel">
         <div class="ph">
-          <div class="ph-title"><div class="ph-dot" style="background:var(--red)"></div>تنبيهات المخزون</div>
+          <div class="ph-left"><div class="ph-dot" style="background:var(--red)"></div><span class="ph-title">تنبيهات المخزون</span></div>
           <a href="inventory.html" class="ph-link">الكل ←</a>
         </div>
         <div id="lowContainer"></div>
       </div>
+
+      <!-- TOP PRODUCTS CHART -->
+      <div class="panel">
+        <div class="ph"><div class="ph-left"><div class="ph-dot" style="background:var(--blue)"></div><span class="ph-title">الأكثر مبيعاً</span></div></div>
+        <div class="chart-wrap" id="topChart"></div>
+      </div>
+
     </div>
   </div>
 </main>
 
-<!-- SETTINGS DRAWER -->
-<div class="overlay" id="overlay" onclick="closeSettings()"></div>
-<div class="drawer" id="drawer">
+<!-- ═══════════════════════════════════════
+     SCAN MODAL
+═══════════════════════════════════════ -->
+<div class="modal-bg" id="scanModal">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="modal-title">▦ مسح باركود سريع</span>
+      <button class="modal-close" onclick="closeScanModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="scan-hint">
+        ✦ امسح الباركود أو اكتبه يدوياً ثم اضغط Enter<br>
+        ✦ إن وُجد المنتج تظهر بياناته وتستطيع تعديل الكمية<br>
+        ✦ إن كان جديداً يتوجه للكاشير لإضافته
+      </div>
+      <input class="big-scan-inp" id="scanInput" placeholder="امسح الباركود هنا…" dir="ltr" autocomplete="off"
+        onkeydown="if(event.key==='Enter')doScan()">
+      <div id="scanResult" class="scan-result">
+        <div class="sr-header">
+          <img id="srImg" src="" class="sr-img" style="display:none">
+          <div class="sr-img" id="srImgPlaceholder" style="display:flex;align-items:center;justify-content:center;font-size:1.4rem">📦</div>
+          <div><div class="sr-name" id="srName">—</div><div class="sr-meta" id="srMeta">—</div></div>
+        </div>
+        <div class="sr-body">
+          <div class="sr-field"><label>الكمية الحالية</label><input id="srQtyCur" readonly></div>
+          <div class="sr-field"><label>الكمية المضافة</label><input id="srQtyAdd" type="number" min="0" value="1"></div>
+          <div class="sr-field"><label>سعر الشراء</label><input id="srCost" type="number" step="0.01"></div>
+          <div class="sr-field"><label>سعر البيع</label><input id="srPrice" type="number" step="0.01"></div>
+        </div>
+        <div class="sr-actions">
+          <button class="btn-primary" onclick="confirmScanReceive()">✓ تأكيد الاستلام</button>
+          <button class="btn-sec" onclick="goToCashier()">فتح الكاشير</button>
+        </div>
+      </div>
+      <div id="scanNotFound" class="not-found">
+        <p>المنتج غير موجود في المخزون</p>
+        <button class="btn-primary" onclick="goToCashierNew()" style="display:inline-block;width:auto;padding:8px 20px">إضافة منتج جديد</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     DETAIL DRAWER
+═══════════════════════════════════════ -->
+<div class="drawer-bg" id="drawerBg" onclick="closeDrawer()"></div>
+<div class="drawer" id="detailDrawer">
+  <div class="dh">
+    <span class="dh-title" id="drawerTitle">التفاصيل</span>
+    <button class="dh-close" onclick="closeDrawer()">✕</button>
+  </div>
+  <div class="d-body" id="drawerBody"></div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SETTINGS DRAWER
+═══════════════════════════════════════ -->
+<div class="sd-overlay" id="sdOverlay" onclick="closeSettings()"></div>
+<div class="settings-drawer" id="settingsDrawer">
   <div class="dh">
     <span class="dh-title">⚙ إعدادات المتجر</span>
     <button class="dh-close" onclick="closeSettings()">✕</button>
   </div>
-  <div class="d-body">
-    <div class="d-sec">
-      <div class="d-sec-title">هوية المتجر</div>
-      <div class="d-row">
-        <label class="d-lbl">شعار المتجر</label>
-        <div class="logo-wrap">
-          <div class="logo-box" id="logoBox" onclick="document.getElementById('logoInp').click()">
-            <span style="color:var(--text3);font-size:.7rem;text-align:center">اضغط<br>للرفع</span>
+  <div style="padding:20px">
+    <div style="margin-bottom:20px">
+      <div style="font-size:.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid var(--border)">هوية المتجر</div>
+      <div class="f-row">
+        <label class="f-lbl">الشعار</label>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+          <div class="logo-box" id="sdLogoBox" onclick="document.getElementById('sdLogoInp').click()">
+            <span style="font-size:.68rem;color:var(--text3);text-align:center">رفع</span>
           </div>
-          <div>
-            <div class="logo-hint">يُستخدم في الفواتير والنافبار<br>PNG أو JPG مناسب</div>
-            <button onclick="removeLogo()" style="font-size:.72rem;color:var(--red);margin-top:6px;cursor:pointer">حذف الشعار</button>
-          </div>
+          <div style="font-size:.73rem;color:var(--text3);line-height:1.55">يظهر في الفواتير والشعار<br><button onclick="removeLogo()" style="color:var(--red);font-size:.7rem;cursor:pointer;margin-top:3px">حذف الشعار</button></div>
         </div>
-        <input type="file" id="logoInp" accept="image/*" style="display:none" onchange="handleLogo(this)">
+        <input type="file" id="sdLogoInp" accept="image/*" style="display:none" onchange="handleLogo(this)">
       </div>
-      <div class="d-row"><label class="d-lbl">اسم المتجر</label><input class="d-inp" id="cfg_name" placeholder="طيب الحي للعود والأدهان"></div>
-      <div class="d-row"><label class="d-lbl">العنوان</label><input class="d-inp" id="cfg_addr" placeholder="المنطقة، المدينة"></div>
-      <div class="d-row"><label class="d-lbl">رقم الهاتف</label><input class="d-inp" id="cfg_phone" placeholder="05xxxxxxxx" dir="ltr"></div>
+      <div class="f-row"><label class="f-lbl">اسم المتجر</label><input class="f-inp" id="sd_name"></div>
+      <div class="f-row"><label class="f-lbl">العنوان</label><input class="f-inp" id="sd_addr"></div>
+      <div class="f-row"><label class="f-lbl">الهاتف</label><input class="f-inp" id="sd_phone" dir="ltr"></div>
     </div>
-    <div class="d-sec">
-      <div class="d-sec-title">العملة والضريبة</div>
-      <div class="d-row">
-        <label class="d-lbl">العملة</label>
-        <select class="d-inp" id="cfg_cur">
-          <option value="ر.س">ريال سعودي — ر.س</option>
+    <div style="margin-bottom:20px">
+      <div style="font-size:.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid var(--border)">العملة والضريبة</div>
+      <div class="f-row">
+        <label class="f-lbl">العملة</label>
+        <select class="f-inp" id="sd_cur">
           <option value="د.إ">درهم إماراتي — د.إ</option>
+          <option value="ر.س">ريال سعودي — ر.س</option>
           <option value="د.ك">دينار كويتي — د.ك</option>
           <option value="ر.ع">ريال عماني — ر.ع</option>
-          <option value="د.ب">دينار بحريني — د.ب</option>
           <option value="ر.ق">ريال قطري — ر.ق</option>
         </select>
       </div>
-      <div class="d-row"><label class="d-lbl">نسبة الضريبة %</label><input class="d-inp" id="cfg_tax" type="number" min="0" max="100" placeholder="15"></div>
+      <div class="f-row"><label class="f-lbl">نسبة الضريبة %</label><input class="f-inp" id="sd_tax" type="number" min="0" max="100"></div>
     </div>
-    <div class="d-sec">
-      <div class="d-sec-title">المخزون</div>
-      <div class="d-row"><label class="d-lbl">حد التنبيه المنخفض (وحدة)</label><input class="d-inp" id="cfg_low" type="number" min="1" placeholder="5"></div>
+    <div style="margin-bottom:20px">
+      <div style="font-size:.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid var(--border)">المخزون</div>
+      <div class="f-row"><label class="f-lbl">حد التنبيه المنخفض</label><input class="f-inp" id="sd_low" type="number" min="1"></div>
     </div>
     <button class="save-btn" onclick="saveSettings()">حفظ الإعدادات</button>
   </div>
@@ -227,85 +431,468 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 
 <script src="sync.js"></script>
 <script>
+// ── INIT ──────────────────────────────────
 DB.requireAuth();
 const user = DB.getUser();
 document.getElementById('navUser').textContent = user?.name || user?.username || 'مدير';
 document.getElementById('todayDate').textContent = DB.today();
 
-function logout(){ localStorage.removeItem(DB.KEYS.user); location.href='index.html'; }
+// Force UAE dirham on first load if no setting saved yet
+(function(){
+  const s = DB.getSettings();
+  if(!s._initialized){
+    s.currency = 'د.إ';
+    s._initialized = true;
+    DB.saveSettings(s);
+  }
+})();
+
+function logout(){ localStorage.removeItem(DB.KEYS.user); location.href = 'index.html'; }
 
 function applyNav(){
   const s = DB.getSettings();
   document.getElementById('navName').textContent = s.store_name || 'طيب الحي';
-  const cur = s.currency;
-  ['c1','c2','c3'].forEach(id=>{ document.getElementById(id).textContent=' '+cur; });
   const logo = document.getElementById('navLogo');
-  if(s.logo) logo.innerHTML=`<img src="${s.logo}">`;
-  else logo.innerHTML='🕌';
+  logo.innerHTML = s.logo ? `<img src="${s.logo}">` : '🕌';
 }
 
+// ── LOAD DASHBOARD ────────────────────────
 function loadDash(){
   applyNav();
-  const s=DB.getSettings(), products=DB.getProducts(), invoices=DB.getInvoices(), cur=s.currency, low=s.low_stock_qty;
-  const todaySales=invoices.filter(i=>i.type==='sale'&&DB.isToday(i.created_at));
-  const todayAmt=todaySales.reduce((a,i)=>a+Number(i.total||0),0);
-  document.getElementById('s1').innerHTML=DB.fmt(todayAmt)+`<small> ${cur}</small>`;
-  document.getElementById('s1n').textContent=todaySales.length?`${todaySales.length} فاتورة اليوم`:'لا توجد مبيعات';
-  const invVal=products.reduce((a,p)=>a+(Number(p.cost||0)*Number(p.qty||0)),0);
-  document.getElementById('s2').innerHTML=DB.fmt(invVal)+`<small> ${cur}</small>`;
-  document.getElementById('s2n').textContent=products.length?`${products.length} صنف`:'لا توجد منتجات';
-  const mP=invoices.filter(i=>i.type==='purchase'&&DB.isThisMonth(i.created_at));
-  document.getElementById('s3').innerHTML=DB.fmt(mP.reduce((a,i)=>a+Number(i.total||0),0))+`<small> ${cur}</small>`;
-  document.getElementById('s3n').textContent=mP.length?`${mP.length} عملية`:'لا مشتريات هذا الشهر';
-  const lowItems=products.filter(p=>Number(p.qty||0)<=low);
-  document.getElementById('s4').textContent=lowItems.length;
-  const s4n=document.getElementById('s4n');
-  s4n.textContent=lowItems.length?'تحتاج إعادة تعبئة':'المخزون بخير';
-  s4n.className='stat-note '+(lowItems.length?'r':'g');
-  renderInvoices(invoices); renderLow(products,low);
+  const s        = DB.getSettings();
+  const products = DB.getProducts();
+  const invoices = DB.getInvoices();
+  const cur      = s.currency || 'د.إ';
+  const low      = s.low_stock_qty || 5;
+
+  // Update all currency displays
+  ['c1','c2','c3'].forEach(id => document.getElementById(id).textContent = ' ' + cur);
+
+  // Stat 1 — today sales
+  const todaySales = invoices.filter(i => i.type === 'sale' && DB.isToday(i.created_at));
+  const todayAmt   = todaySales.reduce((a,i) => a + Number(i.total||0), 0);
+  document.getElementById('s1').innerHTML = DB.fmt(todayAmt) + `<small> ${cur}</small>`;
+  document.getElementById('s1n').textContent = todaySales.length ? `${todaySales.length} فاتورة • اضغط للتفاصيل` : 'لا مبيعات اليوم';
+
+  // Stat 2 — inventory value
+  const invVal = products.reduce((a,p) => a + (Number(p.cost||0) * Number(p.qty||0)), 0);
+  document.getElementById('s2').innerHTML = DB.fmt(invVal) + `<small> ${cur}</small>`;
+  document.getElementById('s2n').textContent = products.length ? `${products.length} صنف • اضغط للتفاصيل` : 'لا منتجات';
+
+  // Stat 3 — month purchases
+  const mPurch = invoices.filter(i => i.type === 'purchase' && DB.isThisMonth(i.created_at));
+  const mAmt   = mPurch.reduce((a,i) => a + Number(i.total||0), 0);
+  document.getElementById('s3').innerHTML = DB.fmt(mAmt) + `<small> ${cur}</small>`;
+  document.getElementById('s3n').textContent = mPurch.length ? `${mPurch.length} عملية • اضغط للتفاصيل` : 'لا مشتريات';
+
+  // Stat 4 — low stock
+  const lowItems = products.filter(p => Number(p.qty||0) <= low);
+  document.getElementById('s4').textContent = lowItems.length;
+  const s4n = document.getElementById('s4n');
+  s4n.textContent = lowItems.length ? `${lowItems.length} منتج يحتاج تعبئة` : 'المخزون بخير';
+  s4n.className = 'stat-note ' + (lowItems.length ? 'r' : 'g');
+
+  renderInvoices();
+  renderLowStock(products, low);
+  renderTopChart(invoices, products);
 }
 
-function renderInvoices(invoices){
-  const el=document.getElementById('invContainer'); const list=invoices.slice(0,10);
-  if(!list.length){ el.innerHTML=`<div class="empty"><div class="empty-ic">🧾</div><div class="empty-t">لا توجد فواتير بعد</div><div class="empty-d">ابدأ أول عملية من الكاشير وستظهر هنا</div><button class="empty-cta" onclick="location.href='cashier.html'">فتح الكاشير</button></div>`; return; }
-  const lbl={sale:'بيع',purchase:'شراء',refund:'مرتجع'}, cls={sale:'b-sale',purchase:'b-buy',refund:'b-sale'};
-  el.innerHTML=`<table class="tbl"><thead><tr><th>رقم</th><th>النوع</th><th>التاريخ</th><th>أصناف</th><th>الإجمالي</th></tr></thead><tbody>${list.map(i=>`<tr><td class="mono">#${String(i.id||'').slice(-5)}</td><td><span class="badge ${cls[i.type]||'b-sale'}">${lbl[i.type]||i.type}</span></td><td style="color:var(--text3);font-size:.76rem">${DB.shortDate(i.created_at)}</td><td style="color:var(--text2)">${i.items?.length||'—'}</td><td class="mono">${DB.fmt(i.total)}</td></tr>`).join('')}</tbody></table>`;
+// ── INVOICES ─────────────────────────────
+function renderInvoices(){
+  const el      = document.getElementById('invContainer');
+  const search  = document.getElementById('invSearch').value.trim().toLowerCase();
+  const filter  = document.getElementById('invFilter').value;
+  let invoices  = DB.getInvoices();
+  if(filter)  invoices = invoices.filter(i => i.type === filter);
+  if(search)  invoices = invoices.filter(i =>
+    (i.id||'').toLowerCase().includes(search) ||
+    (i.items||[]).some(it => (it.name||'').toLowerCase().includes(search))
+  );
+  document.getElementById('invCount').textContent = invoices.length;
+  const list = invoices.slice(0, 30);
+  if(!list.length){
+    el.innerHTML = `<div class="empty"><div class="empty-ic">🧾</div><div class="empty-t">لا توجد فواتير</div><div class="empty-d">ابدأ أول عملية من الكاشير</div><button class="empty-cta" onclick="location.href='cashier.html'">فتح الكاشير</button></div>`;
+    return;
+  }
+  const lbl = {sale:'بيع',purchase:'شراء',refund:'مرتجع'};
+  const cls = {sale:'b-sale',purchase:'b-buy',refund:'b-refund'};
+  const cur = DB.getSettings().currency || 'د.إ';
+  el.innerHTML = `<table class="tbl"><thead><tr><th>رقم</th><th>النوع</th><th>التاريخ</th><th>أصناف</th><th>الإجمالي</th></tr></thead><tbody>
+  ${list.map(i => `<tr onclick="openInvoiceDetail('${i.id}')">
+    <td class="mono">#${String(i.id||'').slice(-5)}</td>
+    <td><span class="badge ${cls[i.type]||'b-sale'}">${lbl[i.type]||i.type}</span></td>
+    <td style="color:var(--text3);font-size:.75rem">${DB.shortDate(i.created_at)}</td>
+    <td style="color:var(--text2)">${i.items?.length||'—'}</td>
+    <td class="mono" style="font-weight:700">${DB.fmt(i.total)} <span style="font-family:'Tajawal';font-size:.7rem;color:var(--text3)">${cur}</span></td>
+  </tr>`).join('')}
+  </tbody></table>`;
 }
 
-function renderLow(products,low){
-  const el=document.getElementById('lowContainer'); const items=products.filter(p=>Number(p.qty||0)<=low).sort((a,b)=>Number(a.qty||0)-Number(b.qty||0)).slice(0,8);
-  if(!items.length){ el.innerHTML=`<div class="empty" style="padding:26px 16px"><div class="empty-ic" style="background:#eef6f2;color:var(--green)">✓</div><div class="empty-t">المخزون بخير</div><div class="empty-d">لا منتجات تحت الحد المحدد</div></div>`; return; }
-  el.innerHTML=items.map(p=>{ const q=Number(p.qty||0),c=q===0?'r':'o'; return `<div class="srow"><div class="sdot ${c}"></div><div class="sname">${p.name}</div><div class="sqty ${c}">${q===0?'نفد':q+' وحدة'}</div></div>`; }).join('');
+// ── LOW STOCK ─────────────────────────────
+function renderLowStock(products, low){
+  const el    = document.getElementById('lowContainer');
+  const items = products.filter(p => Number(p.qty||0) <= low)
+                        .sort((a,b) => Number(a.qty||0) - Number(b.qty||0))
+                        .slice(0,8);
+  if(!items.length){
+    el.innerHTML = `<div class="empty" style="padding:24px"><div class="empty-ic" style="background:var(--green-lt);color:var(--green)">✓</div><div class="empty-t">المخزون بخير</div></div>`;
+    return;
+  }
+  el.innerHTML = items.map(p => {
+    const q   = Number(p.qty||0);
+    const cls = q === 0 ? 'r' : 'o';
+    return `<div class="srow" onclick="openProductDetail('${p.barcode}')">
+      <div class="sdot ${cls}"></div>
+      <div class="sname">${p.name}</div>
+      <div class="sqty ${cls}">${q === 0 ? 'نفد' : q + ' وحدة'}</div>
+    </div>`;
+  }).join('');
 }
 
+// ── TOP PRODUCTS CHART ────────────────────
+function renderTopChart(invoices, products){
+  const el = document.getElementById('topChart');
+  const salesInvs = invoices.filter(i => i.type === 'sale');
+  const sold = {};
+  salesInvs.forEach(inv => {
+    (inv.items||[]).forEach(it => {
+      sold[it.name] = (sold[it.name]||0) + Number(it.qty||0);
+    });
+  });
+  const top = Object.entries(sold).sort((a,b) => b[1]-a[1]).slice(0,5);
+  if(!top.length){
+    el.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text3);font-size:.78rem">لا توجد مبيعات بعد</div>`;
+    return;
+  }
+  const max = top[0][1];
+  const cur = DB.getSettings().currency || 'د.إ';
+  el.innerHTML = `<div class="chart-label"><span>الأكثر مبيعاً (وحدة)</span></div>` +
+    top.map(([name, qty]) => `
+      <div class="bar-row">
+        <div class="bar-lbl" title="${name}">${name}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${(qty/max*100).toFixed(0)}%"></div></div>
+        <div class="bar-val">${qty}</div>
+      </div>`).join('');
+}
+
+// ════════════════════════════════════════════
+// DETAIL DRAWERS
+// ════════════════════════════════════════════
+function openDrawer(type){
+  const s        = DB.getSettings();
+  const products = DB.getProducts();
+  const invoices = DB.getInvoices();
+  const cur      = s.currency || 'د.إ';
+  const low      = s.low_stock_qty || 5;
+  const body     = document.getElementById('drawerBody');
+
+  if(type === 'sales'){
+    document.getElementById('drawerTitle').textContent = '💰 مبيعات اليوم';
+    const items = invoices.filter(i => i.type === 'sale' && DB.isToday(i.created_at));
+    const total = items.reduce((a,i) => a + Number(i.total||0), 0);
+    if(!items.length){ body.innerHTML = emptyHTML('لا مبيعات اليوم','لم تُسجَّل أي مبيعة حتى الآن'); }
+    else {
+      body.innerHTML = `
+        <div class="d-section">
+          <div class="d-section-title">ملخص اليوم</div>
+          <div class="d-kv"><span class="d-kv-k">عدد الفواتير</span><span class="d-kv-v">${items.length}</span></div>
+          <div class="d-kv"><span class="d-kv-k">الإجمالي</span><span class="d-kv-v" style="color:var(--green)">${DB.fmt(total)} ${cur}</span></div>
+        </div>
+        <div class="d-section">
+          <div class="d-section-title">الفواتير</div>
+          <div class="d-list">
+            ${items.map(i => `
+              <div class="d-list-row" onclick="openInvoiceDetail('${i.id}');closeDrawer()">
+                <div class="d-list-dot" style="background:var(--green)"></div>
+                <div style="flex:1">
+                  <div style="font-size:.83rem;font-weight:600">#${String(i.id||'').slice(-5)}</div>
+                  <div style="font-size:.7rem;color:var(--text3)">${DB.shortDate(i.created_at)} · ${i.items?.length||0} صنف</div>
+                </div>
+                <div style="font-family:'IBM Plex Mono';font-weight:700;font-size:.82rem">${DB.fmt(i.total)} ${cur}</div>
+              </div>`).join('')}
+          </div>
+        </div>`;
+    }
+  }
+
+  else if(type === 'inventory'){
+    document.getElementById('drawerTitle').textContent = '📦 تفاصيل المخزون';
+    const invVal = products.reduce((a,p) => a + (Number(p.cost||0)*Number(p.qty||0)), 0);
+    const cats = {};
+    products.forEach(p => { cats[p.category||'أخرى'] = (cats[p.category||'أخرى']||0) + 1; });
+    body.innerHTML = `
+      <div class="d-section">
+        <div class="d-section-title">ملخص</div>
+        <div class="d-kv"><span class="d-kv-k">إجمالي الأصناف</span><span class="d-kv-v">${products.length}</span></div>
+        <div class="d-kv"><span class="d-kv-k">القيمة الإجمالية</span><span class="d-kv-v">${DB.fmt(invVal)} ${cur}</span></div>
+        <div class="d-kv"><span class="d-kv-k">نفد من المخزون</span><span class="d-kv-v" style="color:var(--red)">${products.filter(p=>Number(p.qty||0)<=0).length}</span></div>
+        <div class="d-kv"><span class="d-kv-k">تحت الحد المنخفض</span><span class="d-kv-v" style="color:var(--orange)">${products.filter(p=>Number(p.qty||0)>0&&Number(p.qty||0)<=low).length}</span></div>
+      </div>
+      <div class="d-section">
+        <div class="d-section-title">حسب الفئة</div>
+        <div class="d-list">
+          ${Object.entries(cats).map(([cat,cnt]) => `
+            <div class="d-list-row">
+              <div class="d-list-dot" style="background:var(--gold)"></div>
+              <div style="flex:1;font-size:.84rem">${cat}</div>
+              <div style="font-family:'IBM Plex Mono';font-size:.8rem;color:var(--text3)">${cnt} صنف</div>
+            </div>`).join('')}
+        </div>
+      </div>
+      <div class="d-section">
+        <div class="d-section-title">جميع المنتجات</div>
+        <div class="d-list">
+          ${products.sort((a,b)=>Number(a.qty||0)-Number(b.qty||0)).map(p => {
+            const q = Number(p.qty||0);
+            const col = q<=0?'var(--red)':q<=low?'#e67e22':'var(--green)';
+            return `<div class="d-list-row" onclick="openProductDetail('${p.barcode}');closeDrawer()">
+              <div class="d-list-dot" style="background:${col}"></div>
+              <div style="flex:1"><div style="font-size:.83rem;font-weight:500">${p.name}</div><div style="font-size:.7rem;color:var(--text3)">${p.unit||'وحدة'}</div></div>
+              <div style="text-align:left"><div style="font-family:'IBM Plex Mono';font-size:.8rem;font-weight:700;color:${col}">${q<=0?'نفد':q}</div><div style="font-size:.68rem;color:var(--text3)">${DB.fmt(p.price)} ${cur}</div></div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+  }
+
+  else if(type === 'purchases'){
+    document.getElementById('drawerTitle').textContent = '🛒 مشتريات الشهر';
+    const items = invoices.filter(i => i.type === 'purchase' && DB.isThisMonth(i.created_at));
+    const total = items.reduce((a,i) => a + Number(i.total||0), 0);
+    if(!items.length){ body.innerHTML = emptyHTML('لا مشتريات هذا الشهر','سجّل استلام بضاعة من الكاشير'); }
+    else {
+      body.innerHTML = `
+        <div class="d-section">
+          <div class="d-section-title">ملخص الشهر</div>
+          <div class="d-kv"><span class="d-kv-k">عدد العمليات</span><span class="d-kv-v">${items.length}</span></div>
+          <div class="d-kv"><span class="d-kv-k">الإجمالي</span><span class="d-kv-v">${DB.fmt(total)} ${cur}</span></div>
+        </div>
+        <div class="d-section">
+          <div class="d-section-title">سجل الاستلام</div>
+          <div class="d-list">
+            ${items.map(i => `
+              <div class="d-list-row" onclick="openInvoiceDetail('${i.id}');closeDrawer()">
+                <div class="d-list-dot" style="background:var(--blue)"></div>
+                <div style="flex:1">
+                  <div style="font-size:.83rem;font-weight:600">#${String(i.id||'').slice(-5)}</div>
+                  <div style="font-size:.7rem;color:var(--text3)">${DB.shortDate(i.created_at)} · ${i.items?.length||0} صنف</div>
+                </div>
+                <div style="font-family:'IBM Plex Mono';font-weight:700;font-size:.82rem">${DB.fmt(i.total)} ${cur}</div>
+              </div>`).join('')}
+          </div>
+        </div>`;
+    }
+  }
+
+  else if(type === 'lowstock'){
+    document.getElementById('drawerTitle').textContent = '⚠ تنبيهات المخزون';
+    const outItems = products.filter(p => Number(p.qty||0) <= 0);
+    const lowItems = products.filter(p => Number(p.qty||0) > 0 && Number(p.qty||0) <= low);
+    body.innerHTML = `
+      ${outItems.length ? `
+      <div class="d-section">
+        <div class="d-section-title" style="color:var(--red)">نفد من المخزون (${outItems.length})</div>
+        <div class="d-list">
+          ${outItems.map(p => `<div class="d-list-row" onclick="location.href='cashier.html?tab=buy'">
+            <div class="d-list-dot" style="background:var(--red)"></div>
+            <div style="flex:1;font-size:.83rem;font-weight:500">${p.name}</div>
+            <div style="font-size:.76rem;color:var(--red);font-weight:700">نفد</div>
+          </div>`).join('')}
+        </div>
+      </div>` : ''}
+      ${lowItems.length ? `
+      <div class="d-section">
+        <div class="d-section-title" style="color:var(--orange)">منخفض (${lowItems.length})</div>
+        <div class="d-list">
+          ${lowItems.map(p => `<div class="d-list-row" onclick="location.href='cashier.html?tab=buy'">
+            <div class="d-list-dot" style="background:#e67e22"></div>
+            <div style="flex:1;font-size:.83rem;font-weight:500">${p.name}</div>
+            <div style="font-family:'IBM Plex Mono';font-size:.78rem;font-weight:700;color:#e67e22">${p.qty} وحدة</div>
+          </div>`).join('')}
+        </div>
+      </div>` : ''}
+      ${!outItems.length && !lowItems.length ? emptyHTML('المخزون بخير','لا منتجات تحت الحد المحدد') : ''}
+      <div style="padding:0 0 8px">
+        <button onclick="location.href='cashier.html?tab=buy'" style="width:100%;padding:10px;background:var(--dark);color:var(--gold);border-radius:8px;font-size:.88rem;font-weight:700;font-family:'Tajawal';cursor:pointer;border:none">+ استلام بضاعة</button>
+      </div>`;
+  }
+
+  document.getElementById('drawerBg').classList.add('open');
+  document.getElementById('detailDrawer').classList.add('open');
+}
+
+function openInvoiceDetail(id){
+  const inv = DB.getInvoices().find(i => i.id === id); if(!inv) return;
+  const s   = DB.getSettings();
+  const cur = s.currency || 'د.إ';
+  const lbl = {sale:'بيع',purchase:'شراء',refund:'مرتجع'};
+  document.getElementById('drawerTitle').textContent = `🧾 فاتورة #${String(id).slice(-5)}`;
+  document.getElementById('drawerBody').innerHTML = `
+    <div class="d-section">
+      <div class="d-section-title">بيانات الفاتورة</div>
+      <div class="d-kv"><span class="d-kv-k">الرقم</span><span class="d-kv-v mono">${id}</span></div>
+      <div class="d-kv"><span class="d-kv-k">النوع</span><span class="d-kv-v">${lbl[inv.type]||inv.type}</span></div>
+      <div class="d-kv"><span class="d-kv-k">التاريخ</span><span class="d-kv-v">${DB.shortDate(inv.created_at)}</span></div>
+    </div>
+    <div class="d-section">
+      <div class="d-section-title">الأصناف</div>
+      <div class="d-list">
+        ${(inv.items||[]).map(it => `
+          <div class="d-list-row">
+            <div class="d-list-dot" style="background:var(--gold)"></div>
+            <div style="flex:1"><div style="font-size:.83rem;font-weight:500">${it.name}</div><div style="font-size:.7rem;color:var(--text3)">${it.unit||'وحدة'} × ${it.qty}</div></div>
+            <div style="font-family:'IBM Plex Mono';font-size:.8rem;font-weight:700">${DB.fmt(it.price * it.qty)} ${cur}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div class="d-section">
+      <div class="d-section-title">الإجماليات</div>
+      ${inv.discount ? `<div class="d-kv"><span class="d-kv-k">الخصم</span><span class="d-kv-v" style="color:var(--red)">- ${DB.fmt(inv.discount)} ${cur}</span></div>` : ''}
+      ${inv.tax ? `<div class="d-kv"><span class="d-kv-k">الضريبة</span><span class="d-kv-v">${DB.fmt(inv.tax)} ${cur}</span></div>` : ''}
+      <div class="d-kv"><span class="d-kv-k">الإجمالي</span><span class="d-kv-v" style="font-size:1rem;color:var(--green)">${DB.fmt(inv.total)} ${cur}</span></div>
+    </div>`;
+  document.getElementById('drawerBg').classList.add('open');
+  document.getElementById('detailDrawer').classList.add('open');
+}
+
+function openProductDetail(barcode){
+  const p = DB.getProduct(barcode); if(!p) return;
+  const s = DB.getSettings();
+  const cur = s.currency || 'د.إ';
+  const low = s.low_stock_qty || 5;
+  const q = Number(p.qty||0);
+  const stockColor = q<=0?'var(--red)':q<=low?'#e67e22':'var(--green)';
+  document.getElementById('drawerTitle').textContent = '📦 ' + p.name;
+  document.getElementById('drawerBody').innerHTML = `
+    ${p.img ? `<div style="width:100%;height:160px;background:var(--cream2);border-radius:10px;overflow:hidden;margin-bottom:16px"><img src="${p.img}" style="width:100%;height:100%;object-fit:contain"></div>` : ''}
+    <div class="d-section">
+      <div class="d-section-title">بيانات المنتج</div>
+      <div class="d-kv"><span class="d-kv-k">الاسم</span><span class="d-kv-v">${p.name}</span></div>
+      <div class="d-kv"><span class="d-kv-k">الفئة</span><span class="d-kv-v">${p.category||'—'}</span></div>
+      <div class="d-kv"><span class="d-kv-k">الوحدة</span><span class="d-kv-v">${p.unit||'—'}</span></div>
+      <div class="d-kv"><span class="d-kv-k">الشركة</span><span class="d-kv-v">${p.company||'—'}</span></div>
+      <div class="d-kv"><span class="d-kv-k">المورد</span><span class="d-kv-v">${p.supplier||'—'}</span></div>
+      <div class="d-kv"><span class="d-kv-k">الباركود</span><span class="d-kv-v mono">${p.barcode||'—'}</span></div>
+    </div>
+    <div class="d-section">
+      <div class="d-section-title">الأسعار والمخزون</div>
+      <div class="d-kv"><span class="d-kv-k">سعر الشراء</span><span class="d-kv-v">${DB.fmt(p.cost)} ${cur}</span></div>
+      <div class="d-kv"><span class="d-kv-k">سعر البيع</span><span class="d-kv-v">${DB.fmt(p.price)} ${cur}</span></div>
+      <div class="d-kv"><span class="d-kv-k">هامش الربح</span><span class="d-kv-v" style="color:var(--green)">${p.cost>0?((p.price-p.cost)/p.cost*100).toFixed(1)+'%':'—'}</span></div>
+      <div class="d-kv"><span class="d-kv-k">الكمية</span><span class="d-kv-v" style="color:${stockColor};font-size:1rem">${q<=0?'نفد':q+' وحدة'}</span></div>
+    </div>
+    <div style="display:flex;gap:8px;padding-top:4px">
+      <button onclick="location.href='inventory.html'" style="flex:1;padding:9px;background:var(--dark);color:var(--gold);border-radius:8px;font-size:.84rem;font-weight:700;font-family:'Tajawal';cursor:pointer;border:none">تعديل في المخزون</button>
+      <button onclick="location.href='cashier.html?tab=buy'" style="flex:1;padding:9px;background:var(--gold);color:var(--dark);border-radius:8px;font-size:.84rem;font-weight:700;font-family:'Tajawal';cursor:pointer;border:none">استلام كمية</button>
+    </div>`;
+  document.getElementById('drawerBg').classList.add('open');
+  document.getElementById('detailDrawer').classList.add('open');
+}
+
+function closeDrawer(){
+  document.getElementById('drawerBg').classList.remove('open');
+  document.getElementById('detailDrawer').classList.remove('open');
+}
+
+function emptyHTML(t,d){ return `<div class="empty"><div class="empty-ic">📭</div><div class="empty-t">${t}</div><div class="empty-d">${d}</div></div>`; }
+
+// ════════════════════════════════════════════
+// SCAN MODAL
+// ════════════════════════════════════════════
+let _scanProduct = null;
+
+function openScanModal(){
+  document.getElementById('scanInput').value = '';
+  document.getElementById('scanResult').classList.remove('show');
+  document.getElementById('scanNotFound').classList.remove('show');
+  _scanProduct = null;
+  document.getElementById('scanModal').classList.add('open');
+  setTimeout(() => document.getElementById('scanInput').focus(), 150);
+}
+function closeScanModal(){ document.getElementById('scanModal').classList.remove('open'); }
+
+function doScan(){
+  const val = document.getElementById('scanInput').value.trim(); if(!val) return;
+  const products = DB.getProducts();
+  const p = products.find(x => x.barcode === val) || products.find(x => (x.name||'').includes(val));
+  document.getElementById('scanResult').classList.remove('show');
+  document.getElementById('scanNotFound').classList.remove('show');
+  if(p){
+    _scanProduct = p;
+    const imgEl = document.getElementById('srImg');
+    const phEl  = document.getElementById('srImgPlaceholder');
+    if(p.img){ imgEl.src=p.img; imgEl.style.display='block'; phEl.style.display='none'; }
+    else { imgEl.style.display='none'; phEl.style.display='flex'; }
+    document.getElementById('srName').textContent = p.name;
+    document.getElementById('srMeta').textContent = `${p.category||''} · ${p.unit||'وحدة'} · ${p.barcode}`;
+    document.getElementById('srQtyCur').value  = p.qty + ' ' + (p.unit||'وحدة');
+    document.getElementById('srQtyAdd').value  = 1;
+    document.getElementById('srCost').value    = p.cost||'';
+    document.getElementById('srPrice').value   = p.price||'';
+    document.getElementById('scanResult').classList.add('show');
+  } else {
+    document.getElementById('scanNotFound').classList.add('show');
+  }
+}
+
+function confirmScanReceive(){
+  if(!_scanProduct) return;
+  const addQty = Number(document.getElementById('srQtyAdd').value)||0;
+  const cost   = Number(document.getElementById('srCost').value)||_scanProduct.cost;
+  const price  = Number(document.getElementById('srPrice').value)||_scanProduct.price;
+  if(addQty <= 0){ toast('أدخل كمية أكبر من صفر','warning'); return; }
+  const newQty = Number(_scanProduct.qty||0) + addQty;
+  DB.upsertProduct({..._scanProduct, qty:newQty, cost, price});
+  DB.addStockEntry({type:'purchase',barcode:_scanProduct.barcode,name:_scanProduct.name,qty_change:+addQty,note:'مسح سريع'});
+  DB.addInvoice({type:'purchase',items:[{..._scanProduct,qty:addQty,cost,price}],total:cost*addQty,currency:DB.getSettings().currency||'د.إ'});
+  toast(`تم استلام ${addQty} وحدة من "${_scanProduct.name}"`);
+  closeScanModal();
+  loadDash();
+}
+function goToCashier(){
+  const bc = document.getElementById('scanInput').value.trim();
+  location.href = 'cashier.html?tab=buy' + (bc ? '&bc='+encodeURIComponent(bc) : '');
+}
+function goToCashierNew(){ location.href = 'cashier.html?tab=buy'; }
+
+// ════════════════════════════════════════════
+// SETTINGS
+// ════════════════════════════════════════════
 function openSettings(){
-  const s=DB.getSettings();
-  document.getElementById('cfg_name').value=s.store_name||'';
-  document.getElementById('cfg_addr').value=s.address||'';
-  document.getElementById('cfg_phone').value=s.phone||'';
-  document.getElementById('cfg_cur').value=s.currency||'ر.س';
-  document.getElementById('cfg_tax').value=s.tax_rate||15;
-  document.getElementById('cfg_low').value=s.low_stock_qty||5;
-  const lb=document.getElementById('logoBox');
-  lb.innerHTML=s.logo?`<img src="${s.logo}">`:`<span style="color:var(--text3);font-size:.7rem;text-align:center">اضغط<br>للرفع</span>`;
-  document.getElementById('overlay').classList.add('open');
-  document.getElementById('drawer').classList.add('open');
+  const s = DB.getSettings();
+  document.getElementById('sd_name').value = s.store_name||'';
+  document.getElementById('sd_addr').value = s.address||'';
+  document.getElementById('sd_phone').value = s.phone||'';
+  document.getElementById('sd_cur').value = s.currency||'د.إ';
+  document.getElementById('sd_tax').value = s.tax_rate||5;
+  document.getElementById('sd_low').value = s.low_stock_qty||5;
+  const lb = document.getElementById('sdLogoBox');
+  lb.innerHTML = s.logo ? `<img src="${s.logo}" style="width:100%;height:100%;object-fit:contain">` : `<span style="font-size:.68rem;color:var(--text3);text-align:center">رفع</span>`;
+  document.getElementById('sdOverlay').classList.add('open');
+  document.getElementById('settingsDrawer').classList.add('open');
 }
-function closeSettings(){ document.getElementById('overlay').classList.remove('open'); document.getElementById('drawer').classList.remove('open'); }
-function handleLogo(inp){ const f=inp.files[0]; if(!f) return; const r=new FileReader(); r.onload=e=>{ document.getElementById('logoBox').innerHTML=`<img src="${e.target.result}">`; window._tmpLogo=e.target.result; }; r.readAsDataURL(f); }
-function removeLogo(){ window._tmpLogo=null; const s=DB.getSettings(); s.logo=null; DB.saveSettings(s); document.getElementById('logoBox').innerHTML=`<span style="color:var(--text3);font-size:.7rem;text-align:center">اضغط<br>للرفع</span>`; }
+function closeSettings(){
+  document.getElementById('sdOverlay').classList.remove('open');
+  document.getElementById('settingsDrawer').classList.remove('open');
+}
+function handleLogo(inp){ const f=inp.files[0]; if(!f) return; const r=new FileReader(); r.onload=e=>{ window._tmpLogo=e.target.result; document.getElementById('sdLogoBox').innerHTML=`<img src="${e.target.result}" style="width:100%;height:100%;object-fit:contain">`; }; r.readAsDataURL(f); }
+function removeLogo(){ window._tmpLogo=null; const s=DB.getSettings(); s.logo=null; DB.saveSettings(s); document.getElementById('sdLogoBox').innerHTML=`<span style="font-size:.68rem;color:var(--text3)">رفع</span>`; }
 function saveSettings(){
-  const s=DB.getSettings();
-  s.store_name=document.getElementById('cfg_name').value.trim()||s.store_name;
-  s.address=document.getElementById('cfg_addr').value.trim();
-  s.phone=document.getElementById('cfg_phone').value.trim();
-  s.currency=document.getElementById('cfg_cur').value;
-  s.tax_rate=Number(document.getElementById('cfg_tax').value)||15;
-  s.low_stock_qty=Number(document.getElementById('cfg_low').value)||5;
-  if(window._tmpLogo) s.logo=window._tmpLogo;
-  DB.saveSettings(s); window._tmpLogo=null;
-  closeSettings(); toast('تم حفظ الإعدادات'); loadDash();
+  const s = DB.getSettings();
+  s.store_name    = document.getElementById('sd_name').value.trim()||s.store_name;
+  s.address       = document.getElementById('sd_addr').value.trim();
+  s.phone         = document.getElementById('sd_phone').value.trim();
+  s.currency      = document.getElementById('sd_cur').value;
+  s.tax_rate      = Number(document.getElementById('sd_tax').value)||5;
+  s.low_stock_qty = Number(document.getElementById('sd_low').value)||5;
+  if(window._tmpLogo){ s.logo=window._tmpLogo; window._tmpLogo=null; }
+  DB.saveSettings(s);
+  closeSettings();
+  toast('تم حفظ الإعدادات ✓');
+  loadDash();
 }
+
+// ── GO ────────────────────────────────────
 loadDash();
 </script>
 </body>
