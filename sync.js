@@ -1,8 +1,6 @@
 /**
  * sync.js — طيب الحي | قاعدة البيانات المركزية
- * كل الملفات تستورد هذا الملف
  */
-
 const DB = {
   KEYS: {
     products:  'tayyib_products',
@@ -13,30 +11,25 @@ const DB = {
     user:      'oud_user',
   },
 
-  get(key) {
-    try { return JSON.parse(localStorage.getItem(key)) ?? null; } catch { return null; }
-  },
-  set(key, val) {
-    localStorage.setItem(key, JSON.stringify(val));
-  },
+  get(key)       { try { return JSON.parse(localStorage.getItem(key)) ?? null; } catch { return null; } },
+  set(key, val)  { localStorage.setItem(key, JSON.stringify(val)); },
 
-  // ── Products ──────────────────────────────
-  getProducts() { return this.get(this.KEYS.products) || []; },
+  // ── Products ─────────────────────────────
+  getProducts()  { return this.get(this.KEYS.products) || []; },
   saveProducts(arr) { this.set(this.KEYS.products, arr); },
   getProduct(barcode) { return this.getProducts().find(p => p.barcode === barcode) || null; },
   upsertProduct(product) {
     const list = this.getProducts();
     const idx  = list.findIndex(p => p.barcode === product.barcode);
-    if (idx >= 0) list[idx] = { ...list[idx], ...product, updated_at: Date.now() };
-    else          list.push({ ...product, id: Date.now(), created_at: Date.now(), updated_at: Date.now() });
+    const now  = Date.now();
+    if (idx >= 0) list[idx] = { ...list[idx], ...product, updated_at: now };
+    else          list.push({ ...product, id: now, created_at: now, updated_at: now });
     this.saveProducts(list);
     return product;
   },
-  deleteProduct(barcode) {
-    this.saveProducts(this.getProducts().filter(p => p.barcode !== barcode));
-  },
+  deleteProduct(barcode) { this.saveProducts(this.getProducts().filter(p => p.barcode !== barcode)); },
 
-  // ── Invoices ──────────────────────────────
+  // ── Invoices ─────────────────────────────
   getInvoices() { return this.get(this.KEYS.invoices) || []; },
   addInvoice(inv) {
     const list = this.getInvoices();
@@ -46,7 +39,7 @@ const DB = {
     return full;
   },
 
-  // ── Stock Log ─────────────────────────────
+  // ── Stock Log ────────────────────────────
   getStockLog() { return this.get(this.KEYS.stock_log) || []; },
   addStockEntry(entry) {
     const log = this.getStockLog();
@@ -54,34 +47,39 @@ const DB = {
     this.set(this.KEYS.stock_log, log);
   },
 
-  // ── Settings ──────────────────────────────
+  // ── Settings ─────────────────────────────
   getSettings() {
-    return this.get(this.KEYS.settings) || {
-      store_name:     'طيب الحي للعود والأدهان',
-      currency:       'ر.س',
-      tax_rate:       15,
-      low_stock_qty:  5,
-      logo:           null,
-      address:        '',
-      phone:          '',
+    const saved = this.get(this.KEYS.settings);
+    const defaults = {
+      store_name:    'طيب الحي للعود والأدهان',
+      currency:      'د.إ',
+      tax_rate:      5,
+      low_stock_qty: 5,
+      logo:          null,
+      address:       '',
+      phone:         '',
+      _initialized:  false,
     };
+    if (!saved) return defaults;
+    // Always ensure currency defaults to د.إ if not set
+    if (!saved.currency) saved.currency = 'د.إ';
+    return { ...defaults, ...saved };
   },
   saveSettings(s) { this.set(this.KEYS.settings, s); },
 
-  // ── Auth ──────────────────────────────────
-  getUser() { return this.get(this.KEYS.user); },
+  // ── Auth ─────────────────────────────────
+  getUser()    { return this.get(this.KEYS.user); },
   requireAuth() {
     if (!this.getUser()) { location.href = 'index.html'; return false; }
     return true;
   },
 
-  // ── Helpers ───────────────────────────────
-  fmt(n, currency = '') {
-    const s = Number(n || 0).toLocaleString('ar-SA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    return currency ? s + ' ' + currency : s;
+  // ── Helpers ──────────────────────────────
+  fmt(n) {
+    return Number(n || 0).toLocaleString('ar-SA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   },
   today() {
-    return new Date().toLocaleDateString('ar-SA-u-nu-latn', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    return new Date().toLocaleDateString('ar-SA-u-nu-latn', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
   },
   isToday(ts) {
     const d = new Date(ts), n = new Date();
@@ -92,36 +90,35 @@ const DB = {
     return d.getFullYear() === n.getFullYear() && d.getMonth() === n.getMonth();
   },
   shortDate(ts) {
-    return new Date(ts).toLocaleDateString('ar-SA-u-nu-latn', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    return new Date(ts).toLocaleDateString('ar-SA-u-nu-latn', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
   },
 };
 
-// واجهة Toast للإشعارات
+// ── Toast ─────────────────────────────────
 function toast(msg, type = 'success') {
   const el = document.createElement('div');
   el.className = 'toast toast-' + type;
   el.textContent = msg;
   document.body.appendChild(el);
   setTimeout(() => el.classList.add('show'), 10);
-  setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 2800);
+  setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 3000);
 }
 
-// CSS مشترك للـ Toast — يُضاف مرة واحدة
-(function injectToastCSS() {
-  if (document.getElementById('toast-css')) return;
+(function injectCSS() {
+  if (document.getElementById('tayyib-css')) return;
   const s = document.createElement('style');
-  s.id = 'toast-css';
+  s.id = 'tayyib-css';
   s.textContent = `
     .toast {
-      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
-      background: #1C1208; color: #F8F3EA; padding: 10px 22px; border-radius: 8px;
-      font-size: .88rem; font-family: 'Tajawal', sans-serif; z-index: 9999;
-      opacity: 0; transition: opacity .25s, transform .25s; pointer-events: none;
-      border-right: 3px solid #C9A84C;
+      position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(16px);
+      background:#1C1208;color:#F8F3EA;padding:10px 22px;border-radius:9px;
+      font-size:.88rem;font-family:'Tajawal',sans-serif;z-index:9999;
+      opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;
+      border-right:3px solid #C9A84C;box-shadow:0 4px 20px rgba(0,0,0,.25);
     }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    .toast.toast-error   { border-right-color: #c0392b; }
-    .toast.toast-warning { border-right-color: #e67e22; }
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .toast.toast-error{border-right-color:#c0392b}
+    .toast.toast-warning{border-right-color:#e67e22}
   `;
   document.head.appendChild(s);
 })();
