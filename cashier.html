@@ -405,6 +405,14 @@ input,select{font-family:inherit}
               <label>المورد</label>
               <input id="rcvSupplier" placeholder="اسم المورد">
             </div>
+            <div class="fg">
+              <label>رقم فاتورة المورد</label>
+              <input id="rcvInvNum" placeholder="مثال: INV-2024-0851" dir="ltr">
+            </div>
+            <div class="fg">
+              <label>تاريخ فاتورة المورد</label>
+              <input id="rcvInvDate" type="date">
+            </div>
           </div>
           <div class="fg">
             <label>وحدة القياس</label>
@@ -910,6 +918,8 @@ function scanReceive(){
     document.getElementById('rcvCat').value      = p.category||'عود';
     document.getElementById('rcvCompany').value  = p.company||'';
     document.getElementById('rcvSupplier').value = p.supplier||'';
+    document.getElementById('rcvInvNum').value   = p.supplier_invoice||'';
+    document.getElementById('rcvInvDate').value  = p.supplier_invoice_date||'';
     document.getElementById('rcvCost').value     = p.cost||'';
     document.getElementById('rcvPrice').value    = p.price||'';
     document.getElementById('rcvNotes').value    = p.notes||'';
@@ -946,19 +956,24 @@ function saveReceive(){
   const unit = rcvUnit==='أخرى' ? (document.getElementById('rcvUnitCustom').value.trim()||'أخرى') : rcvUnit;
   const existing = DB.product(bc);
   const newQty   = (Number(existing?.qty)||0) + qty;
+  const invNum   = document.getElementById('rcvInvNum').value.trim();
+  const invDate  = document.getElementById('rcvInvDate').value;
 
   const product = {
     barcode:  bc, name, unit,
     category: document.getElementById('rcvCat').value,
     company:  document.getElementById('rcvCompany').value.trim(),
     supplier: document.getElementById('rcvSupplier').value.trim(),
+    supplier_invoice: invNum,
+    supplier_invoice_date: invDate,
     notes:    document.getElementById('rcvNotes').value.trim(),
     cost, price, qty: newQty,
     img: rcvImg || existing?.img || null,
   };
   DB.saveProduct(product);
   DB.adjustStock(bc, qty, 'استلام', DB.session()?.name||'—');
-  DB.addInvoice({ type:'purchase', items:[{...product,qty,cost,price}], total:cost*qty, currency:DB.settings().currency, at:Date.now() });
+  DB.addInvoice({ type:'purchase', items:[{...product,qty,cost,price}], total:cost*qty, currency:DB.settings().currency,
+    supplier: product.supplier, supplier_invoice: invNum, supplier_invoice_date: invDate, at:Date.now() });
 
   toast(`✓ تم حفظ "${name}" — الرصيد: ${newQty} ${unit}`);
   clearRcvForm();
@@ -966,7 +981,7 @@ function saveReceive(){
 }
 
 function clearRcvForm(){
-  ['rcvBarcode','rcvName','rcvBc','rcvCompany','rcvSupplier','rcvCost','rcvPrice','rcvQty','rcvMargin','rcvNotes'].forEach(id=>{
+  ['rcvBarcode','rcvName','rcvBc','rcvCompany','rcvSupplier','rcvInvNum','rcvInvDate','rcvCost','rcvPrice','rcvQty','rcvMargin','rcvNotes'].forEach(id=>{
     const el=document.getElementById(id);
     if(el.tagName==='SELECT') el.selectedIndex=0;
     else el.value='';
