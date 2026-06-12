@@ -270,6 +270,12 @@ input,select{font-family:inherit}
   <button class="mode-tab"    id="tab-receive" onclick="switchMode('receive')">📥 استلام بضاعة</button>
 </div>
 
+<!-- DIAGNOSTIC BAR -->
+<div id="diagBar" style="display:flex;align-items:center;gap:10px;padding:6px 16px;background:var(--s1);border-bottom:1px solid var(--bd);font-size:.76rem;color:var(--tx3)">
+  <span>📦 المنتجات في المخزون: <b id="diagCount" style="color:var(--g)">0</b></span>
+  <span id="diagWarn" style="display:none;color:var(--rd);font-weight:700">— لا توجد منتجات! اذهب لـ"استلام بضاعة" وأضف منتجاً أولاً قبل البيع</span>
+</div>
+
 <!-- MAIN -->
 <div class="main">
 
@@ -425,6 +431,10 @@ input,select{font-family:inherit}
               <button class="unit-pill" onclick="selUnit(this,'أخرى')">أخرى…</button>
             </div>
             <input id="rcvUnitCustom" placeholder="وحدة مخصصة" style="display:none;margin-top:6px;padding:7px 10px;background:var(--s3);border:1.5px solid var(--bd);border-radius:7px;color:var(--tx);font-size:.86rem;width:100%">
+          </div>
+          <div class="fg">
+            <label>المواصفات</label>
+            <textarea id="rcvSpecs" rows="2" placeholder="مثال: تركيز 30%، حجم 12 مل، عبوة زجاجية فاخرة…"></textarea>
           </div>
         </div>
 
@@ -923,6 +933,7 @@ function scanReceive(){
     document.getElementById('rcvCost').value     = p.cost||'';
     document.getElementById('rcvPrice').value    = p.price||'';
     document.getElementById('rcvNotes').value    = p.notes||'';
+    document.getElementById('rcvSpecs').value    = p.specs||'';
     document.getElementById('rcvQty').value      = '';
     rcvUnit = p.unit||'غرام';
     document.querySelectorAll('.unit-pill').forEach(b=>{ b.classList.toggle('on', b.textContent.trim()===rcvUnit); });
@@ -967,6 +978,7 @@ function saveReceive(){
     supplier_invoice: invNum,
     supplier_invoice_date: invDate,
     notes:    document.getElementById('rcvNotes').value.trim(),
+    specs:    document.getElementById('rcvSpecs').value.trim(),
     cost, price, qty: newQty,
     img: rcvImg || existing?.img || null,
   };
@@ -978,10 +990,11 @@ function saveReceive(){
   toast(`✓ تم حفظ "${name}" — الرصيد: ${newQty} ${unit}`);
   clearRcvForm();
   renderRcvRecent();
+  updateDiag();
 }
 
 function clearRcvForm(){
-  ['rcvBarcode','rcvName','rcvBc','rcvCompany','rcvSupplier','rcvInvNum','rcvInvDate','rcvCost','rcvPrice','rcvQty','rcvMargin','rcvNotes'].forEach(id=>{
+  ['rcvBarcode','rcvName','rcvBc','rcvCompany','rcvSupplier','rcvInvNum','rcvInvDate','rcvCost','rcvPrice','rcvQty','rcvMargin','rcvNotes','rcvSpecs'].forEach(id=>{
     const el=document.getElementById(id);
     if(el.tagName==='SELECT') el.selectedIndex=0;
     else el.value='';
@@ -1006,10 +1019,18 @@ function renderRcvRecent(){
     </div>`).join('');
 }
 
+
+function updateDiag(){
+  const n = DB.products().length;
+  document.getElementById('diagCount').textContent = n;
+  document.getElementById('diagWarn').style.display = n===0 ? 'inline' : 'none';
+}
+
 // ─── INIT ─────────────────────────────────
 loadCustomers();
 renderCart();
 calcTotals();
+updateDiag();
 document.getElementById('saleInput').focus();
 </script>
 </body>
