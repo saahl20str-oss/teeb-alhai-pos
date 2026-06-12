@@ -180,6 +180,7 @@ a{text-decoration:none;color:inherit}button{font-family:inherit;cursor:pointer;b
         <div class="fg"><label>سعر الشراء</label><input id="e_cost" type="number" min="0" step="0.01"></div>
         <div class="fg"><label>سعر البيع</label><input id="e_price" type="number" min="0" step="0.01"></div>
       </div>
+      <div class="fg"><label>المواصفات</label><textarea id="e_specs" rows="2" placeholder="مثال: تركيز 30%، حجم 12 مل…"></textarea></div>
       <div class="fg"><label>ملاحظات</label><textarea id="e_notes" rows="2"></textarea></div>
       <button class="modal-save" onclick="saveEdit()">حفظ التعديلات</button>
       <button class="modal-del"  onclick="deleteProduct()">حذف المنتج</button>
@@ -251,11 +252,16 @@ function renderGrid(){
       <div class="pc-body">
         <div class="pc-name" title="${p.name}">${p.name}</div>
         <div class="pc-cat">${p.category||'—'} · ${p.unit||'وحدة'}</div>
+        <div style="font-size:.66rem;color:var(--tx4);font-family:'IBM Plex Mono',monospace;margin-bottom:4px">#${p.barcode||'—'}</div>
         <div class="pc-row">
           <span class="qty-badge ${qCls}">${qTxt}</span>
           <span class="pc-price">${DB.fmt(p.price)}</span>
         </div>
-        ${p.company?`<div style="font-size:.66rem;color:var(--tx4);margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.company}</div>`:''}
+        <div style="display:flex;justify-content:space-between;font-size:.68rem;color:var(--tx3);margin-top:4px">
+          <span>شراء: ${DB.fmt(p.cost)}</span>
+          <span>${p.specs?'📋 مواصفات':''}</span>
+        </div>
+        ${p.company?`<div style="font-size:.66rem;color:var(--tx4);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">🏢 ${p.company}</div>`:''}
       </div>
     </div>`;
   }).join('');
@@ -277,6 +283,7 @@ function openEdit(bc){
   document.getElementById('e_qty').value=p.qty||0;
   document.getElementById('e_cost').value=p.cost||'';
   document.getElementById('e_price').value=p.price||'';
+  document.getElementById('e_specs').value=p.specs||'';
   document.getElementById('e_notes').value=p.notes||'';
   const ib=document.getElementById('editImgBox');
   ib.innerHTML=p.img?`<img src="${p.img}">`:`<span style="font-size:1.2rem">📷</span><span style="font-size:.74rem;color:var(--tx4)">اضغط لتغيير الصورة</span>`;
@@ -300,6 +307,7 @@ function saveEdit(){
     qty:      newQty,
     cost:     Number(document.getElementById('e_cost').value)||p.cost,
     price:    Number(document.getElementById('e_price').value)||p.price,
+    specs:    document.getElementById('e_specs').value.trim(),
     notes:    document.getElementById('e_notes').value.trim(),
     img:      editImg||p.img||null,
   });
