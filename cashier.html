@@ -497,7 +497,7 @@ input,select{font-family:inherit}
 DB.requireAuth();
 if (!DB.can('sale') && !DB.can('receive')) { DB.requirePerm('sale'); }
 
-const S  = DB.settings;
+const S  = () => DB.settings();
 const me = DB.session();
 document.getElementById('tbUser').textContent = me?.name || '—';
 (function applyBranding(){
