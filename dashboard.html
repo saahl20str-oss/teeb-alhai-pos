@@ -163,7 +163,57 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .empty-cta{margin-top:6px;padding:7px 18px;background:var(--g);color:#1C1208;border-radius:7px;font-size:.8rem;font-weight:700;cursor:pointer;border:none;font-family:'Tajawal',sans-serif;transition:.15s}
 .empty-cta:hover{filter:brightness(1.08)}
 
-@media(max-width:1000px){.grid{grid-template-columns:1fr}}
+/* ── INSIGHTS / ANALYSIS ROWS ── */
+.insights-row{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;margin-top:14px}
+.analysis-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:14px}
+
+/* ── REVENUE LINE CHART ── */
+.rev-summary{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px}
+.rev-total{font-size:1.4rem;font-weight:900;font-family:'IBM Plex Mono',monospace}
+.rev-trend{font-size:.78rem;font-weight:700}
+.rev-trend.up{color:var(--gr)}.rev-trend.down{color:var(--rd)}
+
+/* ── INVENTORY STATUS ── */
+.inv-status{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd)}
+.inv-stat{background:var(--s2);padding:16px;display:flex;flex-direction:column;gap:6px}
+.inv-stat-val{font-size:1.5rem;font-weight:900;font-family:'IBM Plex Mono',monospace}
+.inv-stat-lbl{font-size:.74rem;color:var(--tx3);display:flex;align-items:center;gap:5px}
+
+/* ── CATEGORY DONUT (CSS conic-gradient) ── */
+.donut-wrap{display:flex;align-items:center;gap:18px;padding:6px 0}
+.donut{width:88px;height:88px;border-radius:50%;flex-shrink:0;position:relative}
+.donut::after{content:'';position:absolute;inset:14px;background:var(--s2);border-radius:50%}
+.donut-legend{flex:1;display:flex;flex-direction:column;gap:7px}
+.dl-item{display:flex;align-items:center;gap:8px;font-size:.78rem}
+.dl-dot2{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.dl-name{flex:1;color:var(--tx2)}
+.dl-pct{font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--tx3)}
+
+/* ── TOP PROFIT TABLE ── */
+.tp-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--bd)}
+.tp-row:last-child{border-bottom:none}
+.tp-rank{width:22px;height:22px;border-radius:50%;background:var(--gl);color:var(--gd);
+  font-size:.72rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tp-name{flex:1;font-size:.82rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tp-val{font-family:'IBM Plex Mono',monospace;font-size:.84rem;font-weight:800;color:var(--gr)}
+
+/* ── STAGNANT PRODUCTS ── */
+.sg-row{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--bd)}
+.sg-row:last-child{border-bottom:none}
+.sg-img{width:30px;height:30px;border-radius:6px;background:var(--s3);object-fit:contain;flex-shrink:0}
+.sg-img-ph{width:30px;height:30px;border-radius:6px;background:var(--s3);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+.sg-name{flex:1;font-size:.81rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sg-days{font-size:.7rem;color:var(--or);font-weight:700;white-space:nowrap}
+
+/* ── ACTIVITY FEED ── */
+.act-row{display:flex;align-items:center;gap:11px;padding:11px 16px;border-bottom:1px solid var(--bd)}
+.act-row:last-child{border-bottom:none}
+.act-ic{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.act-text{flex:1;font-size:.82rem}
+.act-text b{font-weight:700}
+.act-time{font-size:.7rem;color:var(--tx4);white-space:nowrap}
+
+@media(max-width:1000px){.grid{grid-template-columns:1fr}.insights-row{grid-template-columns:1fr}.analysis-row{grid-template-columns:1fr}}
 @media(max-width:860px){.stats{grid-template-columns:repeat(2,1fr)}.tb-nav{display:none}.page{padding:14px}}
 @media(max-width:480px){.stats{grid-template-columns:1fr}}
 </style>
@@ -291,6 +341,42 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
       </div>
     </div>
   </div>
+
+  <!-- INSIGHTS ROW -->
+  <div class="insights-row">
+    <div class="panel">
+      <div class="ph"><div class="ph-left"><div class="ph-bar" style="background:var(--gr)"></div><span class="ph-title">إجمالي الإيرادات — آخر 7 أيام</span></div></div>
+      <div style="padding:14px 16px">
+        <div id="revChart"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="ph"><div class="ph-left"><div class="ph-bar" style="background:var(--bl)"></div><span class="ph-title">حالة المخزون</span></div></div>
+      <div id="invStatus" class="inv-status"></div>
+    </div>
+  </div>
+
+  <!-- ANALYSIS ROW -->
+  <div class="analysis-row">
+    <div class="panel">
+      <div class="ph"><div class="ph-left"><div class="ph-bar" style="background:var(--g)"></div><span class="ph-title">أفضل الفئات مبيعاً</span></div></div>
+      <div class="chart-body" id="catChart"></div>
+    </div>
+    <div class="panel">
+      <div class="ph"><div class="ph-left"><div class="ph-bar" style="background:var(--gr)"></div><span class="ph-title">الأكثر ربحية</span></div></div>
+      <div id="profitTable"></div>
+    </div>
+    <div class="panel">
+      <div class="ph"><div class="ph-left"><div class="ph-bar" style="background:var(--or)"></div><span class="ph-title">منتجات راكدة (60+ يوم)</span></div></div>
+      <div id="stagnantList"></div>
+    </div>
+  </div>
+
+  <!-- ACTIVITY FEED -->
+  <div class="panel" style="margin-top:14px">
+    <div class="ph"><div class="ph-left"><div class="ph-bar"></div><span class="ph-title">النشاط المباشر</span></div></div>
+    <div id="activityFeed"></div>
+  </div>
 </main>
 
 <!-- DETAIL DRAWER -->
@@ -401,6 +487,237 @@ function load(){
   renderInvoices();
   renderLow(products,low);
   renderTopChart(invoices,products);
+  renderTrends(invoices, todayAmt, mAmt, invVal);
+  renderRevChart(invoices, cur);
+  renderInvStatus(products, low);
+  renderCatDonut(invoices, products, cur);
+  renderTopProfit(invoices, products, cur);
+  renderStagnant(invoices, products);
+  renderActivity(invoices, products);
+}
+
+// ─── TREND PERCENTAGES (vs previous period) ───
+function renderTrends(invoices, todayAmt, mAmt, invVal){
+  // Sales: today vs yesterday
+  const y = new Date(); y.setDate(y.getDate()-1);
+  const yKey = y.toDateString();
+  const yAmt = invoices.filter(i=>i.type==='sale' && new Date(i.at).toDateString()===yKey)
+                        .reduce((a,i)=>a+Number(i.total||0),0);
+  setTrend('s1n', todayAmt, yAmt, 'مقارنة بالأمس');
+
+  // Purchases: this month vs last month
+  const now = new Date();
+  const lm = new Date(now.getFullYear(), now.getMonth()-1, 1);
+  const lmAmt = invoices.filter(i=>i.type==='purchase' && new Date(i.at).getFullYear()===lm.getFullYear() && new Date(i.at).getMonth()===lm.getMonth())
+                         .reduce((a,i)=>a+Number(i.total||0),0);
+  setTrend('s3n', mAmt, lmAmt, 'مقارنة بالشهر السابق', true);
+}
+function setTrend(id, current, prev, label, append){
+  const el = document.getElementById(id);
+  if(!prev || prev===0){ if(!append) el.textContent = label; return; }
+  const pct = ((current-prev)/prev*100);
+  const arrow = pct>=0 ? '↑' : '↓';
+  const cls = pct>=0 ? 'up' : 'dn';
+  const span = `<span class="stat-note ${cls}" style="display:inline">${arrow} ${Math.abs(pct).toFixed(1)}%</span>`;
+  if(append) el.innerHTML = span + ` <span style="color:var(--tx4)">${label}</span>`;
+  else el.innerHTML = span + ` <span style="color:var(--tx4)">${label}</span>`;
+}
+
+// ─── REVENUE LINE CHART (last 7 days, SVG) ───
+function renderRevChart(invoices, cur){
+  const days = [];
+  for(let i=6;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); days.push(d); }
+  const vals = days.map(d=>{
+    return invoices.filter(inv=>inv.type==='sale' && new Date(inv.at).toDateString()===d.toDateString())
+                    .reduce((a,inv)=>a+Number(inv.total||0),0);
+  });
+  const total = vals.reduce((a,v)=>a+v,0);
+  const max = Math.max(...vals, 1);
+  const W=560, H=140, pad=10;
+  const stepX = (W-pad*2)/(vals.length-1);
+  const pts = vals.map((v,i)=>{
+    const x = pad + i*stepX;
+    const y = H - pad - (v/max)*(H-pad*2);
+    return [x,y];
+  });
+  const pathD = pts.map((p,i)=>(i===0?'M':'L')+p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+  const areaD = pathD + ` L${pts[pts.length-1][0].toFixed(1)},${H-pad} L${pts[0][0].toFixed(1)},${H-pad} Z`;
+  const dayNames = days.map(d=>d.toLocaleDateString('ar-SA',{weekday:'short'}));
+
+  // trend vs previous 7 days
+  const prevStart = new Date(); prevStart.setDate(prevStart.getDate()-13);
+  const prevEnd = new Date(); prevEnd.setDate(prevEnd.getDate()-7);
+  const prevTotal = invoices.filter(inv=>inv.type==='sale' && new Date(inv.at)>=prevStart && new Date(inv.at)<prevEnd)
+                             .reduce((a,inv)=>a+Number(inv.total||0),0);
+  let trendHtml = '';
+  if(prevTotal>0){
+    const pct=((total-prevTotal)/prevTotal*100);
+    const cls=pct>=0?'up':'down'; const arrow=pct>=0?'↑':'↓';
+    trendHtml = `<span class="rev-trend ${cls}">${arrow} ${Math.abs(pct).toFixed(1)}% عن الأسبوع الماضي</span>`;
+  }
+
+  document.getElementById('revChart').innerHTML = `
+    <div class="rev-summary">
+      <div><div class="rev-total">${DB.fmt(total)} ${cur}</div>${trendHtml}</div>
+    </div>
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:130px;overflow:visible">
+      <defs><linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="var(--g)" stop-opacity="0.25"/>
+        <stop offset="100%" stop-color="var(--g)" stop-opacity="0"/>
+      </linearGradient></defs>
+      <path d="${areaD}" fill="url(#revGrad)"/>
+      <path d="${pathD}" fill="none" stroke="var(--g)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      ${pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="var(--g)"/>`).join('')}
+    </svg>
+    <div style="display:flex;justify-content:space-between;font-size:.7rem;color:var(--tx4);padding:0 ${pad}px">
+      ${dayNames.map(d=>`<span>${d}</span>`).join('')}
+    </div>`;
+}
+
+// ─── INVENTORY STATUS PANEL ───
+function renderInvStatus(products, low){
+  const total = products.length;
+  const lowStock = products.filter(p=>Number(p.qty||0)>0 && Number(p.qty||0)<=low).length;
+  const outStock = products.filter(p=>Number(p.qty||0)<=0).length;
+  // stagnant: products with no sale in 60+ days (computed via helper)
+  const stagnantCount = getStagnantProducts(products, 60).length;
+
+  document.getElementById('invStatus').innerHTML = `
+    <div class="inv-stat">
+      <div class="inv-stat-val">${total}</div>
+      <div class="inv-stat-lbl">📦 إجمالي المنتجات</div>
+    </div>
+    <div class="inv-stat">
+      <div class="inv-stat-val" style="color:${lowStock?'var(--or)':'var(--tx)'}">${lowStock}</div>
+      <div class="inv-stat-lbl">⚠ قارب على النفاد</div>
+    </div>
+    <div class="inv-stat">
+      <div class="inv-stat-val" style="color:${outStock?'var(--rd)':'var(--tx)'}">${outStock}</div>
+      <div class="inv-stat-lbl">⛔ نفد من المخزون</div>
+    </div>
+    <div class="inv-stat">
+      <div class="inv-stat-val" style="color:${stagnantCount?'var(--or)':'var(--tx)'}">${stagnantCount}</div>
+      <div class="inv-stat-lbl">🐌 منتجات راكدة</div>
+    </div>`;
+}
+
+// ─── BEST-SELLING CATEGORIES (donut via conic-gradient) ───
+function renderCatDonut(invoices, products, cur){
+  const cats = {};
+  invoices.filter(i=>i.type==='sale').forEach(inv=>(inv.items||[]).forEach(it=>{
+    const p = products.find(x=>x.barcode===it.barcode) || {};
+    const c = p.category || 'أخرى';
+    cats[c] = (cats[c]||0) + Number(it.price||0)*Number(it.qty||0);
+  }));
+  const entries = Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+  const total = entries.reduce((a,[,v])=>a+v,0);
+  const el = document.getElementById('catChart');
+  if(!total){ el.innerHTML = `<div class="empty" style="padding:18px"><div class="empty-t" style="color:var(--tx4)">لا مبيعات بعد</div></div>`; return; }
+
+  const colors = ['var(--g)','var(--bl)','var(--gr)','var(--or)','var(--rd)','#9b6bd6'];
+  let acc = 0;
+  const gradParts = entries.map(([c,v],i)=>{
+    const pct = v/total*100;
+    const start = acc; acc += pct;
+    return `${colors[i%colors.length]} ${start}% ${acc}%`;
+  });
+
+  el.innerHTML = `<div class="donut-wrap">
+    <div class="donut" style="background:conic-gradient(${gradParts.join(',')})"></div>
+    <div class="donut-legend">
+      ${entries.slice(0,5).map(([c,v],i)=>`
+        <div class="dl-item">
+          <span class="dl-dot2" style="background:${colors[i%colors.length]}"></span>
+          <span class="dl-name">${c}</span>
+          <span class="dl-pct">${(v/total*100).toFixed(0)}%</span>
+        </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+// ─── TOP PROFIT PRODUCTS ───
+function renderTopProfit(invoices, products, cur){
+  const profit = {};
+  invoices.filter(i=>i.type==='sale').forEach(inv=>(inv.items||[]).forEach(it=>{
+    const p = products.find(x=>x.barcode===it.barcode) || {};
+    const cost = Number(p.cost||it.cost||0);
+    const margin = (Number(it.price||0)-cost)*Number(it.qty||0);
+    profit[it.name] = (profit[it.name]||0) + margin;
+  }));
+  const top = Object.entries(profit).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const el = document.getElementById('profitTable');
+  if(!top.length){ el.innerHTML = `<div class="empty" style="padding:18px"><div class="empty-t" style="color:var(--tx4)">لا بيانات ربح بعد</div></div>`; return; }
+  el.innerHTML = top.map(([name,val],i)=>`
+    <div class="tp-row">
+      <div class="tp-rank">${i+1}</div>
+      <div class="tp-name" title="${name}">${name}</div>
+      <div class="tp-val">${DB.fmt(val)} ${cur}</div>
+    </div>`).join('');
+}
+
+// ─── STAGNANT PRODUCTS (no sale in N days) ───
+function getStagnantProducts(products, days){
+  const invoices = DB.invoices().filter(i=>i.type==='sale');
+  const cutoff = Date.now() - days*86400000;
+  return products.filter(p=>{
+    if(Number(p.qty||0)<=0) return false; // out of stock isn't "stagnant"
+    const lastSale = invoices
+      .filter(inv=>(inv.items||[]).some(it=>it.barcode===p.barcode))
+      .map(inv=>inv.at)
+      .sort((a,b)=>b-a)[0];
+    if(!lastSale) return (Date.now()-(p.created_at||0)) > days*86400000;
+    return lastSale < cutoff;
+  });
+}
+function renderStagnant(invoices, products){
+  const list = getStagnantProducts(products, 60).slice(0,6);
+  const el = document.getElementById('stagnantList');
+  if(!list.length){ el.innerHTML = `<div class="empty" style="padding:18px"><div class="empty-t" style="color:var(--gr)">لا منتجات راكدة ✓</div></div>`; return; }
+  const sales = DB.invoices().filter(i=>i.type==='sale');
+  el.innerHTML = list.map(p=>{
+    const lastSale = sales.filter(inv=>(inv.items||[]).some(it=>it.barcode===p.barcode)).map(inv=>inv.at).sort((a,b)=>b-a)[0];
+    const days = lastSale ? Math.floor((Date.now()-lastSale)/86400000) : Math.floor((Date.now()-(p.created_at||Date.now()))/86400000);
+    return `<div class="sg-row" onclick="openProdDrawer('${p.barcode}')" style="cursor:pointer">
+      ${p.img?`<img class="sg-img" src="${p.img}">`:`<div class="sg-img-ph">📦</div>`}
+      <div class="sg-name" title="${p.name}">${p.name}</div>
+      <div class="sg-days">آخر بيع منذ ${days} يوم</div>
+    </div>`;
+  }).join('');
+}
+
+// ─── ACTIVITY FEED ───
+function renderActivity(invoices, products){
+  const stockLog = DB.stockLog();
+  const items = [];
+  invoices.slice(0,10).forEach(inv=>{
+    items.push({
+      at: inv.at,
+      icon: inv.type==='sale' ? '🛒' : '📥',
+      bg: inv.type==='sale' ? 'var(--grl)' : 'var(--bll)',
+      text: inv.type==='sale'
+        ? `تمت عملية بيع جديدة <b>#${String(inv.id).slice(-6)}</b>`
+        : `تم استلام بضاعة جديدة <b>#${String(inv.id).slice(-6)}</b>`,
+    });
+  });
+  stockLog.filter(l=>l.reason==='تعديل يدوي').slice(0,5).forEach(l=>{
+    items.push({ at:l.at, icon:'✏', bg:'var(--orl)', text:`تم تعديل مخزون <b>${l.name}</b>` });
+  });
+  items.sort((a,b)=>b.at-a.at);
+  const el = document.getElementById('activityFeed');
+  if(!items.length){ el.innerHTML = `<div class="empty" style="padding:20px"><div class="empty-t" style="color:var(--tx4)">لا نشاط حتى الآن</div></div>`; return; }
+  el.innerHTML = items.slice(0,8).map(it=>`
+    <div class="act-row">
+      <div class="act-ic" style="background:${it.bg}">${it.icon}</div>
+      <div class="act-text">${it.text}</div>
+      <div class="act-time">${timeAgo(it.at)}</div>
+    </div>`).join('');
+}
+function timeAgo(ts){
+  const diff = Math.floor((Date.now()-ts)/1000);
+  if(diff<60) return 'الآن';
+  if(diff<3600) return `منذ ${Math.floor(diff/60)} دقيقة`;
+  if(diff<86400) return `منذ ${Math.floor(diff/3600)} ساعة`;
+  return `منذ ${Math.floor(diff/86400)} يوم`;
 }
 
 function renderInvoices(){
