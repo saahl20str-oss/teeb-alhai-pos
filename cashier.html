@@ -498,6 +498,7 @@ input,select{font-family:inherit}
 // ─── BOOT ─────────────────────────────────
 DB.requireAuth();
 if (!DB.can('sale') && !DB.can('receive')) { DB.requirePerm('sale'); }
+DB.applyNavPermissions();
 
 const S  = () => DB.settings();
 const me = DB.session();
