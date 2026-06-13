@@ -313,12 +313,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
       <div class="panel">
         <div class="ph"><div class="ph-left"><div class="ph-bar"></div><span class="ph-title">اختصارات</span></div></div>
         <div class="qa-grid">
-          <button class="qa" onclick="location.href='cashier.html?mode=sale'"><span class="qi">💰</span>بيع</button>
-          <button class="qa" onclick="location.href='cashier.html?mode=receive'"><span class="qi">📥</span>استلام</button>
-          <button class="qa" onclick="location.href='inventory.html'"><span class="qi">📦</span>المخزون</button>
-          <button class="qa" onclick="location.href='reports.html'"><span class="qi">📊</span>التقارير</button>
-          <button class="qa" onclick="location.href='customers.html'"><span class="qi">👥</span>العملاء</button>
-          <button class="qa" onclick="openSettings()"><span class="qi">⚙</span>إعدادات</button>
+          <button class="qa" data-perm="sale,receive" onclick="location.href='cashier.html?mode=sale'"><span class="qi">💰</span>بيع</button>
+          <button class="qa" data-perm="sale,receive" onclick="location.href='cashier.html?mode=receive'"><span class="qi">📥</span>استلام</button>
+          <button class="qa" data-perm="inventory_view" onclick="location.href='inventory.html'"><span class="qi">📦</span>المخزون</button>
+          <button class="qa" data-perm="view_reports" onclick="location.href='reports.html'"><span class="qi">📊</span>التقارير</button>
+          <button class="qa" data-perm="customers" onclick="location.href='customers.html'"><span class="qi">👥</span>العملاء</button>
+          <button class="qa" data-perm="settings" onclick="openSettings()"><span class="qi">⚙</span>إعدادات</button>
         </div>
       </div>
 
@@ -422,7 +422,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 
 <script src="sync.js"></script>
 <script>
-DB.requireAuth();
+DB.enforcePageAccess();
+DB.applyNavPermissions();
 const me = DB.session();
 document.getElementById('tbUser').textContent = me?.name||'—';
 document.getElementById('pgDate').textContent  = DB.today();
@@ -440,7 +441,31 @@ function applyBranding(){
   }
 }
 
+function applyQaPermissions(){
+  document.querySelectorAll('.qa[data-perm]').forEach(btn=>{
+    const perms = btn.dataset.perm.split(',');
+    const ok = perms.some(p=>DB.can(p));
+    if(!ok) btn.style.display='none';
+  });
+}
+
+function applyCostVisibility(){
+  if(DB.can('view_cost')) return; // admin or explicit permission — show everything
+  // Hide inventory-value stat card (built from cost prices)
+  const s2 = document.querySelectorAll('.stat')[1];
+  if(s2) s2.style.display = 'none';
+  // Hide profit-related panels
+  ['profitToday','profitSub'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el && el.closest('.panel')) el.closest('.panel').style.display='none';
+  });
+  const tp = document.getElementById('profitTable');
+  if(tp && tp.closest('.panel')) tp.closest('.panel').style.display='none';
+}
+
 function load(){
+  applyCostVisibility();
+  applyQaPermissions();
   applyBranding();
   const s   = DB.settings();
   const cur = s.currency||'د.إ';
