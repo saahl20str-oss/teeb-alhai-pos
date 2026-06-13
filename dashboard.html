@@ -417,6 +417,53 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
     <div style="font-size:.7rem;font-weight:700;color:var(--tx4);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--bd)">المخزون</div>
     <div class="fg"><label>حد التنبيه المنخفض</label><input id="sd_low" type="number" min="1"></div>
     <button class="sbtn" onclick="saveSettings()">حفظ الإعدادات</button>
+
+    <div id="handoverSection" style="display:none;margin-top:24px;padding-top:18px;border-top:1px solid var(--bd)">
+      <div style="font-size:.7rem;font-weight:700;color:var(--rd);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">منطقة الخطر</div>
+      <div style="font-size:.78rem;color:var(--tx3);line-height:1.7;margin-bottom:12px;background:var(--rdl);border:1px solid rgba(192,57,43,.25);border-radius:9px;padding:12px">
+        ⚠ <b>تهيئة النظام للتسليم</b> — يمسح <b>كل</b> البيانات التجريبية بشكل نهائي:
+        المنتجات، الفواتير، سجل المخزون، العملاء، الموردون.
+        كما يطلب تعيين كلمة مرور جديدة لحساب المدير.
+        <br><br><b>هذا الإجراء لا يمكن التراجع عنه.</b> استخدمه فقط عند التسليم النهائي للشركة.
+      </div>
+      <button class="sbtn" style="background:var(--s4);color:var(--rd);border:1.5px solid var(--rd)" onclick="openHandoverModal()">🧹 تهيئة النظام للتسليم</button>
+    </div>
+  </div>
+</div>
+
+<!-- HANDOVER MODAL -->
+<div class="sov" id="hov" onclick="closeHandoverModal()" style="z-index:200"></div>
+<div class="settings-wrap" id="handoverModal" style="width:420px;max-width:96vw;z-index:201">
+  <div class="dh"><span class="dh-title" style="color:var(--rd)">🧹 تهيئة النظام للتسليم</span><button class="dh-close" onclick="closeHandoverModal()">✕</button></div>
+  <div style="padding:20px;flex:1;overflow-y:auto">
+    <div id="hovStep1">
+      <div style="font-size:.85rem;color:var(--tx2);line-height:1.8;margin-bottom:16px">
+        سيتم حذف نهائياً:
+        <ul style="margin:8px 0 0 0;padding-right:20px;line-height:1.9">
+          <li>جميع المنتجات والمخزون</li>
+          <li>جميع فواتير البيع والشراء</li>
+          <li>سجل حركات المخزون</li>
+          <li>قائمة العملاء</li>
+          <li>قائمة الموردين</li>
+        </ul>
+      </div>
+      <div style="font-size:.85rem;color:var(--tx2);margin-bottom:8px">ستبقى: إعدادات المتجر (الاسم، الشعار، العملة، الضريبة) وحسابات الموظفين.</div>
+      <hr class="divider" style="border:none;border-top:1px solid var(--bd);margin:16px 0">
+      <div class="fg"><label>كلمة مرور جديدة لحساب المدير *</label><input id="hov_pass1" type="password" placeholder="8 أحرف على الأقل"></div>
+      <div class="fg"><label>تأكيد كلمة المرور *</label><input id="hov_pass2" type="password" placeholder="أعد كتابتها"></div>
+      <div class="fg"><label>اكتب "تأكيد" للموافقة على المسح النهائي *</label><input id="hov_confirm" placeholder="تأكيد" dir="rtl"></div>
+      <div class="msg err" id="hov_err" style="text-align:center;font-size:.8rem;color:var(--rd);min-height:20px;margin-top:4px"></div>
+      <button class="sbtn" style="background:var(--rd);color:#fff" onclick="runHandover()">تنفيذ التهيئة النهائية</button>
+    </div>
+    <div id="hovStep2" style="display:none;text-align:center;padding:20px 0">
+      <div style="font-size:2.5rem;margin-bottom:10px">✅</div>
+      <div style="font-size:1rem;font-weight:800;color:var(--gr);margin-bottom:8px">تمت التهيئة بنجاح</div>
+      <div style="font-size:.82rem;color:var(--tx3);line-height:1.8">
+        تم مسح كل البيانات التجريبية، وتحديث كلمة مرور المدير.<br>
+        سيتم تسجيل خروجك الآن — استخدم <b>admin</b> وكلمة المرور الجديدة للدخول.
+      </div>
+      <button class="sbtn" style="margin-top:16px" onclick="logout()">تسجيل الخروج الآن</button>
+    </div>
   </div>
 </div>
 
@@ -941,6 +988,7 @@ function emptyHTML(t){return`<div style="padding:18px;text-align:center;color:va
 
 // SETTINGS
 function openSettings(){
+  document.getElementById('handoverSection').style.display = DB.session()?.role==='admin' ? 'block' : 'none';
   const s=DB.settings();
   document.getElementById('sd_name').value=s.store_name||'';
   document.getElementById('sd_addr').value=s.address||'';
@@ -955,6 +1003,55 @@ function openSettings(){
   document.getElementById('settingsWrap').classList.add('on');
 }
 function closeSettings(){document.getElementById('sov').classList.remove('on');document.getElementById('settingsWrap').classList.remove('on');}
+
+// HANDOVER (system reset for delivery)
+function openHandoverModal(){
+  document.getElementById('hov_pass1').value='';
+  document.getElementById('hov_pass2').value='';
+  document.getElementById('hov_confirm').value='';
+  document.getElementById('hov_err').textContent='';
+  document.getElementById('hovStep1').style.display='block';
+  document.getElementById('hovStep2').style.display='none';
+  document.getElementById('hov').classList.add('on');
+  document.getElementById('handoverModal').classList.add('on');
+}
+function closeHandoverModal(){
+  document.getElementById('hov').classList.remove('on');
+  document.getElementById('handoverModal').classList.remove('on');
+}
+
+function runHandover(){
+  const p1 = document.getElementById('hov_pass1').value;
+  const p2 = document.getElementById('hov_pass2').value;
+  const cf = document.getElementById('hov_confirm').value.trim();
+  const err = document.getElementById('hov_err');
+  err.textContent = '';
+
+  if(p1.length < 8){ err.textContent = 'كلمة المرور 8 أحرف على الأقل'; return; }
+  if(p1 !== p2){ err.textContent = 'كلمتا المرور غير متطابقتين'; return; }
+  if(cf !== 'تأكيد'){ err.textContent = 'اكتب كلمة "تأكيد" بالضبط للموافقة'; return; }
+
+  // 1. Wipe transactional data
+  DB._set(DB.K.products, []);
+  DB._set(DB.K.invoices, []);
+  DB._set(DB.K.stock_log, []);
+  DB._set(DB.K.customers, []);
+  localStorage.removeItem('th_suppliers');
+
+  // 2. Update admin password
+  const accounts = DB.accounts();
+  const idx = accounts.findIndex(a=>a.username==='admin');
+  if(idx>=0){
+    accounts[idx].password = p1;
+    accounts[idx].active = true;
+    accounts[idx].role = 'admin';
+    DB.saveAccounts(accounts);
+  }
+
+  // 3. Show success step
+  document.getElementById('hovStep1').style.display='none';
+  document.getElementById('hovStep2').style.display='block';
+}
 function handleLogo(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{window._logo=e.target.result;document.getElementById('logoUp').innerHTML=`<img src="${e.target.result}">`;};r.readAsDataURL(f);}
 function removeLogo(){window._logo=null;const s=DB.settings();s.logo=null;DB.saveSettings(s);document.getElementById('logoUp').innerHTML=`<span style="font-size:.74rem;color:var(--tx4)">رفع شعار</span>`;}
 function saveSettings(){
