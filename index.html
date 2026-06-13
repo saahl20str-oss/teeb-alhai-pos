@@ -161,6 +161,11 @@ html,body{height:100%;font-family:'Tajawal',sans-serif}
         </div>
         <button class="btn" onclick="login()">دخول</button>
         <div class="msg err" id="l_err"></div>
+        <div style="margin-top:14px;text-align:center">
+          <button onclick="resetAndLogin()" style="font-size:.7rem;color:#c8b89a;background:none;border:none;cursor:pointer;font-family:'Tajawal',sans-serif;padding:4px 8px;border-radius:5px;transition:.15s" onmouseover="this.style.color='#C9A84C'" onmouseout="this.style.color='#c8b89a'">
+            إعادة تعيين حساب المدير
+          </button>
+        </div>
       </div>
 
       <!-- REGISTER FORM -->
@@ -215,7 +220,7 @@ html,body{height:100%;font-family:'Tajawal',sans-serif}
 (function(){
   const s = DB.settings();
   if(s.store_name) document.getElementById('loginName').textContent = s.store_name;
-  if(DB.session()) location.href = 'dashboard.html';
+  if(DB.session()) location.href = DB.firstAccessiblePage();
 })();
 
 // TAB SWITCH
@@ -275,7 +280,7 @@ function login(){
     id:acc.id, username:acc.username, name:acc.name,
     role:acc.role, permissions:acc.permissions||{}, loginAt:Date.now()
   });
-  location.href = 'dashboard.html';
+  location.href = DB.firstAccessiblePage();
 }
 
 // REGISTER
@@ -314,6 +319,25 @@ function register(){
   // Clear form
   ['r_name','r_user','r_phone','r_pass','r_pass2'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('pwBar').style.width='0';
+}
+
+// RESET ADMIN — fixes login if account is broken
+function resetAndLogin(){
+  if(!confirm('هل تريد إعادة تعيين حساب المدير؟\nسيتم تسجيل الدخول بـ admin / admin123')) return;
+  const list = DB.accounts();
+  const idx  = list.findIndex(a => a.username === 'admin');
+  const adminAcc = {
+    id:'admin', username:'admin', password:'admin123',
+    name:'مدير النظام', role:'admin', permissions:{}, active:true, created_at:Date.now()
+  };
+  if(idx >= 0) list[idx] = adminAcc;
+  else list.push(adminAcc);
+  DB.saveAccounts(list);
+  DB._set(DB.K.session, {
+    id:'admin', username:'admin', name:'مدير النظام',
+    role:'admin', permissions:{}, loginAt:Date.now()
+  });
+  location.href = DB.firstAccessiblePage();
 }
 </script>
 </body>
