@@ -108,14 +108,64 @@ const DB = {
   requirePerm(perm) {
     if (!this.requireAuth()) return false;
     if (!this.can(perm)) {
+      const home = DB.firstAccessiblePage();
       document.body.innerHTML = `
         <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;
-          justify-content:center;gap:14px;font-family:'Tajawal',sans-serif;background:#0f0d0a;color:#c8b89a">
+          justify-content:center;gap:14px;font-family:'Tajawal',sans-serif;background:#fff;color:#7A6A50">
           <span style="font-size:3rem">🔒</span>
-          <span style="font-size:1.1rem;font-weight:700">ليس لديك صلاحية لهذه الصفحة</span>
-          <a href="dashboard.html" style="padding:9px 24px;background:#C9A84C;color:#1C1208;
+          <span style="font-size:1.1rem;font-weight:700;color:#1F1709">ليس لديك صلاحية لهذه الصفحة</span>
+          <a href="${home}" style="padding:9px 24px;background:#C9A84C;color:#1C1208;
             border-radius:8px;font-weight:700;text-decoration:none;font-size:.9rem">العودة للرئيسية</a>
         </div>`;
+      return false;
+    }
+    return true;
+  },
+
+  /* ── PAGE ACCESS MAP ── */
+  PAGE_PERMS: {
+    'dashboard.html': 'view_dashboard',
+    'cashier.html'  : ['sale','receive'],
+    'inventory.html': 'inventory_view',
+    'suppliers.html': 'inventory_view',
+    'reports.html'  : 'view_reports',
+    'customers.html': 'customers',
+    'users.html'    : 'manage_users',
+  },
+
+  /* First page this user is allowed to see (used for redirects & nav fallback) */
+  firstAccessiblePage() {
+    const order = ['dashboard.html','cashier.html','inventory.html','reports.html','customers.html','suppliers.html','users.html'];
+    for (const page of order) {
+      const perm = this.PAGE_PERMS[page];
+      const ok = Array.isArray(perm) ? perm.some(p=>this.can(p)) : this.can(perm);
+      if (ok) return page;
+    }
+    return 'index.html';
+  },
+
+  /* Hide nav links (and dashboard-only elements) the current user can't access */
+  applyNavPermissions() {
+    document.querySelectorAll('.tb-nav a[href]').forEach(a => {
+      const href = a.getAttribute('href');
+      const perm = this.PAGE_PERMS[href];
+      if (!perm) return;
+      const ok = Array.isArray(perm) ? perm.some(p=>this.can(p)) : this.can(perm);
+      if (!ok) a.style.display = 'none';
+    });
+  },
+
+  /* If current page requires a permission this user lacks, redirect to their home page */
+  enforcePageAccess() {
+    if (!this.requireAuth()) return false;
+    const file = location.pathname.split('/').pop() || 'dashboard.html';
+    const perm = this.PAGE_PERMS[file];
+    if (!perm) return true;
+    const ok = Array.isArray(perm) ? perm.some(p=>this.can(p)) : this.can(perm);
+    if (!ok) {
+      const home = this.firstAccessiblePage();
+      if (home === file) return true; // avoid redirect loop
+      location.href = home;
       return false;
     }
     return true;
