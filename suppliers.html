@@ -175,7 +175,9 @@ a{text-decoration:none;color:inherit}button{font-family:inherit;cursor:pointer;b
 
 <script src="sync.js"></script>
 <script>
-DB.requireAuth();
+DB.enforcePageAccess();
+DB.requirePerm('inventory_view');
+DB.applyNavPermissions();
 const me = DB.session();
 document.getElementById('tbUser').textContent = me?.name || '—';
 (function(){
