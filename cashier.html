@@ -336,7 +336,7 @@ input,select{font-family:inherit}
         <hr class="sum-divider">
         <div class="sum-row"><span class="lbl">المجموع</span><span class="val mono" id="sumSub">0.00</span></div>
         <div class="sum-row" id="discRow" style="display:none"><span class="lbl">الخصم</span><span class="val mono" style="color:var(--rd)" id="sumDisc">0.00</span></div>
-        <div class="sum-row"><span class="lbl">ضريبة (<span id="vatPct">5</span>%)</span><span class="val mono" id="sumVat">0.00</span></div>
+        <div class="sum-row" id="vatRow"><span class="lbl">ضريبة (<span id="vatPct">5</span>%)</span><span class="val mono" id="sumVat">0.00</span></div>
         <hr class="sum-divider">
         <div class="sum-row sum-total"><span class="lbl">الإجمالي</span><span class="val mono" id="sumTotal">0.00</span></div>
         <div style="font-size:.7rem;color:var(--tx4);text-align:left;margin-top:2px" id="sumCur">د.إ</div>
@@ -667,7 +667,8 @@ function calcTotals(){
   const dv  = Number(document.getElementById('discAmt').value)||0;
   let disc  = discType==='pct' ? sub*(dv/100) : Math.min(dv,sub);
   const after = Math.max(0, sub - disc);
-  const vat   = after * ((s.vat||5)/100);
+  const vatEnabled = s.vat_enabled !== false && Number(s.vat||0) > 0;
+  const vat   = vatEnabled ? after * (Number(s.vat||5)/100) : 0;
   const total = after + vat;
   const cur   = s.currency||'د.إ';
   document.getElementById('sumSub').textContent   = DB.fmt(sub)+' '+cur;
@@ -675,6 +676,9 @@ function calcTotals(){
   document.getElementById('sumTotal').textContent = DB.fmt(total)+' '+cur;
   document.getElementById('sumCur').textContent   = cur;
   document.getElementById('vatPct').textContent   = s.vat||5;
+  // Show/hide VAT row based on vat_enabled and amount
+  const vatRowEl = document.getElementById('vatRow');
+  if(vatRowEl) vatRowEl.style.display = vat > 0 ? 'flex' : 'none';
   const dr = document.getElementById('discRow');
   if(disc>0){
     dr.style.display='flex';
@@ -805,7 +809,7 @@ function renderInvoice(inv){
     <div class="rp-totals">
       <div class="rp-trow"><span>المجموع قبل الخصم</span><span class="rv">${DB.fmt(inv.subtotal)} ${cur}</span></div>
       ${inv.discount>0?`<div class="rp-trow"><span>الخصم</span><span class="rv" style="color:var(--rd)">- ${DB.fmt(inv.discount)} ${cur}</span></div>`:''}
-      <div class="rp-trow"><span>ضريبة القيمة المضافة (${s.vat||5}%)</span><span class="rv">${DB.fmt(inv.vat)} ${cur}</span></div>
+      ${(inv.vat && Number(inv.vat)>0)?`<div class="rp-trow"><span>ضريبة القيمة المضافة (${s.vat||5}%)</span><span class="rv">${DB.fmt(inv.vat)} ${cur}</span></div>`:''}
       <div class="rp-grand"><span>الإجمالي النهائي</span><span class="rv">${DB.fmt(inv.total)} ${cur}</span></div>
     </div>
     <div class="rp-footer">
