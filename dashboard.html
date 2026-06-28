@@ -414,19 +414,14 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
       </select>
     </div>
     <div class="fg"><label>الضريبة (ضريبة القيمة المضافة)</label>
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 13px;background:var(--s3);border:1.5px solid var(--bd);border-radius:8px;margin-bottom:6px">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 13px;background:var(--s3);border:1.5px solid var(--bd);border-radius:8px;margin-bottom:6px;cursor:pointer" onclick="toggleVatSwitch()">
         <span style="font-size:.88rem;color:var(--tx2)">تفعيل الضريبة</span>
-        <label style="position:relative;width:42px;height:23px;flex-shrink:0">
-          <input type="checkbox" id="sd_vat_on" style="opacity:0;width:0;height:0;position:absolute"
-            onchange="document.getElementById('sd_vat_wrap').style.display=this.checked?'block':'none'">
-          <div id="sd_vat_track" onclick="document.getElementById('sd_vat_on').click()"
-            style="position:absolute;inset:0;background:var(--s4);border:1px solid var(--bd2);border-radius:23px;transition:.2s;cursor:pointer"></div>
-          <div id="sd_vat_thumb"
-            style="position:absolute;top:3px;right:3px;width:15px;height:15px;background:#fff;border-radius:50%;transition:.2s;pointer-events:none;box-shadow:0 1px 3px rgba(0,0,0,.2)"></div>
-        </label>
+        <div id="sd_vat_switch" style="width:44px;height:24px;border-radius:24px;background:var(--s4);border:1px solid var(--bd2);position:relative;transition:.2s;flex-shrink:0">
+          <div id="sd_vat_knob" style="width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:2px;right:3px;transition:.2s;box-shadow:0 1px 4px rgba(0,0,0,.2)"></div>
+        </div>
       </div>
       <div id="sd_vat_wrap">
-        <input id="sd_vat" type="number" min="0" max="100" placeholder="مثال: 5" style="padding:9px 11px;background:var(--s3);border:1.5px solid var(--bd);border-radius:8px;color:var(--tx);font-size:.88rem;font-family:'Tajawal',sans-serif;width:100%">
+        <input id="sd_vat" type="number" min="0.01" max="100" step="0.01" placeholder="مثال: 5" style="padding:9px 11px;background:var(--s3);border:1.5px solid var(--bd);border-radius:8px;color:var(--tx);font-size:.88rem;font-family:'Tajawal',sans-serif;width:100%;transition:.15s">
         <div style="font-size:.72rem;color:var(--tx4);margin-top:5px">النسبة المئوية للضريبة — تُطبَّق على إجمالي الفاتورة</div>
       </div>
     </div>
@@ -1011,17 +1006,9 @@ function openSettings(){
   document.getElementById('sd_phone').value=s.phone||'';
   document.getElementById('sd_note').value=s.receipt_note||'';
   document.getElementById('sd_cur').value=s.currency||'د.إ';
-  const vatOn = s.vat_enabled !== false; // default ON
-  const vatCb = document.getElementById('sd_vat_on');
-  const vatWrap = document.getElementById('sd_vat_wrap');
-  const vatTrack = document.getElementById('sd_vat_track');
-  const vatThumb = document.getElementById('sd_vat_thumb');
-  vatCb.checked = vatOn;
-  vatWrap.style.display = vatOn ? 'block' : 'none';
-  vatTrack.style.background = vatOn ? 'var(--g)' : 'var(--s4)';
-  vatTrack.style.borderColor = vatOn ? 'var(--g)' : 'var(--bd2)';
-  vatThumb.style.right = vatOn ? 'calc(100% - 18px)' : '3px';
-  document.getElementById('sd_vat').value=s.vat||5;
+  window._vatOn = s.vat_enabled !== false; // default ON
+  setVatSwitch(window._vatOn);
+  document.getElementById('sd_vat').value = s.vat || 5;
   document.getElementById('sd_low').value=s.low_alert||5;
   const lu=document.getElementById('logoUp');
   lu.innerHTML=s.logo?`<img src="${s.logo}">`:`<span style="font-size:.74rem;color:var(--tx4)">رفع شعار</span>`;
@@ -1029,6 +1016,22 @@ function openSettings(){
   document.getElementById('settingsWrap').classList.add('on');
 }
 function closeSettings(){document.getElementById('sov').classList.remove('on');document.getElementById('settingsWrap').classList.remove('on');}
+
+// VAT TOGGLE
+function setVatSwitch(on){
+  window._vatOn = on;
+  const sw   = document.getElementById('sd_vat_switch');
+  const knob = document.getElementById('sd_vat_knob');
+  const wrap = document.getElementById('sd_vat_wrap');
+  if(!sw) return;
+  sw.style.background   = on ? 'var(--g)'   : 'var(--s4)';
+  sw.style.borderColor  = on ? 'var(--g)'   : 'var(--bd2)';
+  knob.style.right      = on ? 'calc(100% - 21px)' : '3px';
+  wrap.style.display    = on ? 'block' : 'none';
+}
+function toggleVatSwitch(){
+  setVatSwitch(!window._vatOn);
+}
 
 // HANDOVER (system reset for delivery)
 function openHandoverModal(){
@@ -1087,13 +1090,8 @@ function saveSettings(){
   s.phone        = document.getElementById('sd_phone').value.trim();
   s.receipt_note = document.getElementById('sd_note').value.trim();
   s.currency     = document.getElementById('sd_cur').value;
-  const vatCb2 = document.getElementById('sd_vat_on');
-  s.vat_enabled  = vatCb2.checked;
-  s.vat          = vatCb2.checked ? (Number(document.getElementById('sd_vat').value)||5) : 0;
-  // Sync toggle visual
-  document.getElementById('sd_vat_track').style.background = vatCb2.checked ? 'var(--g)' : 'var(--s4)';
-  document.getElementById('sd_vat_track').style.borderColor = vatCb2.checked ? 'var(--g)' : 'var(--bd2)';
-  document.getElementById('sd_vat_thumb').style.right = vatCb2.checked ? 'calc(100% - 18px)' : '3px';
+  s.vat_enabled = window._vatOn;
+  s.vat         = window._vatOn ? (Number(document.getElementById('sd_vat').value)||5) : 0;
   s.low_alert    = Number(document.getElementById('sd_low').value)||5;
   if(window._logo){s.logo=window._logo;window._logo=null;}
   DB.saveSettings(s);
