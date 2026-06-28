@@ -413,7 +413,23 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
         <option value="ر.ق">ريال قطري — ر.ق</option>
       </select>
     </div>
-    <div class="fg"><label>نسبة الضريبة %</label><input id="sd_vat" type="number" min="0" max="100"></div>
+    <div class="fg"><label>الضريبة (ضريبة القيمة المضافة)</label>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 13px;background:var(--s3);border:1.5px solid var(--bd);border-radius:8px;margin-bottom:6px">
+        <span style="font-size:.88rem;color:var(--tx2)">تفعيل الضريبة</span>
+        <label style="position:relative;width:42px;height:23px;flex-shrink:0">
+          <input type="checkbox" id="sd_vat_on" style="opacity:0;width:0;height:0;position:absolute"
+            onchange="document.getElementById('sd_vat_wrap').style.display=this.checked?'block':'none'">
+          <div id="sd_vat_track" onclick="document.getElementById('sd_vat_on').click()"
+            style="position:absolute;inset:0;background:var(--s4);border:1px solid var(--bd2);border-radius:23px;transition:.2s;cursor:pointer"></div>
+          <div id="sd_vat_thumb"
+            style="position:absolute;top:3px;right:3px;width:15px;height:15px;background:#fff;border-radius:50%;transition:.2s;pointer-events:none;box-shadow:0 1px 3px rgba(0,0,0,.2)"></div>
+        </label>
+      </div>
+      <div id="sd_vat_wrap">
+        <input id="sd_vat" type="number" min="0" max="100" placeholder="مثال: 5" style="padding:9px 11px;background:var(--s3);border:1.5px solid var(--bd);border-radius:8px;color:var(--tx);font-size:.88rem;font-family:'Tajawal',sans-serif;width:100%">
+        <div style="font-size:.72rem;color:var(--tx4);margin-top:5px">النسبة المئوية للضريبة — تُطبَّق على إجمالي الفاتورة</div>
+      </div>
+    </div>
     <div style="font-size:.7rem;font-weight:700;color:var(--tx4);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--bd)">المخزون</div>
     <div class="fg"><label>حد التنبيه المنخفض</label><input id="sd_low" type="number" min="1"></div>
     <button class="sbtn" onclick="saveSettings()">حفظ الإعدادات</button>
@@ -943,7 +959,7 @@ function openInvDrawer(id){
     </div></div>
     <div class="ds"><div class="ds-title">الإجماليات</div>
       ${inv.discount>0?`<div class="kv"><span class="k">الخصم</span><span class="v" style="color:var(--rd)">- ${DB.fmt(inv.discount)} ${cur}</span></div>`:''}
-      ${inv.vat?`<div class="kv"><span class="k">الضريبة</span><span class="v">${DB.fmt(inv.vat)} ${cur}</span></div>`:''}
+      ${(inv.vat && Number(inv.vat)>0)?`<div class="kv"><span class="k">الضريبة</span><span class="v">${DB.fmt(inv.vat)} ${cur}</span></div>`:''}
       <div class="kv"><span class="k" style="font-weight:700;color:var(--tx)">الإجمالي</span><span class="v" style="font-size:1.05rem;color:var(--gr)">${DB.fmt(inv.total)} ${cur}</span></div>
     </div>`;
   document.getElementById('dBg').classList.add('on');
@@ -995,6 +1011,16 @@ function openSettings(){
   document.getElementById('sd_phone').value=s.phone||'';
   document.getElementById('sd_note').value=s.receipt_note||'';
   document.getElementById('sd_cur').value=s.currency||'د.إ';
+  const vatOn = s.vat_enabled !== false; // default ON
+  const vatCb = document.getElementById('sd_vat_on');
+  const vatWrap = document.getElementById('sd_vat_wrap');
+  const vatTrack = document.getElementById('sd_vat_track');
+  const vatThumb = document.getElementById('sd_vat_thumb');
+  vatCb.checked = vatOn;
+  vatWrap.style.display = vatOn ? 'block' : 'none';
+  vatTrack.style.background = vatOn ? 'var(--g)' : 'var(--s4)';
+  vatTrack.style.borderColor = vatOn ? 'var(--g)' : 'var(--bd2)';
+  vatThumb.style.right = vatOn ? 'calc(100% - 18px)' : '3px';
   document.getElementById('sd_vat').value=s.vat||5;
   document.getElementById('sd_low').value=s.low_alert||5;
   const lu=document.getElementById('logoUp');
@@ -1061,7 +1087,13 @@ function saveSettings(){
   s.phone        = document.getElementById('sd_phone').value.trim();
   s.receipt_note = document.getElementById('sd_note').value.trim();
   s.currency     = document.getElementById('sd_cur').value;
-  s.vat          = Number(document.getElementById('sd_vat').value)||5;
+  const vatCb2 = document.getElementById('sd_vat_on');
+  s.vat_enabled  = vatCb2.checked;
+  s.vat          = vatCb2.checked ? (Number(document.getElementById('sd_vat').value)||5) : 0;
+  // Sync toggle visual
+  document.getElementById('sd_vat_track').style.background = vatCb2.checked ? 'var(--g)' : 'var(--s4)';
+  document.getElementById('sd_vat_track').style.borderColor = vatCb2.checked ? 'var(--g)' : 'var(--bd2)';
+  document.getElementById('sd_vat_thumb').style.right = vatCb2.checked ? 'calc(100% - 18px)' : '3px';
   s.low_alert    = Number(document.getElementById('sd_low').value)||5;
   if(window._logo){s.logo=window._logo;window._logo=null;}
   DB.saveSettings(s);
