@@ -84,7 +84,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .tbl tbody tr{cursor:pointer;transition:.08s}
 .tbl tbody tr:hover td{background:var(--s3)}
 .badge{display:inline-flex;padding:2px 8px;border-radius:4px;font-size:.67rem;font-weight:700}
-.b-s{background:var(--grl);color:var(--gr)}.b-p{background:var(--bll);color:var(--bl)}
+.b-s{background:var(--grl);color:var(--gr)}.b-p{background:var(--bll);color:var(--bl)}.b-r{background:var(--rdl);color:var(--rd)}
 
 /* CHART BARS */
 .chart-body{padding:14px 16px}
@@ -819,7 +819,7 @@ function renderInvoices(){
   el.innerHTML=`<table class="tbl"><thead><tr><th>رقم</th><th>النوع</th><th>التاريخ</th><th>إجمالي</th></tr></thead><tbody>
   ${show.map(i=>`<tr onclick="openInvDrawer('${i.id}')">
     <td class="mono" style="color:var(--tx3)">#${String(i.id||'').slice(-6)}</td>
-    <td><span class="badge ${i.type==='sale'?'b-s':'b-p'}">${i.type==='sale'?'بيع':'شراء'}</span></td>
+    <td><span class="badge ${i.type==='sale'?'b-s':i.type==='return'?'b-r':'b-p'}">${i.type==='sale'?'بيع':i.type==='return'?'مرتجع':'شراء'}</span></td>
     <td style="font-size:.75rem;color:var(--tx4)">${DB.fmtDate(i.at,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</td>
     <td class="mono" style="font-weight:700;color:var(--tx)">${DB.fmt(i.total)}<span style="font-family:'Tajawal';font-size:.7rem;color:var(--tx4);margin-right:2px">${cur}</span></td>
   </tr>`).join('')}
