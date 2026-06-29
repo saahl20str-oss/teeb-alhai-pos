@@ -44,7 +44,7 @@ a{text-decoration:none;color:inherit}button{font-family:inherit;cursor:pointer;b
 .tbl tr:last-child td{border-bottom:none}
 .tbl tbody tr:hover td{background:var(--s3)}
 .badge{padding:2px 7px;border-radius:4px;font-size:.68rem;font-weight:700}
-.b-s{background:var(--grl);color:var(--gr)}.b-p{background:var(--bll);color:var(--bl)}
+.b-s{background:var(--grl);color:var(--gr)}.b-p{background:var(--bll);color:var(--bl)}.b-r{background:var(--rdl);color:var(--rd)}
 .exp-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;background:var(--s3);border:1px solid var(--bd2);color:var(--tx3);border-radius:7px;font-size:.8rem;font-weight:700;cursor:pointer;transition:.12s}
 .exp-btn:hover{border-color:var(--g);color:var(--g)}
 @media(max-width:900px){.stats4{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.tb-nav{display:none}.page{padding:12px}}
@@ -136,15 +136,26 @@ function load(){
   filtered=all.filter(i=>i.at>=from&&i.at<=to);
   const sales=filtered.filter(i=>i.type==='sale');
   const buys=filtered.filter(i=>i.type==='purchase');
+  const returns=filtered.filter(i=>i.type==='return');
   const sAmt=sales.reduce((a,i)=>a+Number(i.total||0),0);
+  const retAmt=returns.reduce((a,i)=>a+Math.abs(Number(i.total||0)),0);
+  const netSales=Math.max(0,sAmt-retAmt);
   const bAmt=buys.reduce((a,i)=>a+Number(i.total||0),0);
   const prods=DB.products();
   let profit=0;
   sales.forEach(inv=>(inv.items||[]).forEach(it=>{const p=prods.find(x=>x.barcode===it.barcode)||{};profit+=(Number(it.price||0)-Number(p.cost||it.cost||0))*Number(it.qty||0);}));
-  document.getElementById('r1').textContent=DB.fmt(sAmt)+' '+cur;document.getElementById('r1n').textContent=sales.length+' فاتورة';
+  returns.forEach(inv=>(inv.items||[]).forEach(it=>{const p=prods.find(x=>x.barcode===it.barcode)||{};profit-=(Number(it.price||0)-Number(p.cost||it.cost||0))*Number(it.qty||0);}));
+  document.getElementById('r1').textContent=DB.fmt(netSales)+' '+cur;
+  document.getElementById('r1n').textContent=sales.length+' فاتورة'+(retAmt>0?' (خصم مرتجعات: '+DB.fmt(retAmt)+' '+cur+')':'');
   document.getElementById('r2').textContent=DB.fmt(bAmt)+' '+cur;document.getElementById('r2n').textContent=buys.length+' عملية';
+  // Show returns info in r3n
+  if(retAmt>0){
+    const retEl=document.getElementById('r3n');
+    if(retEl) retEl.innerHTML+=' <span style="color:var(--rd);font-size:.68rem">(بعد خصم مرتجعات '+DB.fmt(retAmt)+' '+cur+')</span>';
+  }
   document.getElementById('r3').textContent=DB.fmt(profit)+' '+cur;document.getElementById('r3n').textContent=profit>=0?'ربح':'خسارة';document.getElementById('r3n').style.color=profit>=0?'var(--gr)':'var(--rd)';
-  document.getElementById('r4').textContent=filtered.length;document.getElementById('r4n').textContent='إجمالي العمليات';
+  document.getElementById('r4').textContent=filtered.length;
+  document.getElementById('r4n').textContent='بيع: '+sales.length+(returns.length?' · مرتجع: '+returns.length:'');
   renderDailyChart(sales,cur);renderTopChart(sales,cur);renderCatTable(sales,prods,cur);renderInvTable();renderMarginChart(prods,cur);
 }
 
@@ -170,6 +181,8 @@ function renderCatTable(sales,prods,cur){
   const tb=document.getElementById('catBody');
   const cats={};
   sales.forEach(inv=>(inv.items||[]).forEach(it=>{const p=prods.find(x=>x.barcode===it.barcode)||{};const c=p.category||'أخرى';if(!cats[c])cats[c]={qty:0,rev:0,cost:0};const q=Number(it.qty||0);cats[c].qty+=q;cats[c].rev+=Number(it.price||0)*q;cats[c].cost+=Number(p.cost||0)*q;}));
+  // Deduct returns from category stats
+  returns.forEach(inv=>(inv.items||[]).forEach(it=>{const p=prods.find(x=>x.barcode===it.barcode)||{};const c=p.category||'أخرى';if(cats[c]){const q=Number(it.qty||0);cats[c].qty=Math.max(0,cats[c].qty-q);cats[c].rev=Math.max(0,cats[c].rev-Number(it.price||0)*q);}}));
   const rows=Object.entries(cats).sort((a,b)=>b[1].rev-a[1].rev);
   if(!rows.length){tb.innerHTML=`<tr><td colspan="5" style="text-align:center;padding:18px;color:var(--tx4)">لا بيانات</td></tr>`;return;}
   tb.innerHTML=rows.map(([c,d])=>`<tr><td style="font-weight:600">${c}</td><td class="mono">${d.qty}</td><td class="mono" style="color:var(--gr)">${DB.fmt(d.rev)}</td><td class="mono" style="color:var(--rd)">${DB.fmt(d.cost)}</td><td class="mono" style="font-weight:700;color:${d.rev-d.cost>=0?'var(--gr)':'var(--rd)'}">${DB.fmt(d.rev-d.cost)}</td></tr>`).join('');
@@ -178,7 +191,7 @@ function renderInvTable(){
   const tb=document.getElementById('invBody');const srch=document.getElementById('invS').value.toLowerCase();const cur=DB.settings().currency||'د.إ';
   let rows=filtered;if(srch)rows=rows.filter(i=>(i.id||'').toLowerCase().includes(srch)||(i.items||[]).some(it=>(it.name||'').toLowerCase().includes(srch)));
   if(!rows.length){tb.innerHTML=`<tr><td colspan="4" style="text-align:center;padding:16px;color:var(--tx4)">لا نتائج</td></tr>`;return;}
-  tb.innerHTML=rows.slice(0,60).map(i=>`<tr><td class="mono" style="font-size:.74rem;color:var(--tx4)">#${String(i.id||'').slice(-6)}</td><td><span class="badge ${i.type==='sale'?'b-s':'b-p'}">${i.type==='sale'?'بيع':'شراء'}</span></td><td style="font-size:.74rem;color:var(--tx4)">${DB.fmtDate(i.at,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</td><td class="mono" style="font-weight:700">${DB.fmt(i.total)} <span style="font-family:'Tajawal';font-size:.68rem;color:var(--tx4)">${cur}</span></td></tr>`).join('');
+  tb.innerHTML=rows.slice(0,60).map(i=>`<tr><td class="mono" style="font-size:.74rem;color:var(--tx4)">#${String(i.id||'').slice(-6)}</td><td><span class="badge ${i.type==='sale'?'b-s':i.type==='return'?'b-r':'b-p'}">${i.type==='sale'?'بيع':i.type==='return'?'مرتجع':'شراء'}</span></td><td style="font-size:.74rem;color:var(--tx4)">${DB.fmtDate(i.at,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</td><td class="mono" style="font-weight:700">${DB.fmt(i.total)} <span style="font-family:'Tajawal';font-size:.68rem;color:var(--tx4)">${cur}</span></td></tr>`).join('');
 }
 function renderMarginChart(prods,cur){
   const el=document.getElementById('marginChart');
