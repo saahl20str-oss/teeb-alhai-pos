@@ -269,6 +269,7 @@ input,select{font-family:inherit}
 <div class="mode-tabs">
   <button class="mode-tab on" id="tab-sale"    onclick="switchMode('sale')">💰 بيع</button>
   <button class="mode-tab"    id="tab-receive" onclick="switchMode('receive')">📥 استلام بضاعة</button>
+  <button class="mode-tab"    id="tab-return"  onclick="switchMode('return')">🔄 مرتجعات</button>
 </div>
 
 <!-- DIAGNOSTIC BAR -->
@@ -475,6 +476,93 @@ input,select{font-family:inherit}
       </div>
     </div>
   </div>
+
+  <!-- ══════════════ RETURN MODE ══════════════ -->
+  <div id="mode-return" style="display:none;flex:1;overflow:hidden;flex-direction:column">
+    <div class="receive-wrap">
+
+      <!-- Search panel -->
+      <div class="receive-left">
+        <div class="card-block">
+          <div class="cb-title">🔍 ابحث عن الفاتورة الأصلية</div>
+          <div class="fg">
+            <label>رقم الفاتورة</label>
+            <div style="display:flex;gap:7px">
+              <input id="retInvNum" dir="ltr" placeholder="مثال: INV1718000000"
+                style="flex:1" onkeydown="if(event.key==='Enter')searchReturnInvoice()">
+              <button onclick="searchReturnInvoice()"
+                style="padding:0 16px;background:var(--g);color:#1C1208;border:none;border-radius:8px;font-size:.84rem;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif">بحث</button>
+            </div>
+          </div>
+          <div id="retFound" style="display:none"></div>
+          <div id="retError" style="display:none;color:var(--rd);font-size:.8rem;padding:8px 0"></div>
+        </div>
+
+        <!-- Return items -->
+        <div class="card-block" id="retItemsBlock" style="display:none">
+          <div class="cb-title">اختر المنتجات المُرتجعة</div>
+          <div id="retItemsList"></div>
+        </div>
+
+        <!-- Return details -->
+        <div class="card-block" id="retDetailsBlock" style="display:none">
+          <div class="cb-title">تفاصيل الارتجاع</div>
+          <div class="fg">
+            <label>سبب الارتجاع *</label>
+            <select id="retReason" style="padding:9px 11px;background:var(--s3);border:1.5px solid var(--bd);border-radius:8px;color:var(--tx);font-size:.88rem;font-family:'Tajawal',sans-serif;width:100%">
+              <option value="">— اختر السبب —</option>
+              <option value="معيب">🔴 منتج معيب أو تالف</option>
+              <option value="خطأ في الطلب">🟡 خطأ في الطلب</option>
+              <option value="لم يعجب العميل">🔵 لم يعجب العميل</option>
+              <option value="انتهى الصلاحية">🟠 انتهى تاريخ الصلاحية</option>
+              <option value="أخرى">✏️ أخرى</option>
+            </select>
+          </div>
+          <div class="fg" id="retReasonOtherWrap" style="display:none">
+            <label>اذكر السبب</label>
+            <input id="retReasonOther" placeholder="اكتب السبب هنا">
+          </div>
+          <div class="fg">
+            <label>طريقة رد المبلغ</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+              <button class="pay-btn on" id="ret-pay-cash"     onclick="setRetPay('cash')"><span class="pi">💵</span>نقد</button>
+              <button class="pay-btn"    id="ret-pay-card"     onclick="setRetPay('card')"><span class="pi">💳</span>بطاقة</button>
+              <button class="pay-btn"    id="ret-pay-credit"   onclick="setRetPay('credit')"><span class="pi">📋</span>رصيد</button>
+            </div>
+          </div>
+          <div class="fg">
+            <label>ملاحظات (اختياري)</label>
+            <textarea id="retNotes" rows="2" placeholder="أي تفاصيل إضافية…"
+              style="padding:9px 11px;background:var(--s3);border:1.5px solid var(--bd);border-radius:8px;color:var(--tx);font-size:.88rem;font-family:'Tajawal',sans-serif;width:100%;resize:vertical"></textarea>
+          </div>
+
+          <!-- Summary -->
+          <div style="background:var(--rdl);border:1px solid rgba(192,57,43,.25);border-radius:9px;padding:12px 14px;margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;font-size:.84rem;margin-bottom:5px">
+              <span style="color:var(--tx3)">المنتجات المُرتجعة</span>
+              <span id="retSummaryCount" style="font-weight:700">0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:1rem;font-weight:900">
+              <span style="color:var(--tx2)">المبلغ المسترد</span>
+              <span id="retSummaryAmt" style="color:var(--rd);font-family:'IBM Plex Mono',monospace">0.00</span>
+            </div>
+          </div>
+
+          <button onclick="executeReturn()"
+            style="width:100%;padding:13px;background:var(--rd);color:#fff;border:none;border-radius:10px;font-size:.98rem;font-weight:900;font-family:'Tajawal',sans-serif;cursor:pointer;transition:.15s"
+            onmouseover="this.style.filter='brightness(1.08)'" onmouseout="this.style.filter=''">
+            🔄 تنفيذ الارتجاع
+          </button>
+        </div>
+      </div>
+
+      <!-- Recent returns -->
+      <div class="receive-right">
+        <div style="font-size:.76rem;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">آخر المرتجعات</div>
+        <div id="retRecent"></div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- RECEIPT OVERLAY -->
@@ -489,6 +577,21 @@ input,select{font-family:inherit}
       <button class="rm-btn primary" onclick="printReceipt()">🖨 طباعة</button>
       <button class="rm-btn sec"     onclick="newSale()">+ فاتورة جديدة</button>
       <button class="rm-btn sec"     onclick="closeReceipt()">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<!-- RETURN RECEIPT OVERLAY -->
+<div class="overlay" id="returnReceiptOverlay">
+  <div class="receipt-modal">
+    <div class="rm-head">
+      <span class="rm-title">🔄 إيصال الارتجاع</span>
+      <button class="rm-close" onclick="closeReturnReceipt()">✕</button>
+    </div>
+    <div id="returnReceiptPrint"></div>
+    <div class="rm-actions">
+      <button class="rm-btn primary" onclick="printReturnReceipt()">🖨 طباعة</button>
+      <button class="rm-btn sec"     onclick="closeReturnReceipt()">إغلاق</button>
     </div>
   </div>
 </div>
@@ -517,11 +620,12 @@ function logout(){ DB._set(DB.K.session, null); location.href='index.html'; }
 let mode = 'sale';
 function switchMode(m){
   mode = m;
-  ['sale','receive'].forEach(x=>{
-    document.getElementById('mode-'+x).style.display = x===m ? (m==='sale'?'flex':'flex') : 'none';
+  ['sale','receive','return'].forEach(x=>{
+    document.getElementById('mode-'+x).style.display = x===m ? 'flex' : 'none';
     document.getElementById('tab-'+x).classList.toggle('on', x===m);
   });
   if(m==='receive') renderRcvRecent();
+  if(m==='return')  { renderRetRecent(); resetReturnForm(); }
   if(m==='sale') setTimeout(()=>document.getElementById('saleInput').focus(), 50);
 }
 
@@ -529,10 +633,17 @@ function switchMode(m){
 (function(){
   const params = new URLSearchParams(location.search);
   const m = params.get('mode') || params.get('tab');
-  // map old tab names to new mode names
-  const map = {'buy':'receive','sale':'sale','receive':'receive'};
+  const map = {'buy':'receive','sale':'sale','receive':'receive','return':'return'};
   if(m && map[m]) switchMode(map[m]);
   else if(m) switchMode(m);
+  // Auto-fill invoice number if coming from dashboard
+  const inv = params.get('inv');
+  if(inv && m==='return'){
+    setTimeout(()=>{
+      document.getElementById('retInvNum').value = inv;
+      searchReturnInvoice();
+    }, 100);
+  }
 })();
 
 // ─────────────────────────────────────────────
@@ -825,9 +936,10 @@ function closeReceipt(){ document.getElementById('receiptOverlay').classList.rem
 function newSale(){
   closeReceipt();
   cart=[];
+  heldOrders=[];
   document.getElementById('discAmt').value='';
   document.getElementById('custSelect').value='';
-  renderCart(); calcTotals();
+  renderCart(); calcTotals(); renderHeldBar();
   document.getElementById('saleInput').focus();
 }
 
@@ -1041,6 +1153,296 @@ function updateDiag(){
   document.getElementById('diagCount').textContent = n;
   document.getElementById('diagWarn').style.display = n===0 ? 'inline' : 'none';
 }
+
+
+// ─────────────────────────────────────────────
+// RETURNS MODE (المرتجعات)
+// ─────────────────────────────────────────────
+let retPayMethod   = 'cash';
+let retInvoice     = null;   // original invoice object
+let retItems       = {};     // barcode → qty to return
+
+function setRetPay(p){
+  retPayMethod = p;
+  ['cash','card','credit'].forEach(x=>
+    document.getElementById('ret-pay-'+x).classList.toggle('on', x===p));
+}
+
+function resetReturnForm(){
+  retInvoice = null;
+  retItems   = {};          // ← full reset every time
+  document.getElementById('retInvNum').value           = '';
+  document.getElementById('retFound').style.display    = 'none';
+  document.getElementById('retError').style.display    = 'none';
+  document.getElementById('retItemsBlock').style.display   = 'none';
+  document.getElementById('retDetailsBlock').style.display = 'none';
+  document.getElementById('retItemsList').innerHTML    = '';
+  document.getElementById('retReason').value           = '';
+  document.getElementById('retNotes').value            = '';
+  document.getElementById('retSummaryCount').textContent = '0';
+  document.getElementById('retSummaryAmt').textContent   = '0.00';
+  document.getElementById('retReasonOtherWrap').style.display = 'none';
+  setRetPay('cash');
+}
+
+function searchReturnInvoice(){
+  const raw  = document.getElementById('retInvNum').value.trim();
+  const errEl = document.getElementById('retError');
+  const fndEl = document.getElementById('retFound');
+  errEl.style.display = 'none';
+  fndEl.style.display = 'none';
+  document.getElementById('retItemsBlock').style.display   = 'none';
+  document.getElementById('retDetailsBlock').style.display = 'none';
+  if(!raw){ errEl.textContent='أدخل رقم الفاتورة'; errEl.style.display='block'; return; }
+
+  // Search by full ID or last 6 chars
+  const all = DB.invoices();
+  const inv = all.find(i=>i.id===raw || String(i.id).slice(-6)===raw || String(i.id).endsWith(raw));
+
+  if(!inv){
+    errEl.textContent = 'لم يتم العثور على الفاتورة'; errEl.style.display='block'; return;
+  }
+  if(inv.type !== 'sale'){
+    errEl.textContent = 'هذه ليست فاتورة بيع — لا يمكن إرجاعها'; errEl.style.display='block'; return;
+  }
+  if(inv.type === 'return'){
+    errEl.textContent = 'هذه فاتورة مرتجعات — لا يمكن إرجاعها مرة أخرى'; errEl.style.display='block'; return;
+  }
+
+  // Check return period
+  const s = DB.settings();
+  const maxDays = s.return_days || 7;
+  const daysSince = Math.floor((Date.now() - inv.at) / 86400000);
+  if(daysSince > maxDays){
+    errEl.textContent = `انتهت مدة الارتجاع — الحد الأقصى ${maxDays} أيام (مضى ${daysSince} يوم)`;
+    errEl.style.display='block'; return;
+  }
+
+  // Check if already fully returned
+  const prevReturns = all.filter(i=>i.type==='return' && i.original_invoice===inv.id);
+  const returnedQtys = {};
+  prevReturns.forEach(r=>(r.items||[]).forEach(it=>{
+    returnedQtys[it.barcode] = (returnedQtys[it.barcode]||0) + Number(it.qty||0);
+  }));
+  const remainingItems = (inv.items||[]).filter(it=>{
+    const sold     = Number(it.qty||0);
+    const returned = returnedQtys[it.barcode]||0;
+    return sold > returned;
+  });
+  if(!remainingItems.length){
+    errEl.textContent = 'تم استرجاع هذه الفاتورة بالكامل مسبقاً'; errEl.style.display='block'; return;
+  }
+
+  retInvoice = inv;
+  retItems   = {};
+  remainingItems.forEach(it=>{ retItems[it.barcode] = 0; });
+
+  const cur = s.currency||'د.إ';
+  const custName = inv.customer_id ? (DB.customer(inv.customer_id)?.name||'') : 'عميل عادي';
+  fndEl.style.display='block';
+  fndEl.innerHTML = `<div class="found-badge" style="background:var(--bll);border-color:var(--bl)">
+    <div style="flex:1">
+      <div class="found-name">فاتورة #${String(inv.id).slice(-6)}</div>
+      <div class="found-meta">${DB.fmtDate(inv.at,{year:'numeric',month:'short',day:'numeric'})} · ${custName} · ${daysSince===0?'اليوم':'منذ '+daysSince+' يوم'}</div>
+    </div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-weight:900;color:var(--bl)">${DB.fmt(inv.total)} ${cur}</div>
+  </div>`;
+
+  renderRetItems(remainingItems, returnedQtys, cur);
+  document.getElementById('retItemsBlock').style.display   = 'block';
+  document.getElementById('retDetailsBlock').style.display = 'block';
+  calcRetSummary(cur);
+}
+
+function renderRetItems(items, returnedQtys, cur){
+  const el = document.getElementById('retItemsList');
+  el.innerHTML = items.map(it=>{
+    const sold     = Number(it.qty||0);
+    const returned = returnedQtys[it.barcode]||0;
+    const avail    = sold - returned;
+    return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd)">
+      <div style="flex:1">
+        <div style="font-size:.86rem;font-weight:700">${it.name}</div>
+        <div style="font-size:.72rem;color:var(--tx4)">المباع: ${sold} ${it.unit||'وحدة'} · المُرتجع سابقاً: ${returned} · المتاح للإرجاع: ${avail}</div>
+      </div>
+      <div style="font-size:.84rem;font-weight:700;color:var(--tx);min-width:60px;text-align:left">${DB.fmt(it.price)} ${cur}</div>
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+        <button onclick="changeRetQty('${it.barcode}',-1,${avail})"
+          style="width:26px;height:26px;border-radius:6px;background:var(--s3);border:1px solid var(--bd2);cursor:pointer;font-size:1rem;font-family:inherit;transition:.12s"
+          onmouseover="this.style.background='var(--g)'" onmouseout="this.style.background='var(--s3)'">−</button>
+        <span id="retQty_${it.barcode}" style="width:24px;text-align:center;font-weight:700;font-family:'IBM Plex Mono',monospace">0</span>
+        <button onclick="changeRetQty('${it.barcode}',+1,${avail})"
+          style="width:26px;height:26px;border-radius:6px;background:var(--s3);border:1px solid var(--bd2);cursor:pointer;font-size:1rem;font-family:inherit;transition:.12s"
+          onmouseover="this.style.background='var(--g)'" onmouseout="this.style.background='var(--s3)'">+</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function changeRetQty(bc, d, max){
+  const cur = DB.settings().currency||'د.إ';
+  const old = retItems[bc]||0;
+  const nv  = Math.min(max, Math.max(0, old+d));
+  retItems[bc] = nv;
+  const el = document.getElementById('retQty_'+bc);
+  if(el) el.textContent = nv;
+  calcRetSummary(cur);
+}
+
+function calcRetSummary(cur){
+  if(!retInvoice) return;
+  const cur2 = cur || DB.settings().currency||'د.إ';
+  let count=0, amt=0;
+  (retInvoice.items||[]).forEach(it=>{
+    const qty = retItems[it.barcode]||0;
+    count += qty;
+    amt   += qty * Number(it.price||0);
+  });
+  // Apply vat proportionally
+  const s = DB.settings();
+  const vatEnabled = s.vat_enabled !== false && Number(s.vat||0)>0;
+  const vat = vatEnabled ? amt*(Number(s.vat||0)/100) : 0;
+  const total = amt+vat;
+  document.getElementById('retSummaryCount').textContent = count + ' وحدة';
+  document.getElementById('retSummaryAmt').textContent   = DB.fmt(total)+' '+cur2;
+}
+
+function executeReturn(){
+  if(!retInvoice){ toast('ابحث عن الفاتورة أولاً','err'); return; }
+
+  const reason = document.getElementById('retReason').value;
+  if(!reason){ toast('اختر سبب الارتجاع','err'); return; }
+  const finalReason = reason==='أخرى'
+    ? (document.getElementById('retReasonOther').value.trim()||'أخرى')
+    : reason;
+
+  const returnedItems = (retInvoice.items||[])
+    .filter(it=>(retItems[it.barcode]||0)>0)
+    .map(it=>({ ...it, qty: retItems[it.barcode] }));
+
+  if(!returnedItems.length){ toast('اختر منتجاً واحداً على الأقل للإرجاع','err'); return; }
+
+  const s   = DB.settings();
+  const cur = s.currency||'د.إ';
+  const vatEnabled = s.vat_enabled !== false && Number(s.vat||0)>0;
+
+  let subTotal=0;
+  returnedItems.forEach(it=>{ subTotal += Number(it.price||0)*Number(it.qty||0); });
+  const vat   = vatEnabled ? subTotal*(Number(s.vat||0)/100) : 0;
+  const total = subTotal+vat;
+  const user  = DB.session()?.name||'—';
+
+  // 1. Create return invoice
+  const retInv = DB.addInvoice({
+    type:             'return',
+    original_invoice: retInvoice.id,
+    items:            returnedItems,
+    subtotal:         -subTotal,
+    vat:              -vat,
+    total:            -total,
+    currency:         cur,
+    refund_method:    retPayMethod,
+    reason:           finalReason,
+    notes:            document.getElementById('retNotes').value.trim(),
+    cashier:          user,
+    customer_id:      retInvoice.customer_id||null,
+  });
+
+  // 2. Restore stock
+  returnedItems.forEach(it=>{
+    DB.adjustStock(it.barcode, Number(it.qty||0), 'مرتجع', user);
+  });
+
+  // 3. Print return receipt (BEFORE reset so retInvoice still accessible)
+  renderReturnReceipt(retInv, cur);
+
+  // 4. Reset form & update (after receipt rendered)
+  resetReturnForm();
+  renderRetRecent();
+  updateDiag();
+  toast(`✓ تم تنفيذ الارتجاع — المبلغ المسترد: ${DB.fmt(total)} ${cur}`);
+}
+
+// ─── RETURN RECENT LIST ─────────────────
+function renderRetRecent(){
+  const el  = document.getElementById('retRecent');
+  const cur = DB.settings().currency||'د.إ';
+  const list = DB.invoices().filter(i=>i.type==='return').slice(0,15);
+  if(!list.length){
+    el.innerHTML=`<div style="color:var(--tx4);font-size:.78rem;text-align:center;padding:20px">لا مرتجعات حتى الآن</div>`;
+    return;
+  }
+  el.innerHTML = list.map(r=>`
+    <div style="display:flex;align-items:center;gap:9px;padding:9px 10px;border-bottom:1px solid var(--bd);font-size:.8rem">
+      <div style="flex:1">
+        <div style="font-weight:700;color:var(--rd)">مرتجع #${String(r.id).slice(-5)}</div>
+        <div style="color:var(--tx4);font-size:.7rem">أصلية: #${String(r.original_invoice||'').slice(-5)} · ${r.reason||'—'}</div>
+      </div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--rd)">${DB.fmt(Math.abs(r.total))} ${cur}</div>
+    </div>`).join('');
+}
+
+// ─── RETURN RECEIPT PRINT ───────────────
+function renderReturnReceipt(ret, cur){
+  const s    = DB.settings();
+  const payLbl = {cash:'نقد',card:'بطاقة',credit:'رصيد للعميل'};
+  const logoHtml = s.logo
+    ? `<div class="rp-logo"><img src="${s.logo}"></div>`
+    : `<div class="rp-logo">${(s.store_name||'ط')[0]}</div>`;
+
+  document.getElementById('returnReceiptPrint').innerHTML = `
+    <div id="receiptPrint">
+      <div class="rp-header">
+        <div class="rp-logo-area">
+          ${logoHtml}
+          <div>
+            <div class="rp-store-name">${s.store_name||'طيب الحي'}</div>
+            <div class="rp-store-info" style="color:var(--rd);font-weight:700">إيصال استرجاع</div>
+          </div>
+        </div>
+        <div>
+          <div class="rp-inv-num" style="color:var(--rd)">RET-${String(ret.id).slice(-6)}</div>
+          <div class="rp-meta">${DB.fmtDate(ret.at)}</div>
+          <div class="rp-meta">فاتورة أصلية: #${String(ret.original_invoice||'').slice(-6)}</div>
+          <div class="rp-meta">طريقة الرد: ${payLbl[ret.refund_method]||ret.refund_method}</div>
+          <div class="rp-meta">السبب: ${ret.reason||'—'}</div>
+        </div>
+      </div>
+      <table class="rp-table">
+        <thead><tr><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr></thead>
+        <tbody>
+          ${(ret.items||[]).map(i=>`<tr>
+            <td style="font-weight:600">${i.name}</td>
+            <td class="mono">${i.qty}</td>
+            <td class="mono">${DB.fmt(i.price)}</td>
+            <td class="mono" style="font-weight:700;color:var(--rd)">${DB.fmt(i.price*i.qty)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+      <div class="rp-totals">
+        <div class="rp-grand" style="color:var(--rd)">
+          <span>المبلغ المسترد</span>
+          <span class="rv">${DB.fmt(Math.abs(ret.total))} ${cur}</span>
+        </div>
+      </div>
+      <div class="rp-footer">${s.receipt_note||'شكراً لتعاملكم معنا'}</div>
+    </div>`;
+
+  document.getElementById('returnReceiptOverlay').classList.add('show');
+}
+function printReturnReceipt(){ window.print(); }
+function closeReturnReceipt(){
+  document.getElementById('returnReceiptOverlay').classList.remove('show');
+}
+
+// Reason 'other' toggle
+document.addEventListener('change', e=>{
+  if(e.target.id==='retReason'){
+    document.getElementById('retReasonOtherWrap').style.display =
+      e.target.value==='أخرى' ? 'block':'none';
+  }
+});
+
 
 // ─── INIT ─────────────────────────────────
 loadCustomers();
