@@ -200,6 +200,7 @@ const PERMS = [
   { key:'inventory_edit',  label:'تعديل المخزون',        group:'المخزون' },
   { key:'customers',       label:'إدارة العملاء',        group:'العملاء' },
   { key:'manage_users',    label:'إدارة الموظفين',       group:'الإدارة' },
+  { key:'returns',          label:'تنفيذ المرتجعات',      group:'الكاشير' },
   { key:'settings',        label:'تعديل الإعدادات',      group:'الإدارة' },
 ];
 
