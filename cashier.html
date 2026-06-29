@@ -484,11 +484,11 @@ input,select{font-family:inherit}
       <!-- Search panel -->
       <div class="receive-left">
         <div class="card-block">
-          <div class="cb-title">🔍 ابحث عن الفاتورة الأصلية</div>
+          <div class="cb-title">🔍 ابحث بـ: رقم الفاتورة أو باركود المنتج</div>
           <div class="fg">
-            <label>رقم الفاتورة</label>
+            <label>رقم الفاتورة أو باركود المنتج</label>
             <div style="display:flex;gap:7px">
-              <input id="retInvNum" dir="ltr" placeholder="مثال: INV1718000000"
+              <input id="retInvNum" dir="ltr" placeholder="رقم الفاتورة أو باركود المنتج (امسح بالسكانر)"
                 style="flex:1" onkeydown="if(event.key==='Enter')searchReturnInvoice()">
               <button onclick="searchReturnInvoice()"
                 style="padding:0 16px;background:var(--g);color:#1C1208;border:none;border-radius:8px;font-size:.84rem;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif">بحث</button>
@@ -925,6 +925,10 @@ function renderInvoice(inv){
     </div>
     <div class="rp-footer">
       ${s.receipt_note||'شكراً لتعاملكم معنا'}
+      <div style="margin-top:8px;padding-top:8px;border-top:1px dashed #ddd;font-size:.7rem;opacity:.7;line-height:1.7">
+        سياسة الاسترجاع: يُقبل الإرجاع خلال <b>${s.return_days||7} أيام</b> من تاريخ الشراء<br>
+        بشرط إحضار الفاتورة الأصلية والمنتج بحالته الأصلية
+      </div>
       ${s.logo?`<div class="rp-stamp"><img src="${s.logo}"></div>`:''}
     </div>`;
 
@@ -1162,6 +1166,29 @@ let retPayMethod   = 'cash';
 let retInvoice     = null;   // original invoice object
 let retItems       = {};     // barcode → qty to return
 
+// Show picker when barcode matches multiple sales
+function renderReturnPicker(invoices, errEl, fndEl){
+  const cur = DB.settings().currency||'د.إ';
+  fndEl.style.display='block';
+  fndEl.innerHTML = `<div style="font-size:.78rem;color:var(--tx3);margin-bottom:8px">تم العثور على ${invoices.length} فواتير تحتوي هذا المنتج — اختر الفاتورة:</div>`+
+    invoices.slice(0,6).map(inv=>`
+      <div onclick="selectReturnInvoice('${inv.id}')"
+        style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--s2);
+        border:1px solid var(--bd);border-radius:8px;margin-bottom:6px;cursor:pointer;transition:.12s"
+        onmouseover="this.style.borderColor='var(--g)'" onmouseout="this.style.borderColor='var(--bd)'">
+        <div style="flex:1">
+          <div style="font-weight:700;font-family:'IBM Plex Mono',monospace;font-size:.82rem">#${String(inv.id).slice(-6)}</div>
+          <div style="font-size:.7rem;color:var(--tx4)">${DB.fmtDate(inv.at,{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
+        </div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--g)">${DB.fmt(inv.total)} ${cur}</div>
+      </div>`).join('');
+}
+
+function selectReturnInvoice(id){
+  document.getElementById('retInvNum').value = id;
+  searchReturnInvoice();
+}
+
 function setRetPay(p){
   retPayMethod = p;
   ['cash','card','credit'].forEach(x=>
@@ -1195,12 +1222,30 @@ function searchReturnInvoice(){
   document.getElementById('retDetailsBlock').style.display = 'none';
   if(!raw){ errEl.textContent='أدخل رقم الفاتورة'; errEl.style.display='block'; return; }
 
-  // Search by full ID or last 6 chars
   const all = DB.invoices();
-  const inv = all.find(i=>i.id===raw || String(i.id).slice(-6)===raw || String(i.id).endsWith(raw));
+  let inv = null;
+
+  // Search by full ID or last 6 chars of invoice number
+  inv = all.find(i=>i.type==='sale' && (i.id===raw || String(i.id).slice(-6)===raw || String(i.id).endsWith(raw)));
+
+  // If not found by invoice number, try searching by BARCODE — find latest sale containing this product
+  if(!inv){
+    const byBarcode = all
+      .filter(i=>i.type==='sale' && (i.items||[]).some(it=>it.barcode===raw||String(it.barcode)===raw))
+      .sort((a,b)=>b.at-a.at);
+    if(byBarcode.length>0){
+      inv = byBarcode[0];
+      // Show picker if multiple sales contain this barcode
+      if(byBarcode.length>1){
+        renderReturnPicker(byBarcode, errEl, fndEl);
+        return;
+      }
+    }
+  }
 
   if(!inv){
-    errEl.textContent = 'لم يتم العثور على الفاتورة'; errEl.style.display='block'; return;
+    errEl.textContent = 'لم يتم العثور على الفاتورة — جرب رقم الفاتورة أو باركود المنتج';
+    errEl.style.display='block'; return;
   }
   if(inv.type !== 'sale'){
     errEl.textContent = 'هذه ليست فاتورة بيع — لا يمكن إرجاعها'; errEl.style.display='block'; return;
@@ -1260,20 +1305,33 @@ function renderRetItems(items, returnedQtys, cur){
     const sold     = Number(it.qty||0);
     const returned = returnedQtys[it.barcode]||0;
     const avail    = sold - returned;
-    return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd)">
-      <div style="flex:1">
-        <div style="font-size:.86rem;font-weight:700">${it.name}</div>
-        <div style="font-size:.72rem;color:var(--tx4)">المباع: ${sold} ${it.unit||'وحدة'} · المُرتجع سابقاً: ${returned} · المتاح للإرجاع: ${avail}</div>
+    // Get full product details from DB
+    const prod     = DB.product(it.barcode)||{};
+    const imgHtml  = (prod.img||it.img)
+      ? `<img src="${prod.img||it.img}" style="width:52px;height:52px;border-radius:8px;object-fit:contain;background:var(--s3);flex-shrink:0">`
+      : `<div style="width:52px;height:52px;border-radius:8px;background:var(--s3);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0">📦</div>`;
+    return `<div style="display:flex;align-items:flex-start;gap:11px;padding:13px 0;border-bottom:1px solid var(--bd)">
+      ${imgHtml}
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.9rem;font-weight:800;margin-bottom:3px">${it.name}</div>
+        <div style="font-size:.72rem;color:var(--tx4);margin-bottom:2px;font-family:'IBM Plex Mono',monospace">${it.barcode||'—'}</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:.73rem;color:var(--tx3);margin-bottom:5px">
+          <span>📦 المباع: <b>${sold} ${it.unit||'وحدة'}</b></span>
+          <span>🔄 مُرتجع سابقاً: <b>${returned}</b></span>
+          <span style="color:var(--g)">✓ متاح للإرجاع: <b>${avail}</b></span>
+        </div>
+        ${prod.specs?`<div style="font-size:.7rem;color:var(--tx4);margin-bottom:4px">📋 ${prod.specs}</div>`:''}
+        <div style="font-size:.82rem;font-weight:700;color:var(--tx)">سعر الوحدة: ${DB.fmt(it.price)} ${cur}</div>
       </div>
-      <div style="font-size:.84rem;font-weight:700;color:var(--tx);min-width:60px;text-align:left">${DB.fmt(it.price)} ${cur}</div>
-      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0">
         <button onclick="changeRetQty('${it.barcode}',-1,${avail})"
-          style="width:26px;height:26px;border-radius:6px;background:var(--s3);border:1px solid var(--bd2);cursor:pointer;font-size:1rem;font-family:inherit;transition:.12s"
-          onmouseover="this.style.background='var(--g)'" onmouseout="this.style.background='var(--s3)'">−</button>
-        <span id="retQty_${it.barcode}" style="width:24px;text-align:center;font-weight:700;font-family:'IBM Plex Mono',monospace">0</span>
+          style="width:30px;height:30px;border-radius:7px;background:var(--s3);border:1px solid var(--bd2);cursor:pointer;font-size:1.1rem;transition:.12s;line-height:1"
+          onmouseover="this.style.background='var(--rdl)';this.style.color='var(--rd)'" onmouseout="this.style.background='var(--s3)';this.style.color=''">−</button>
+        <span id="retQty_${it.barcode}" style="width:30px;text-align:center;font-weight:900;font-size:1rem;font-family:'IBM Plex Mono',monospace">0</span>
         <button onclick="changeRetQty('${it.barcode}',+1,${avail})"
-          style="width:26px;height:26px;border-radius:6px;background:var(--s3);border:1px solid var(--bd2);cursor:pointer;font-size:1rem;font-family:inherit;transition:.12s"
-          onmouseover="this.style.background='var(--g)'" onmouseout="this.style.background='var(--s3)'">+</button>
+          style="width:30px;height:30px;border-radius:7px;background:var(--s3);border:1px solid var(--bd2);cursor:pointer;font-size:1.1rem;transition:.12s;line-height:1"
+          onmouseover="this.style.background='var(--grl)';this.style.color='var(--gr)'" onmouseout="this.style.background='var(--s3)';this.style.color=''">+</button>
+        <div style="font-size:.68rem;color:var(--tx4);text-align:center">${DB.fmt(it.price*avail)}<br>${cur}</div>
       </div>
     </div>`;
   }).join('');
