@@ -225,15 +225,18 @@ const DB = {
   // أول تشغيل — إنشاء حساب المدير
   async createFirstAdmin(data) {
     const hash = await _sha256(data.password);
+    const now = Date.now();
     const acc = {
-      id: 'admin_' + Date.now(),
+      id: 'admin_' + now,
       username: data.username,
       password_hash: hash,
       name: data.name,
       role: 'admin',
       permissions: {},
       active: true,
-      created_at: Date.now(),
+      created_at: now,
+      password_changed_at: now,        // ← يُعتبر كلمة المرور محدّثة عند الإنشاء
+      password_warning_dismissed: false,
     };
     _sbPush('th_accounts', 'POST', acc);
     this._accCache = [acc];
@@ -278,6 +281,15 @@ const DB = {
     const acc=this.accountSync(me.username);
     if(!acc||acc.password_warning_dismissed) return false;
     const since=this.daysSincePasswordChange(me.username);
+    // حساب جديد تم إنشاؤه أقل من يوم — لا تحذير
+    if(since !== null && since < 1) return false;
+    // إن لم يتم تغيير كلمة المرور أبداً ولكن الحساب جديد (أقل من 7 أيام)
+    if(since === null){
+      const accountAge = acc.created_at
+        ? Math.floor((Date.now()-acc.created_at)/86400000)
+        : 999;
+      if(accountAge < 7) return false;
+    }
     return since===null||since>=days;
   },
 
