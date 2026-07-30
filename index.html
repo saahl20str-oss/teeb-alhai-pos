@@ -168,7 +168,78 @@ async function login(){
 }
 
 function resetAdmin(){
-  if(!confirm('إعادة الإعداد الأولي؟\nستُفقد كل الحسابات الحالية ويمكنك إنشاء حساب جديد.')) return;
+  // يجب أن يعرف كلمة مرور المدير الحالي
+  const modal = document.getElementById('resetModal');
+  if(modal) { modal.style.display='flex'; return; }
+  
+  // إنشاء النافذة ديناميكياً
+  const m = document.createElement('div');
+  m.id = 'resetModal';
+  m.style = 'position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px';
+  m.innerHTML = `
+    <div style="background:#fff;border-radius:16px;padding:28px 24px;width:100%;max-width:360px;box-shadow:0 24px 60px rgba(0,0,0,.5)">
+      <div style="font-size:1.1rem;font-weight:900;color:#1C1208;margin-bottom:6px">🔑 إعادة الإعداد</div>
+      <div style="font-size:.8rem;color:#8a7458;margin-bottom:18px;line-height:1.6">
+        هذا الإجراء خطير — يجب التحقق من هويتك.<br>
+        أدخل كلمة مرور المدير الحالية للمتابعة.
+      </div>
+      <div style="margin-bottom:12px">
+        <label style="font-size:.72rem;font-weight:700;color:#8a7458;display:block;margin-bottom:5px">اسم المستخدم</label>
+        <input id="rm_user" style="width:100%;padding:10px 12px;border:1.5px solid #e0d5c4;border-radius:8px;font-family:Tajawal,sans-serif;font-size:.9rem;background:#faf8f5" placeholder="اسم المستخدم">
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="font-size:.72rem;font-weight:700;color:#8a7458;display:block;margin-bottom:5px">كلمة المرور الحالية</label>
+        <input id="rm_pass" type="password" style="width:100%;padding:10px 12px;border:1.5px solid #e0d5c4;border-radius:8px;font-family:Tajawal,sans-serif;font-size:.9rem;background:#faf8f5" placeholder="••••••••"
+          onkeydown="if(event.key==='Enter')confirmReset()">
+      </div>
+      <div id="rm_err" style="color:#c0392b;font-size:.78rem;text-align:center;min-height:18px;margin-bottom:10px"></div>
+      <div style="display:flex;gap:8px">
+        <button onclick="document.getElementById('resetModal').remove()"
+          style="flex:1;padding:10px;background:none;border:1.5px solid #e0d5c4;border-radius:8px;font-family:Tajawal,sans-serif;font-weight:700;color:#8a7458;cursor:pointer">
+          إلغاء
+        </button>
+        <button onclick="confirmReset()"
+          style="flex:1;padding:10px;background:#c0392b;color:#fff;border:none;border-radius:8px;font-family:Tajawal,sans-serif;font-weight:900;cursor:pointer">
+          تأكيد الإعادة
+        </button>
+      </div>
+    </div>`;
+  document.body.appendChild(m);
+  setTimeout(()=>document.getElementById('rm_user').focus(), 100);
+}
+
+async function confirmReset(){
+  const user = document.getElementById('rm_user').value.trim();
+  const pass = document.getElementById('rm_pass').value;
+  const err  = document.getElementById('rm_err');
+  err.textContent = '';
+
+  if(!user || !pass){ err.textContent='أدخل اسم المستخدم وكلمة المرور'; return; }
+
+  // تحميل الحسابات والتحقق
+  const accounts = await DB.accounts().catch(()=>DB.accountsSync());
+  const acc = accounts.find(a=>a.username===user && a.role==='admin');
+  
+  if(!acc){ err.textContent='اسم المستخدم غير صحيح أو ليس مديراً'; return; }
+  
+  // التحقق من كلمة المرور
+  let valid = false;
+  if(acc.password_hash){
+    valid = await DB.verifyPassword(pass, acc.password_hash);
+  } else if(acc.password){
+    valid = (acc.password === pass);
+  }
+  
+  if(!valid){ err.textContent='كلمة المرور غير صحيحة'; return; }
+  
+  // تأكيد نهائي
+  if(!confirm('⚠ تحذير: سيتم مسح كل الحسابات وإعادة الإعداد من البداية.\nهل أنت متأكد تماماً؟')) return;
+  
+  // مسح الحسابات من localStorage
+  localStorage.removeItem('th_accounts');
+  localStorage.removeItem('th_session');
+  
+  // التوجه لـ setup.html
   location.href = 'setup.html';
 }
 </script>
