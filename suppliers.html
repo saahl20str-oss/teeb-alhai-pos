@@ -257,6 +257,7 @@ function selectSupplier(id){
     <span class="dh-title">${s.name}</span>
     <div class="dh-btns">
       <button class="d-btn d-edit" onclick="openModal('${id}')">✏ تعديل</button>
+      <button class="d-btn" style="background:var(--grl);color:var(--gd)" onclick="goToReceive('${s.name}')">📥 استلام بضاعة</button>
       <button class="d-btn d-del" onclick="deleteById('${id}')">حذف</button>
     </div>`;
 
@@ -264,7 +265,7 @@ function selectSupplier(id){
     <div class="db">
       <div class="dav">${(s.name||'م')[0]}</div>
       <div class="dname">${s.name}</div>
-      <div class="dphone">${s.phone || 'لا هاتف'}</div>
+      <div class="dphone">${s.phone ? `<a href="tel:${s.phone}" style="color:var(--g);text-decoration:none">📞 ${s.phone}</a>` : 'لا هاتف'}</div>
       <div class="kv"><span class="k">الشخص المسؤول</span><span class="v">${s.contact||'—'}</span></div>
       <div class="kv"><span class="k">البريد</span><span class="v">${s.email||'—'}</span></div>
       <div class="kv"><span class="k">العنوان</span><span class="v">${s.address||'—'}</span></div>
@@ -300,6 +301,10 @@ function selectSupplier(id){
     </div>`;
 
   renderList();
+}
+
+function goToReceive(supplierName){
+  location.href = 'cashier.html?mode=receive&supplier='+encodeURIComponent(supplierName);
 }
 
 function openModal(id=null){
