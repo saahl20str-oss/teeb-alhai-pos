@@ -305,8 +305,15 @@ const DB = {
   saveSuppliers(list) { _set(_K.suppliers, list); },
 
   // ── HELPERS ──────────────────────────────────────────────
-  fmt(n) { return Number(n || 0).toLocaleString('ar-SA', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); },
-  fmtDate(ts, opts) { return new Date(ts).toLocaleDateString('ar-SA-u-nu-latn', opts || { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }); },
+  fmt(n) {
+    return Number(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  },
+  fmtDate(ts, opts) {
+    const d=new Date(ts);
+    if(opts) return d.toLocaleDateString('ar-SA-u-nu-latn',opts);
+    return d.toLocaleDateString('ar-SA-u-nu-latn',{year:'numeric',month:'short',day:'numeric'})
+      +' '+d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true});
+  },
   today() { return new Date().toLocaleDateString('ar-SA-u-nu-latn', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }); },
   isToday(ts) { return new Date(ts).toDateString() === new Date().toDateString(); },
   isThisMonth(ts) { const d = new Date(ts), n = new Date(); return d.getFullYear() === n.getFullYear() && d.getMonth() === n.getMonth(); },
@@ -364,6 +371,30 @@ setInterval(async () => {
   const custs = await _sbGet('th_customers?select=*&order=name.asc');
   if (custs?.length) _set(_K.customers, custs);
 }, 30000);
+
+
+// ─── IDLE TIMER (2 minutes → auto logout) ──────────────
+(function setupIdleTimer(){
+  let _idleTimer = null;
+  const IDLE_MS = 2 * 60 * 1000; // 2 minutes
+
+  function resetIdle(){
+    clearTimeout(_idleTimer);
+    // Only run if user is logged in
+    if(!DB.session()) return;
+    _idleTimer = setTimeout(()=>{
+      DB.clearSession();
+      location.href = 'index.html?timeout=1';
+    }, IDLE_MS);
+  }
+
+  ['mousemove','mousedown','keydown','touchstart','scroll','click'].forEach(ev=>{
+    document.addEventListener(ev, resetIdle, { passive:true });
+  });
+
+  // Start timer
+  resetIdle();
+})();
 
 // ─── TOAST ───────────────────────────────────────────────
 function toast(msg, type = 'ok') {
