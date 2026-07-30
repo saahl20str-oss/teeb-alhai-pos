@@ -375,7 +375,7 @@ function openModal(username = null){
 }
 function closeModal(){ document.getElementById('modal').classList.remove('show'); editingId = null; }
 
-function saveUser(){
+async function saveUser(){
   const name = document.getElementById('m_name').value.trim();
   const uname = document.getElementById('m_user').value.trim().toLowerCase();
   const pass  = document.getElementById('m_pass').value;
@@ -383,7 +383,7 @@ function saveUser(){
   if(!name)  { toast('أدخل الاسم الكامل','err'); return; }
   if(!uname) { toast('أدخل اسم المستخدم','err'); return; }
 
-  const accounts = DB.accounts();
+  const accounts = DB.accountsSync();
   if(!editingId && accounts.find(a => a.username === uname)){ toast('اسم المستخدم موجود بالفعل','err'); return; }
   if(!editingId && !pass){ toast('أدخل كلمة المرور','err'); return; }
 
@@ -395,13 +395,15 @@ function saveUser(){
     if(idx >= 0){
       accounts[idx] = { ...accounts[idx], name, role, permissions };
       if(pass){
-        accounts[idx].password              = pass;
+        accounts[idx].password_hash         = await DB.hashPassword(pass);
+        accounts[idx].password              = null; // حذف كلمة المرور غير المشفرة
         accounts[idx].password_changed_at   = Date.now();
         accounts[idx].password_warning_dismissed = false;
       }
     }
   } else {
-    accounts.push({ id:'USR'+Date.now(), username:uname, password:pass, name, role, permissions, active:true, created_at:Date.now() });
+    const newHash = pass ? await DB.hashPassword(pass) : '';
+    accounts.push({ id:'USR'+Date.now(), username:uname, password_hash:newHash, password:null, name, role, permissions, active:true, created_at:Date.now() });
   }
   DB.saveAccounts(accounts);
   closeModal(); renderGrid();
