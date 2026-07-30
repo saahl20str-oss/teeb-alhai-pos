@@ -87,13 +87,31 @@ html,body{height:100%;font-family:'Tajawal',sans-serif}
 <script>
 // Check first run → setup wizard
 (async()=>{
-  await DB.accounts(); // تحميل الحسابات من Supabase
-  if(DB.isFirstRun()){
-    location.href = 'setup.html';
+  // Auto-redirect if already logged in
+  if(DB.session()){
+    location.href = DB.firstAccessiblePage();
     return;
   }
-  // Auto-redirect if already logged in
-  if(DB.session()) location.href = DB.firstAccessiblePage();
+  // تحقق مباشر من Supabase — هل يوجد حسابات؟
+  try {
+    const rows = await fetch(
+      'https://xwjhewvjlmnnuqiylxht.supabase.co/rest/v1/th_accounts?select=id&limit=1',
+      { headers:{
+        'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh3amhld3ZqbG1ubnVxaXlseGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyMzU1NDgsImV4cCI6MjEwMDgxMTU0OH0.7sJGJESM-c6AKNKwscUO-onvSX3Zzco5baWlSEUvHFU',
+        'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh3amhld3ZqbG1ubnVxaXlseGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyMzU1NDgsImV4cCI6MjEwMDgxMTU0OH0.7sJGJESM-c6AKNKwscUO-onvSX3Zzco5baWlSEUvHFU'
+      }}
+    ).then(r=>r.json()).catch(()=>null);
+    
+    if(!rows || rows.length === 0){
+      // لا يوجد حسابات → إعداد أولي
+      location.href = 'setup.html';
+      return;
+    }
+    // يوجد حسابات → تحميلها في الخلفية
+    DB.accounts().catch(()=>{});
+  } catch(e) {
+    console.warn('Boot check failed:', e);
+  }
 })();
 
 // Show idle timeout message
