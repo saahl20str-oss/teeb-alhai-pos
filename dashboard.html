@@ -213,6 +213,89 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .act-text b{font-weight:700}
 .act-time{font-size:.7rem;color:var(--tx4);white-space:nowrap}
 
+.archive-overlay{position:fixed;inset:0;background:rgba(20,12,4,.5);z-index:150;opacity:0;pointer-events:none;transition:.2s}
+.archive-overlay.on{opacity:1;pointer-events:all}
+.archive-panel{position:fixed;top:0;left:0;height:100%;width:520px;max-width:98vw;background:var(--s2);z-index:151;
+  border-left:1px solid var(--bd2);box-shadow:var(--SH);transform:translateX(-100%);transition:.3s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column}
+.archive-panel.on{transform:translateX(0)}
+.ar-head{padding:14px 18px;background:var(--s1);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:sticky;top:0}
+.ar-title{font-size:.92rem;font-weight:700;color:var(--gd)}
+.ar-close{width:28px;height:28px;border-radius:6px;background:var(--s3);color:var(--tx3);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.12s}
+.ar-close:hover{background:var(--s4);color:var(--tx2)}
+.ar-filters{display:flex;gap:6px;padding:10px 14px;border-bottom:1px solid var(--bd);background:var(--s1);flex-shrink:0;flex-wrap:wrap}
+.ar-filter{padding:5px 13px;border-radius:6px;font-size:.78rem;font-weight:700;background:var(--s3);border:1px solid var(--bd);color:var(--tx3);cursor:pointer;transition:.12s}
+.ar-filter.on{background:var(--g);color:#1C1208;border-color:var(--g)}
+.ar-search{padding:7px 12px;background:var(--s3);border:1px solid var(--bd2);border-radius:7px;color:var(--tx);font-size:.82rem;font-family:'Tajawal',sans-serif;flex:1;min-width:120px}
+.ar-search:focus{outline:none;border-color:var(--g)}
+.ar-body{flex:1;overflow-y:auto;padding:12px}
+.ar-body::-webkit-scrollbar{width:5px}
+.ar-body::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:4px}
+/* Invoice card in archive */
+.inv-card{background:var(--s2);border:1px solid var(--bd);border-radius:var(--R2);margin-bottom:10px;overflow:hidden;cursor:pointer;transition:.15s}
+.inv-card:hover{border-color:var(--bd2);box-shadow:var(--SH)}
+.inv-card-head{display:flex;align-items:center;gap:10px;padding:11px 13px;border-bottom:1px solid var(--bd)}
+.inv-type-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.inv-card-info{flex:1;min-width:0}
+.inv-card-num{font-size:.82rem;font-weight:700;font-family:'IBM Plex Mono',monospace}
+.inv-card-date{font-size:.7rem;color:var(--tx4);margin-top:2px}
+.inv-card-total{font-family:'IBM Plex Mono',monospace;font-weight:900;font-size:.92rem}
+/* Thumbnail: list of items in card */
+.inv-items-strip{display:flex;gap:6px;padding:9px 13px;overflow-x:auto;scrollbar-width:none}
+.inv-items-strip::-webkit-scrollbar{display:none}
+.inv-item-thumb{display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0;width:54px}
+.iit-img{width:42px;height:42px;border-radius:8px;background:var(--s3);object-fit:contain;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.iit-img img{width:100%;height:100%;object-fit:contain;border-radius:8px}
+.iit-name{font-size:.62rem;color:var(--tx3);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:54px}
+.iit-qty{font-size:.66rem;font-weight:700;color:var(--g);font-family:'IBM Plex Mono',monospace}
+
+.pw-warning-bar{
+  display:none;position:sticky;top:60px;z-index:40;
+  padding:10px 20px;
+  background:linear-gradient(135deg,#7b3f00,#a85500);
+  color:#fff;border-bottom:1px solid rgba(255,255,255,.15);
+  font-size:.85rem;font-family:'Tajawal',sans-serif;
+  align-items:center;gap:12px;flex-wrap:wrap;
+}
+.pw-warning-bar.show{display:flex}
+.pw-warning-bar b{font-weight:800}
+.pw-warn-btn{padding:5px 14px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);
+  color:#fff;border-radius:6px;font-size:.8rem;font-weight:700;cursor:pointer;
+  font-family:'Tajawal',sans-serif;transition:.15s;white-space:nowrap}
+.pw-warn-btn:hover{background:rgba(255,255,255,.35)}
+.pw-warn-dismiss{padding:4px 10px;background:none;border:none;color:rgba(255,255,255,.6);
+  font-size:.78rem;cursor:pointer;font-family:'Tajawal',sans-serif;white-space:nowrap}
+.pw-warn-dismiss:hover{color:#fff}
+
+/* Password change modal */
+.pw-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  opacity:0;pointer-events:none;transition:.2s}
+.pw-modal-overlay.show{opacity:1;pointer-events:all}
+.pw-modal{background:var(--s2);border:1px solid var(--bd2);border-radius:16px;
+  width:100%;max-width:400px;box-shadow:0 32px 80px rgba(0,0,0,.3);overflow:hidden}
+.pw-modal-head{padding:16px 20px;background:var(--s1);border-bottom:1px solid var(--bd);
+  display:flex;align-items:center;gap:10px}
+.pw-modal-title{font-size:.94rem;font-weight:700;color:var(--gd);flex:1}
+.pw-modal-icon{font-size:1.3rem}
+.pw-modal-body{padding:22px 20px}
+.pw-field{display:flex;flex-direction:column;gap:4px;margin-bottom:13px}
+.pw-field label{font-size:.72rem;font-weight:700;color:var(--tx4);text-transform:uppercase;letter-spacing:.04em}
+.pw-field input{padding:10px 12px;background:var(--s3);border:1.5px solid var(--bd);
+  border-radius:8px;color:var(--tx);font-size:.9rem;font-family:'Tajawal',sans-serif;
+  direction:ltr;transition:.15s;width:100%}
+.pw-field input:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 2px var(--gl)}
+.pw-strength{height:4px;border-radius:2px;background:var(--s4);margin-top:5px;overflow:hidden}
+.pw-strength-bar{height:100%;width:0;border-radius:2px;transition:.3s}
+.pw-error{color:var(--rd);font-size:.78rem;text-align:center;min-height:18px;margin-top:4px}
+.pw-modal-foot{padding:14px 20px;background:var(--s1);border-top:1px solid var(--bd);display:flex;gap:8px}
+.pw-save{flex:1;padding:10px;background:var(--g);color:#1C1208;border:none;border-radius:8px;
+  font-size:.9rem;font-weight:900;font-family:'Tajawal',sans-serif;cursor:pointer;transition:.15s}
+.pw-save:hover{filter:brightness(1.08)}
+.pw-cancel{padding:10px 16px;background:var(--s3);color:var(--tx3);border:1px solid var(--bd);
+  border-radius:8px;font-size:.86rem;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer;transition:.15s}
+.pw-cancel:hover{background:var(--s4)}
+
 @media(max-width:1000px){.grid{grid-template-columns:1fr}.insights-row{grid-template-columns:1fr}.analysis-row{grid-template-columns:1fr}}
 @media(max-width:860px){.stats{grid-template-columns:repeat(2,1fr)}.tb-nav{display:none}.page{padding:14px}}
 @media(max-width:480px){.stats{grid-template-columns:1fr}}
@@ -240,6 +323,44 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
     <button class="tb-out" onclick="logout()">خروج</button>
   </div>
 </header>
+
+<!-- PASSWORD WARNING BANNER -->
+<div class="pw-warning-bar" id="pwWarnBar">
+  <span style="font-size:1.1rem">🔐</span>
+  <span id="pwWarnMsg"><b>تنبيه أمني:</b> حان وقت تغيير كلمة مرورك</span>
+  <button class="pw-warn-btn" onclick="openPwModal()">تغيير كلمة المرور الآن</button>
+  <button class="pw-warn-dismiss" onclick="dismissPwWarning()">تذكيرني لاحقاً</button>
+</div>
+
+<!-- PASSWORD CHANGE MODAL -->
+<div class="pw-modal-overlay" id="pwModalOverlay">
+  <div class="pw-modal">
+    <div class="pw-modal-head">
+      <span class="pw-modal-icon">🔐</span>
+      <span class="pw-modal-title">تغيير كلمة المرور</span>
+    </div>
+    <div class="pw-modal-body">
+      <div class="pw-field">
+        <label>كلمة المرور الحالية</label>
+        <input type="password" id="pw_current" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <div class="pw-field">
+        <label>كلمة المرور الجديدة</label>
+        <input type="password" id="pw_new" placeholder="8 أحرف على الأقل" autocomplete="new-password" oninput="checkPwStrength()">
+        <div class="pw-strength"><div class="pw-strength-bar" id="pwStrBar"></div></div>
+      </div>
+      <div class="pw-field">
+        <label>تأكيد كلمة المرور الجديدة</label>
+        <input type="password" id="pw_confirm" placeholder="أعد الكتابة" autocomplete="new-password">
+      </div>
+      <div class="pw-error" id="pwError"></div>
+    </div>
+    <div class="pw-modal-foot">
+      <button class="pw-cancel" onclick="closePwModal()">إلغاء</button>
+      <button class="pw-save" onclick="saveNewPassword()">حفظ كلمة المرور</button>
+    </div>
+  </div>
+</div>
 
 <main class="page">
   <div class="pg-hd">
@@ -319,6 +440,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
           <button class="qa" data-perm="view_reports" onclick="location.href='reports.html'"><span class="qi">📊</span>التقارير</button>
           <button class="qa" data-perm="customers" onclick="location.href='customers.html'"><span class="qi">👥</span>العملاء</button>
           <button class="qa" data-perm="settings" onclick="openSettings()"><span class="qi">⚙</span>إعدادات</button>
+          <button class="qa" onclick="openInvoicesArchive()"><span class="qi">🗂</span>الفواتير</button>
         </div>
       </div>
 
@@ -429,6 +551,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
     <div class="fg"><label>حد التنبيه المنخفض</label><input id="sd_low" type="number" min="1"></div>
     <div style="font-size:.7rem;font-weight:700;color:var(--tx4);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--bd)">سياسة الارتجاع</div>
     <div class="fg"><label>مدة قبول الارتجاع (أيام)</label><input id="sd_return_days" type="number" min="1" max="365" placeholder="7"></div>
+    <div style="font-size:.7rem;font-weight:700;color:var(--tx4);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--bd)">أمان الحسابات</div>
+    <div class="fg">
+      <label>تذكير تغيير كلمة المرور (أيام)</label>
+      <input id="sd_pw_days" type="number" min="0" max="365" placeholder="90">
+      <div style="font-size:.7rem;color:var(--tx4);margin-top:4px">اكتب 0 لتعطيل التذكير — الموصى به: كل 90 يوم</div>
+    </div>
     <button class="sbtn" onclick="saveSettings()">حفظ الإعدادات</button>
 
     <div id="handoverSection" style="display:none;margin-top:24px;padding-top:18px;border-top:1px solid var(--bd)">
@@ -480,17 +608,36 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
   </div>
 </div>
 
+<!-- INVOICES ARCHIVE PANEL -->
+<div class="archive-overlay" id="archiveOv" onclick="closeInvoicesArchive()"></div>
+<div class="archive-panel" id="archivePanel">
+  <div class="ar-head">
+    <span class="ar-title">🗂 أرشيف الفواتير</span>
+    <button class="ar-close" onclick="closeInvoicesArchive()">✕</button>
+  </div>
+  <div class="ar-filters">
+    <button class="ar-filter on" id="arf-all"      onclick="setArchiveFilter('all',this)">الكل</button>
+    <button class="ar-filter"   id="arf-sale"      onclick="setArchiveFilter('sale',this)">💰 مبيعات</button>
+    <button class="ar-filter"   id="arf-purchase"  onclick="setArchiveFilter('purchase',this)">📥 مشتريات</button>
+    <button class="ar-filter"   id="arf-return"    onclick="setArchiveFilter('return',this)">🔄 مرتجعات</button>
+    <input class="ar-search" id="archiveSearch" placeholder="ابحث برقم أو منتج…" oninput="renderArchive()">
+  </div>
+  <div class="ar-body" id="archiveBody"></div>
+</div>
+
 <script src="sync.js"></script>
 <script>
+(async()=>{
 DB.enforcePageAccess();
 DB.applyNavPermissions();
 const me = DB.session();
 document.getElementById('tbUser').textContent = me?.name||'—';
 document.getElementById('pgDate').textContent  = DB.today();
+})();
 
-function logout(){ DB._set(DB.K.session,null); location.href='index.html'; }
+function logout(){ DB.clearSession(); location.href='index.html'; }
 
-function applyBranding(){
+async function applyBranding(){
   const s=DB.settings();
   document.getElementById('tbName').textContent=s.store_name||'طيب الحي للعود والأدهان';
   const cur=s.currency||'د.إ';
@@ -509,7 +656,7 @@ function applyQaPermissions(){
   });
 }
 
-function applyCostVisibility(){
+async function applyCostVisibility(){
   if(DB.can('view_cost')) return; // admin or explicit permission — show everything
   // Hide inventory-value stat card (built from cost prices)
   const s2 = document.querySelectorAll('.stat')[1];
@@ -523,7 +670,7 @@ function applyCostVisibility(){
   if(tp && tp.closest('.panel')) tp.closest('.panel').style.display='none';
 }
 
-function load(){
+async function load(){
   applyCostVisibility();
   applyQaPermissions();
   applyBranding();
@@ -534,10 +681,16 @@ function load(){
   const invoices = DB.invoices();
 
   // Sales today
-  const todayInvs = invoices.filter(i=>i.type==='sale'&&DB.isToday(i.at));
-  const todayAmt  = todayInvs.reduce((a,i)=>a+Number(i.total||0),0);
+  const todayInvs    = invoices.filter(i=>i.type==='sale'&&DB.isToday(i.at));
+  const todayRetInvs = invoices.filter(i=>i.type==='return'&&DB.isToday(i.at));
+  const todayGross   = todayInvs.reduce((a,i)=>a+Number(i.total||0),0);
+  const todayRetAmt  = todayRetInvs.reduce((a,i)=>a+Math.abs(Number(i.total||0)),0);
+  const todayAmt     = Math.max(0, todayGross - todayRetAmt);
   document.getElementById('s1').innerHTML = DB.fmt(todayAmt)+`<span class="cur"> ${cur}</span>`;
-  document.getElementById('s1n').textContent = todayInvs.length?`${todayInvs.length} فاتورة — اضغط للتفاصيل`:'لا مبيعات — اضغط للتفاصيل';
+  const s1sub = todayInvs.length
+    ? `${todayInvs.length} فاتورة${todayRetAmt>0?' · مرتجع: '+DB.fmt(todayRetAmt)+' '+cur:''} — اضغط للتفاصيل`
+    : 'لا مبيعات — اضغط للتفاصيل';
+  document.getElementById('s1n').textContent = s1sub;
   document.getElementById('s1n').className = 'stat-note '+(todayInvs.length?'up':'');
 
   // Inventory value
@@ -582,7 +735,7 @@ function load(){
 }
 
 // ─── TREND PERCENTAGES (vs previous period) ───
-function renderTrends(invoices, todayAmt, mAmt, invVal){
+async function renderTrends(invoices, todayAmt, mAmt, invVal){
   // Sales: today vs yesterday
   const y = new Date(); y.setDate(y.getDate()-1);
   const yKey = y.toDateString();
@@ -609,7 +762,7 @@ function setTrend(id, current, prev, label, append){
 }
 
 // ─── REVENUE LINE CHART (last 7 days, SVG) ───
-function renderRevChart(invoices, cur){
+async function renderRevChart(invoices, cur){
   const days = [];
   for(let i=6;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); days.push(d); }
   const vals = days.map(d=>{
@@ -660,7 +813,7 @@ function renderRevChart(invoices, cur){
 }
 
 // ─── INVENTORY STATUS PANEL ───
-function renderInvStatus(products, low){
+async function renderInvStatus(products, low){
   const total = products.length;
   const lowStock = products.filter(p=>Number(p.qty||0)>0 && Number(p.qty||0)<=low).length;
   const outStock = products.filter(p=>Number(p.qty||0)<=0).length;
@@ -687,7 +840,7 @@ function renderInvStatus(products, low){
 }
 
 // ─── BEST-SELLING CATEGORIES (donut via conic-gradient) ───
-function renderCatDonut(invoices, products, cur){
+async function renderCatDonut(invoices, products, cur){
   const cats = {};
   invoices.filter(i=>i.type==='sale').forEach(inv=>(inv.items||[]).forEach(it=>{
     const p = products.find(x=>x.barcode===it.barcode) || {};
@@ -721,7 +874,7 @@ function renderCatDonut(invoices, products, cur){
 }
 
 // ─── TOP PROFIT PRODUCTS ───
-function renderTopProfit(invoices, products, cur){
+async function renderTopProfit(invoices, products, cur){
   const profit = {};
   invoices.filter(i=>i.type==='sale').forEach(inv=>(inv.items||[]).forEach(it=>{
     const p = products.find(x=>x.barcode===it.barcode) || {};
@@ -741,8 +894,8 @@ function renderTopProfit(invoices, products, cur){
 }
 
 // ─── STAGNANT PRODUCTS (no sale in N days) ───
-function getStagnantProducts(products, days){
-  const invoices = DB.invoices().filter(i=>i.type==='sale');
+async function getStagnantProducts(products, days){
+  const invoices = (DB.invoices()).filter(i=>i.type==='sale');
   const cutoff = Date.now() - days*86400000;
   return products.filter(p=>{
     if(Number(p.qty||0)<=0) return false; // out of stock isn't "stagnant"
@@ -754,11 +907,11 @@ function getStagnantProducts(products, days){
     return lastSale < cutoff;
   });
 }
-function renderStagnant(invoices, products){
+async function renderStagnant(invoices, products){
   const list = getStagnantProducts(products, 60).slice(0,6);
   const el = document.getElementById('stagnantList');
   if(!list.length){ el.innerHTML = `<div class="empty" style="padding:18px"><div class="empty-t" style="color:var(--gr)">لا منتجات راكدة ✓</div></div>`; return; }
-  const sales = DB.invoices().filter(i=>i.type==='sale');
+  const sales = (DB.invoices()).filter(i=>i.type==='sale');
   el.innerHTML = list.map(p=>{
     const lastSale = sales.filter(inv=>(inv.items||[]).some(it=>it.barcode===p.barcode)).map(inv=>inv.at).sort((a,b)=>b-a)[0];
     const days = lastSale ? Math.floor((Date.now()-lastSale)/86400000) : Math.floor((Date.now()-(p.created_at||Date.now()))/86400000);
@@ -771,7 +924,7 @@ function renderStagnant(invoices, products){
 }
 
 // ─── ACTIVITY FEED ───
-function renderActivity(invoices, products){
+async function renderActivity(invoices, products){
   const stockLog = DB.stockLog();
   const items = [];
   invoices.slice(0,10).forEach(inv=>{
@@ -805,7 +958,7 @@ function timeAgo(ts){
   return `منذ ${Math.floor(diff/86400)} يوم`;
 }
 
-function renderInvoices(){
+async function renderInvoices(){
   const el=document.getElementById('invWrap');
   const search=document.getElementById('invSearch').value.toLowerCase();
   const filter=document.getElementById('invFilter').value;
@@ -853,7 +1006,7 @@ function renderTopChart(invoices,products){
 }
 
 // ─── DRAWERS ──────────────────────────────
-function openDrawer(type){
+async function openDrawer(type){
   const s=DB.settings();const cur=s.currency||'د.إ';const low=s.low_alert||5;
   const products=DB.products();const invoices=DB.invoices();
   const body=document.getElementById('drawerBody');
@@ -932,7 +1085,7 @@ function openDrawer(type){
   document.getElementById('drawer').classList.add('on');
 }
 
-function openInvDrawer(id){
+async function openInvDrawer(id){
   const inv=DB.invoice(id);if(!inv)return;
   const s=DB.settings();const cur=s.currency||'د.إ';
   const pLbl={cash:'نقد',card:'بطاقة',transfer:'تحويل'};
@@ -967,7 +1120,7 @@ function openInvDrawer(id){
   document.getElementById('drawer').classList.add('on');
 }
 
-function openProdDrawer(bc){
+async function openProdDrawer(bc){
   const p=DB.product(bc);if(!p)return;
   const s=DB.settings();const cur=s.currency||'د.إ';const low=s.low_alert||5;
   const q=Number(p.qty||0);const c=q<=0?'var(--rd)':q<=low?'var(--or)':'var(--gr)';
@@ -1009,7 +1162,7 @@ function goToReturn(invId){
 }
 
 // SETTINGS
-function openSettings(){
+async function openSettings(){
   document.getElementById('handoverSection').style.display = DB.session()?.role==='admin' ? 'block' : 'none';
   const s=DB.settings();
   document.getElementById('sd_name').value=s.store_name||'';
@@ -1022,6 +1175,7 @@ function openSettings(){
   document.getElementById('sd_vat').value = s.vat || 5;
   document.getElementById('sd_low').value=s.low_alert||5;
   document.getElementById('sd_return_days').value=s.return_days||7;
+  document.getElementById('sd_pw_days').value=s.pw_reminder_days!==undefined?s.pw_reminder_days:90;
   const lu=document.getElementById('logoUp');
   lu.innerHTML=s.logo?`<img src="${s.logo}">`:`<span style="font-size:.74rem;color:var(--tx4)">رفع شعار</span>`;
   document.getElementById('sov').classList.add('on');
@@ -1061,7 +1215,7 @@ function closeHandoverModal(){
   document.getElementById('handoverModal').classList.remove('on');
 }
 
-function runHandover(){
+async function runHandover(){
   const p1 = document.getElementById('hov_pass1').value;
   const p2 = document.getElementById('hov_pass2').value;
   const cf = document.getElementById('hov_confirm').value.trim();
@@ -1094,8 +1248,8 @@ function runHandover(){
   document.getElementById('hovStep2').style.display='block';
 }
 function handleLogo(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{window._logo=e.target.result;document.getElementById('logoUp').innerHTML=`<img src="${e.target.result}">`;};r.readAsDataURL(f);}
-function removeLogo(){window._logo=null;const s=DB.settings();s.logo=null;DB.saveSettings(s);document.getElementById('logoUp').innerHTML=`<span style="font-size:.74rem;color:var(--tx4)">رفع شعار</span>`;}
-function saveSettings(){
+async function removeLogo(){window._logo=null;const s=DB.settings();s.logo=null;DB.saveSettings(s);document.getElementById('logoUp').innerHTML=`<span style="font-size:.74rem;color:var(--tx4)">رفع شعار</span>`;}
+async function saveSettings(){
   const s=DB.settings();
   s.store_name   = document.getElementById('sd_name').value.trim()||s.store_name;
   s.address      = document.getElementById('sd_addr').value.trim();
@@ -1105,15 +1259,401 @@ function saveSettings(){
   s.vat_enabled = window._vatOn;
   s.vat         = window._vatOn ? (Number(document.getElementById('sd_vat').value)||5) : 0;
   s.low_alert    = Number(document.getElementById('sd_low').value)||5;
-  s.return_days  = Number(document.getElementById('sd_return_days').value)||7;
+  s.return_days      = Number(document.getElementById('sd_return_days').value)||7;
+  s.pw_reminder_days = Number(document.getElementById('sd_pw_days').value??90);
   if(window._logo){s.logo=window._logo;window._logo=null;}
   DB.saveSettings(s);
   closeSettings();
   toast('تم حفظ الإعدادات ✓');
-  load();
+  
+// ─────────────────────────────────────────────
+// PASSWORD SECURITY
+// ─────────────────────────────────────────────
+async function checkPwWarning(){
+  if(!DB.shouldWarnPassword()) return;
+  const me    = DB.session();
+  const s     = DB.settings();
+  const days  = DB.daysSincePasswordChange(me?.username);
+  const bar   = document.getElementById('pwWarnBar');
+  const msg   = document.getElementById('pwWarnMsg');
+  const limit = Number(s.pw_reminder_days||90);
+
+  let text = '';
+  if(days===null){
+    text = `<b>تنبيه أمني:</b> لم تقم بتغيير كلمة مرورك منذ إنشاء الحساب`;
+  } else {
+    text = `<b>تنبيه أمني:</b> مضى <b>${days} يوم</b> على آخر تغيير لكلمة المرور — الحد المقرر ${limit} يوم`;
+  }
+  msg.innerHTML = text;
+  bar.classList.add('show');
+}
+
+function dismissPwWarning(){
+  const me = DB.session();
+  if(!me) return;
+  const list = DB.accounts();
+  const idx  = list.findIndex(a=>a.username===me.username);
+  if(idx>=0){
+    list[idx].password_warning_dismissed = true;
+    DB.saveAccounts(list);
+  }
+  document.getElementById('pwWarnBar').classList.remove('show');
+}
+
+function openPwModal(){
+  document.getElementById('pw_current').value = '';
+  document.getElementById('pw_new').value     = '';
+  document.getElementById('pw_confirm').value = '';
+  document.getElementById('pwError').textContent = '';
+  document.getElementById('pwStrBar').style.width  = '0';
+  document.getElementById('pwStrBar').style.background = '';
+  document.getElementById('pwModalOverlay').classList.add('show');
+  setTimeout(()=>document.getElementById('pw_current').focus(), 100);
+}
+function closePwModal(){
+  document.getElementById('pwModalOverlay').classList.remove('show');
+}
+
+function checkPwStrength(){
+  const v   = document.getElementById('pw_new').value;
+  const bar = document.getElementById('pwStrBar');
+  let score = 0;
+  if(v.length>=8)           score++;
+  if(/[A-Z]/.test(v))       score++;
+  if(/[0-9]/.test(v))       score++;
+  if(/[^A-Za-z0-9]/.test(v)) score++;
+  const colors = ['','#c0392b','#e67e22','#C9A84C','#2e7d5c'];
+  const widths  = ['0%','25%','50%','75%','100%'];
+  bar.style.width      = widths[score];
+  bar.style.background = colors[score];
+}
+
+async function saveNewPassword(){
+  const cur  = document.getElementById('pw_current').value;
+  const nw   = document.getElementById('pw_new').value;
+  const cf   = document.getElementById('pw_confirm').value;
+  const err  = document.getElementById('pwError');
+  err.textContent = '';
+
+  const me  = DB.session();
+  const acc = DB.account(me?.username);
+  if(!acc){ err.textContent='خطأ في الجلسة'; return; }
+
+  if(acc.password !== cur){
+    err.textContent = 'كلمة المرور الحالية غير صحيحة'; return;
+  }
+  if(nw.length < 8){
+    err.textContent = 'كلمة المرور الجديدة 8 أحرف على الأقل'; return;
+  }
+  if(nw === cur){
+    err.textContent = 'كلمة المرور الجديدة مطابقة للحالية — اختر كلمة مختلفة'; return;
+  }
+  if(nw !== cf){
+    err.textContent = 'كلمتا المرور غير متطابقتين'; return;
+  }
+
+  // Save new password + record change date
+  const list = DB.accounts();
+  const idx  = list.findIndex(a=>a.username===me.username);
+  if(idx>=0){
+    list[idx].password                  = nw;
+    list[idx].password_changed_at       = Date.now();
+    list[idx].password_warning_dismissed = false;
+  }
+  DB.saveAccounts(list);
+  closePwModal();
+  document.getElementById('pwWarnBar').classList.remove('show');
+  toast('✓ تم تغيير كلمة المرور بنجاح');
+}
+
+// ─────────────────────────────────────────────
+// INVOICES ARCHIVE
+// ─────────────────────────────────────────────
+let archiveFilter = 'all';
+
+function openInvoicesArchive(){
+  document.getElementById('archiveOv').classList.add('on');
+  document.getElementById('archivePanel').classList.add('on');
+  renderArchive();
+}
+function closeInvoicesArchive(){
+  document.getElementById('archiveOv').classList.remove('on');
+  document.getElementById('archivePanel').classList.remove('on');
+}
+function setArchiveFilter(f, btn){
+  archiveFilter = f;
+  document.querySelectorAll('.ar-filter').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderArchive();
+}
+async function renderArchive(){
+  const el   = document.getElementById('archiveBody');
+  const s    = DB.settings();
+  const cur  = s.currency||'د.إ';
+  const srch = (document.getElementById('archiveSearch').value||'').toLowerCase();
+  const products = DB.products();
+
+  let list = DB.invoices();
+  if(archiveFilter!=='all') list = list.filter(i=>i.type===archiveFilter);
+  if(srch) list = list.filter(i=>
+    (i.id||'').toLowerCase().includes(srch) ||
+    (i.items||[]).some(it=>(it.name||'').toLowerCase().includes(srch))
+  );
+
+  if(!list.length){
+    el.innerHTML = `<div style="text-align:center;padding:48px 16px;color:var(--tx4)">
+      <div style="font-size:2.5rem;opacity:.2;margin-bottom:8px">🗂</div>
+      <div style="font-size:.88rem">${srch?'لا نتائج للبحث':'لا فواتير بعد'}</div>
+    </div>`;
+    return;
+  }
+
+  const typeInfo = {
+    sale:     {icon:'💰', bg:'var(--grl)', color:'var(--gr)', label:'بيع'},
+    purchase: {icon:'📥', bg:'var(--bll)', color:'var(--bl)', label:'شراء'},
+    return:   {icon:'🔄', bg:'var(--rdl)', color:'var(--rd)', label:'مرتجع'},
+  };
+
+  el.innerHTML = list.map(inv=>{
+    const ti     = typeInfo[inv.type] || typeInfo.sale;
+    const items  = inv.items||[];
+    const isNeg  = Number(inv.total||0)<0;
+    const totalColor = inv.type==='return'?'var(--rd)':'var(--tx)';
+    const custName = inv.customer_id ? (DB.customer(inv.customer_id)?.name||'') : '';
+
+    const thumbs = items.slice(0,5).map(it=>{
+      const prod = products.find(p=>p.barcode===it.barcode)||{};
+      const img  = prod.img||it.img||null;
+      return `<div class="inv-item-thumb">
+        <div class="iit-img">${img?`<img src="${img}">`:`📦`}</div>
+        <div class="iit-name">${it.name||'—'}</div>
+        <div class="iit-qty">×${it.qty}</div>
+      </div>`;
+    }).join('');
+    const extraItems = items.length>5 ? `<div class="inv-item-thumb"><div class="iit-img" style="color:var(--tx4);font-size:.8rem">+${items.length-5}</div></div>` : '';
+
+    return `<div class="inv-card" onclick="openInvFromArchive('${inv.id}')">
+      <div class="inv-card-head">
+        <div class="inv-type-icon" style="background:${ti.bg};color:${ti.color}">${ti.icon}</div>
+        <div class="inv-card-info">
+          <div class="inv-card-num">#${String(inv.id||'').slice(-6)}</div>
+          <div class="inv-card-date">
+            ${DB.fmtDate(inv.at,{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}
+            ${custName?` · ${custName}`:''}
+            ${inv.type==='return'&&inv.original_invoice?` · أصل: #${String(inv.original_invoice).slice(-6)}`:''}
+          </div>
+        </div>
+        <div style="text-align:left">
+          <div class="inv-card-total" style="color:${totalColor}">${isNeg?'':''}${DB.fmt(Math.abs(inv.total||0))} ${cur}</div>
+          <div style="font-size:.68rem;color:var(--tx4);text-align:left;margin-top:2px">${ti.label} · ${items.length} صنف</div>
+        </div>
+      </div>
+      ${items.length>0?`<div class="inv-items-strip">${thumbs}${extraItems}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+async function openInvFromArchive(id){
+  closeInvoicesArchive();
+  openInvDrawer(id);
 }
 
 load();
+}
+
+
+// ─────────────────────────────────────────────
+// PASSWORD SECURITY
+// ─────────────────────────────────────────────
+async function checkPwWarning(){
+  if(!DB.shouldWarnPassword()) return;
+  const me    = DB.session();
+  const s     = DB.settings();
+  const days  = DB.daysSincePasswordChange(me?.username);
+  const bar   = document.getElementById('pwWarnBar');
+  const msg   = document.getElementById('pwWarnMsg');
+  const limit = Number(s.pw_reminder_days||90);
+
+  let text = '';
+  if(days===null){
+    text = `<b>تنبيه أمني:</b> لم تقم بتغيير كلمة مرورك منذ إنشاء الحساب`;
+  } else {
+    text = `<b>تنبيه أمني:</b> مضى <b>${days} يوم</b> على آخر تغيير لكلمة المرور — الحد المقرر ${limit} يوم`;
+  }
+  msg.innerHTML = text;
+  bar.classList.add('show');
+}
+
+function dismissPwWarning(){
+  const me = DB.session();
+  if(!me) return;
+  const list = DB.accounts();
+  const idx  = list.findIndex(a=>a.username===me.username);
+  if(idx>=0){
+    list[idx].password_warning_dismissed = true;
+    DB.saveAccounts(list);
+  }
+  document.getElementById('pwWarnBar').classList.remove('show');
+}
+
+function openPwModal(){
+  document.getElementById('pw_current').value = '';
+  document.getElementById('pw_new').value     = '';
+  document.getElementById('pw_confirm').value = '';
+  document.getElementById('pwError').textContent = '';
+  document.getElementById('pwStrBar').style.width  = '0';
+  document.getElementById('pwStrBar').style.background = '';
+  document.getElementById('pwModalOverlay').classList.add('show');
+  setTimeout(()=>document.getElementById('pw_current').focus(), 100);
+}
+function closePwModal(){
+  document.getElementById('pwModalOverlay').classList.remove('show');
+}
+
+function checkPwStrength(){
+  const v   = document.getElementById('pw_new').value;
+  const bar = document.getElementById('pwStrBar');
+  let score = 0;
+  if(v.length>=8)           score++;
+  if(/[A-Z]/.test(v))       score++;
+  if(/[0-9]/.test(v))       score++;
+  if(/[^A-Za-z0-9]/.test(v)) score++;
+  const colors = ['','#c0392b','#e67e22','#C9A84C','#2e7d5c'];
+  const widths  = ['0%','25%','50%','75%','100%'];
+  bar.style.width      = widths[score];
+  bar.style.background = colors[score];
+}
+
+async function saveNewPassword(){
+  const cur  = document.getElementById('pw_current').value;
+  const nw   = document.getElementById('pw_new').value;
+  const cf   = document.getElementById('pw_confirm').value;
+  const err  = document.getElementById('pwError');
+  err.textContent = '';
+
+  const me  = DB.session();
+  const acc = DB.account(me?.username);
+  if(!acc){ err.textContent='خطأ في الجلسة'; return; }
+
+  if(acc.password !== cur){
+    err.textContent = 'كلمة المرور الحالية غير صحيحة'; return;
+  }
+  if(nw.length < 8){
+    err.textContent = 'كلمة المرور الجديدة 8 أحرف على الأقل'; return;
+  }
+  if(nw === cur){
+    err.textContent = 'كلمة المرور الجديدة مطابقة للحالية — اختر كلمة مختلفة'; return;
+  }
+  if(nw !== cf){
+    err.textContent = 'كلمتا المرور غير متطابقتين'; return;
+  }
+
+  // Save new password + record change date
+  const list = DB.accounts();
+  const idx  = list.findIndex(a=>a.username===me.username);
+  if(idx>=0){
+    list[idx].password                  = nw;
+    list[idx].password_changed_at       = Date.now();
+    list[idx].password_warning_dismissed = false;
+  }
+  DB.saveAccounts(list);
+  closePwModal();
+  document.getElementById('pwWarnBar').classList.remove('show');
+  toast('✓ تم تغيير كلمة المرور بنجاح');
+}
+
+// ─────────────────────────────────────────────
+// INVOICES ARCHIVE
+// ─────────────────────────────────────────────
+let archiveFilter = 'all';
+
+function openInvoicesArchive(){
+  document.getElementById('archiveOv').classList.add('on');
+  document.getElementById('archivePanel').classList.add('on');
+  renderArchive();
+}
+function closeInvoicesArchive(){
+  document.getElementById('archiveOv').classList.remove('on');
+  document.getElementById('archivePanel').classList.remove('on');
+}
+function setArchiveFilter(f, btn){
+  archiveFilter = f;
+  document.querySelectorAll('.ar-filter').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderArchive();
+}
+async function renderArchive(){
+  const el   = document.getElementById('archiveBody');
+  const s    = DB.settings();
+  const cur  = s.currency||'د.إ';
+  const srch = (document.getElementById('archiveSearch').value||'').toLowerCase();
+  const products = DB.products();
+
+  let list = DB.invoices();
+  if(archiveFilter!=='all') list = list.filter(i=>i.type===archiveFilter);
+  if(srch) list = list.filter(i=>
+    (i.id||'').toLowerCase().includes(srch) ||
+    (i.items||[]).some(it=>(it.name||'').toLowerCase().includes(srch))
+  );
+
+  if(!list.length){
+    el.innerHTML = `<div style="text-align:center;padding:48px 16px;color:var(--tx4)">
+      <div style="font-size:2.5rem;opacity:.2;margin-bottom:8px">🗂</div>
+      <div style="font-size:.88rem">${srch?'لا نتائج للبحث':'لا فواتير بعد'}</div>
+    </div>`;
+    return;
+  }
+
+  const typeInfo = {
+    sale:     {icon:'💰', bg:'var(--grl)', color:'var(--gr)', label:'بيع'},
+    purchase: {icon:'📥', bg:'var(--bll)', color:'var(--bl)', label:'شراء'},
+    return:   {icon:'🔄', bg:'var(--rdl)', color:'var(--rd)', label:'مرتجع'},
+  };
+
+  el.innerHTML = list.map(inv=>{
+    const ti     = typeInfo[inv.type] || typeInfo.sale;
+    const items  = inv.items||[];
+    const isNeg  = Number(inv.total||0)<0;
+    const totalColor = inv.type==='return'?'var(--rd)':'var(--tx)';
+    const custName = inv.customer_id ? (DB.customer(inv.customer_id)?.name||'') : '';
+
+    const thumbs = items.slice(0,5).map(it=>{
+      const prod = products.find(p=>p.barcode===it.barcode)||{};
+      const img  = prod.img||it.img||null;
+      return `<div class="inv-item-thumb">
+        <div class="iit-img">${img?`<img src="${img}">`:`📦`}</div>
+        <div class="iit-name">${it.name||'—'}</div>
+        <div class="iit-qty">×${it.qty}</div>
+      </div>`;
+    }).join('');
+    const extraItems = items.length>5 ? `<div class="inv-item-thumb"><div class="iit-img" style="color:var(--tx4);font-size:.8rem">+${items.length-5}</div></div>` : '';
+
+    return `<div class="inv-card" onclick="openInvFromArchive('${inv.id}')">
+      <div class="inv-card-head">
+        <div class="inv-type-icon" style="background:${ti.bg};color:${ti.color}">${ti.icon}</div>
+        <div class="inv-card-info">
+          <div class="inv-card-num">#${String(inv.id||'').slice(-6)}</div>
+          <div class="inv-card-date">
+            ${DB.fmtDate(inv.at,{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}
+            ${custName?` · ${custName}`:''}
+            ${inv.type==='return'&&inv.original_invoice?` · أصل: #${String(inv.original_invoice).slice(-6)}`:''}
+          </div>
+        </div>
+        <div style="text-align:left">
+          <div class="inv-card-total" style="color:${totalColor}">${isNeg?'':''}${DB.fmt(Math.abs(inv.total||0))} ${cur}</div>
+          <div style="font-size:.68rem;color:var(--tx4);text-align:left;margin-top:2px">${ti.label} · ${items.length} صنف</div>
+        </div>
+      </div>
+      ${items.length>0?`<div class="inv-items-strip">${thumbs}${extraItems}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+async function openInvFromArchive(id){
+  closeInvoicesArchive();
+  openInvDrawer(id);
+}
+
 </script>
 </body>
 </html>
