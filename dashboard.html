@@ -628,11 +628,20 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 <script src="sync.js"></script>
 <script>
 (async()=>{
-DB.enforcePageAccess();
+if(!DB.enforcePageAccess()) throw 0;
 DB.applyNavPermissions();
 const me = DB.session();
 document.getElementById('tbUser').textContent = me?.name||'—';
 document.getElementById('pgDate').textContent  = DB.today();
+if(location.search.includes('timeout=1')){
+  const bar=document.createElement('div');
+  bar.style='position:fixed;top:60px;left:0;right:0;z-index:99;padding:10px 20px;background:#f39c12;color:#fff;text-align:center;font-family:Tajawal,sans-serif;font-size:.88rem;font-weight:700';
+  bar.textContent='⏱ انتهت جلستك — مرحباً مجدداً';
+  document.body.appendChild(bar);
+  setTimeout(()=>bar.remove(),4000);
+}
+await load();
+checkPwWarning();
 })();
 
 function logout(){ DB.clearSession(); location.href='index.html'; }
