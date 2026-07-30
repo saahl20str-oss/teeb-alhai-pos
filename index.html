@@ -85,8 +85,16 @@ html,body{height:100%;font-family:'Tajawal',sans-serif}
 </div>
 <script src="sync.js"></script>
 <script>
-// Auto-redirect if already logged in
-if(DB.session()) location.href = DB.firstAccessiblePage();
+// Check first run → setup wizard
+(async()=>{
+  await DB.accounts(); // تحميل الحسابات من Supabase
+  if(DB.isFirstRun()){
+    location.href = 'setup.html';
+    return;
+  }
+  // Auto-redirect if already logged in
+  if(DB.session()) location.href = DB.firstAccessiblePage();
+})();
 
 // Show idle timeout message
 if(location.search.includes('timeout=1')){
@@ -111,7 +119,7 @@ function togglePw(){
   btn.textContent = inp.type === 'password' ? '👁' : '🙈';
 }
 
-function login(){
+async function login(){
   const u = document.getElementById('l_user').value.trim();
   const p = document.getElementById('l_pass').value;
   const e = document.getElementById('l_err');
@@ -119,40 +127,49 @@ function login(){
 
   if(!u || !p){ e.textContent = 'أدخل اسم المستخدم وكلمة المرور'; return; }
 
-  const acc = DB.account(u);
-  if(!acc){ e.textContent = 'اسم المستخدم غير موجود'; return; }
-  if(!acc.active){ e.textContent = 'الحساب موقوف — تواصل مع المدير'; return; }
-  if(acc.password !== p){ e.textContent = 'كلمة المرور غير صحيحة'; return; }
-
   document.getElementById('loginLoading').classList.add('show');
   document.getElementById('loginBtn').disabled = true;
 
-  // Small delay to let Supabase sync complete
-  setTimeout(()=>{
-    DB.setSession({
-      id: acc.id, username: acc.username, name: acc.name,
-      role: acc.role, permissions: acc.permissions || {},
-      loginAt: Date.now(),
-    });
-    location.href = DB.firstAccessiblePage();
-  }, 800);
+  // تحميل الحسابات من Supabase
+  const accounts = await DB.accounts().catch(()=>DB.accountsSync());
+  const acc = accounts.find(a=>a.username===u);
+
+  if(!acc){
+    document.getElementById('loginLoading').classList.remove('show');
+    document.getElementById('loginBtn').disabled = false;
+    e.textContent = 'اسم المستخدم غير موجود'; return;
+  }
+  if(!acc.active){
+    document.getElementById('loginLoading').classList.remove('show');
+    document.getElementById('loginBtn').disabled = false;
+    e.textContent = 'الحساب موقوف — تواصل مع المدير'; return;
+  }
+
+  // التحقق من كلمة المرور (مشفّرة أو عادية)
+  let valid = false;
+  if(acc.password_hash){
+    valid = await DB.verifyPassword(p, acc.password_hash);
+  } else if(acc.password){
+    valid = (acc.password === p);
+  }
+
+  if(!valid){
+    document.getElementById('loginLoading').classList.remove('show');
+    document.getElementById('loginBtn').disabled = false;
+    e.textContent = 'كلمة المرور غير صحيحة'; return;
+  }
+
+  DB.setSession({
+    id: acc.id, username: acc.username, name: acc.name,
+    role: acc.role, permissions: acc.permissions || {},
+    loginAt: Date.now(),
+  });
+  location.href = DB.firstAccessiblePage();
 }
 
 function resetAdmin(){
-  if(!confirm('إعادة تعيين حساب المدير؟\nستُنشأ كلمة مرور: admin123')) return;
-  const list = DB.accounts();
-  const i = list.findIndex(a => a.username === 'admin');
-  const adm = {
-    id:'admin', username:'admin', password:'admin123',
-    name:'مدير النظام', role:'admin', permissions:{},
-    active:true, created_at:Date.now()
-  };
-  if(i >= 0) list[i] = adm; else list.push(adm);
-  DB.saveAccounts(list);
-  document.getElementById('l_user').value = 'admin';
-  document.getElementById('l_pass').value = 'admin123';
-  document.getElementById('l_err').textContent = '';
-  login();
+  if(!confirm('إعادة الإعداد الأولي؟\nستُفقد كل الحسابات الحالية ويمكنك إنشاء حساب جديد.')) return;
+  location.href = 'setup.html';
 }
 </script>
 </body>
