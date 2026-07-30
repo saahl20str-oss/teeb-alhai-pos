@@ -94,6 +94,15 @@ a{text-decoration:none;color:inherit}button{font-family:inherit;cursor:pointer;b
 .modal-del:hover{background:var(--rdl)}
 
 @media(max-width:700px){.tb-nav{display:none}.page{padding:12px}}
+.pending-card{background:var(--s2);border:1.5px solid var(--or);border-radius:var(--R2);
+  padding:14px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pending-name{font-weight:700;font-size:.9rem}
+.pending-meta{font-size:.75rem;color:var(--tx4);margin-top:2px}
+.approve-btn{padding:7px 16px;background:var(--g);color:#1C1208;border:none;border-radius:7px;
+  font-size:.8rem;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer;transition:.12s}
+.approve-btn:hover{filter:brightness(1.08)}
+.reject-btn{padding:7px 14px;background:var(--s3);color:var(--rd);border:1px solid rgba(192,57,43,.3);
+  border-radius:7px;font-size:.8rem;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer}
 </style>
 </head>
 <body>
@@ -122,6 +131,18 @@ a{text-decoration:none;color:inherit}button{font-family:inherit;cursor:pointer;b
     <h1 class="pg-title">👥 إدارة الموظفين والصلاحيات</h1>
     <button class="add-btn" onclick="openModal()">+ موظف جديد</button>
   </div>
+
+  <!-- طلبات الانتساب المعلقة -->
+  <div id="pendingSection" style="display:none;margin-bottom:18px">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <div style="width:4px;height:20px;background:var(--or);border-radius:2px"></div>
+      <span style="font-size:.88rem;font-weight:700;color:var(--tx2)">طلبات الانتساب المعلقة</span>
+      <span id="pendingCount" style="background:var(--or);color:#fff;border-radius:10px;
+        padding:2px 8px;font-size:.72rem;font-weight:700">0</span>
+    </div>
+    <div id="pendingList" style="display:grid;gap:8px"></div>
+  </div>
+
   <div class="grid" id="usersGrid"></div>
 </main>
 
@@ -178,6 +199,76 @@ let editingId = null;
 
 function roleLabel(r){ return {admin:'مدير',supervisor:'مشرف',staff:'موظف'}[r] || r; }
 function avClass(r){ return {admin:'av-admin',supervisor:'av-sup',staff:'av-staff'}[r] || 'av-staff'; }
+
+
+// ─── طلبات الانتساب المعلقة ────────────────────────────
+function renderPending(){
+  const all     = DB.accounts();
+  const pending = all.filter(a => !a.active && a.role !== 'admin');
+  const sec     = document.getElementById('pendingSection');
+  const cnt     = document.getElementById('pendingCount');
+  const list    = document.getElementById('pendingList');
+  
+  if(!pending.length){ sec.style.display='none'; return; }
+  sec.style.display = 'block';
+  cnt.textContent   = pending.length;
+  
+  list.innerHTML = pending.map(u=>`
+    <div class="pending-card">
+      <div style="flex:1">
+        <div class="pending-name">${u.name}</div>
+        <div class="pending-meta">
+          @${u.username}
+          ${u.phone?' · '+u.phone:''}
+          · طلب منذ ${u.created_at?Math.floor((Date.now()-u.created_at)/3600000)+' ساعة':'—'}
+        </div>
+      </div>
+      <div style="display:flex;gap:7px;flex-shrink:0">
+        <button class="approve-btn" onclick="openApproveModal('${u.id}')">
+          ✓ موافقة وتحديد الصلاحيات
+        </button>
+        <button class="reject-btn" onclick="rejectUser('${u.id}','${u.name}')">
+          حذف الطلب
+        </button>
+      </div>
+    </div>`).join('');
+}
+
+function rejectUser(id, name){
+  if(!confirm('حذف طلب '+name+' نهائياً؟')) return;
+  DB.deleteAccount(id);
+  renderPending();
+  // Activate account on approval
+  const updList=DB.accounts();
+  const updIdx=updList.findIndex(a=>a.id===(editingId||''));
+  if(updIdx>=0 && !updList[updIdx].active){ updList[updIdx].active=true; DB.saveAccounts(updList); }
+  window._approvingId=null;
+  const noteEl=document.getElementById('approveNote'); if(noteEl) noteEl.style.display='none';
+  renderPending();
+  renderPending();
+renderGrid();
+  toast('تم حذف الطلب');
+}
+
+function openApproveModal(id){
+  const acc = DB.accounts().find(a=>a.id===id);
+  if(!acc) return;
+  // Open the edit modal pre-filled — admin sets role & permissions then saves
+  // Override openModal to handle approval
+  window._approvingId = id;
+  openModal(id); // uses existing openModal
+  document.getElementById('mTitle').textContent = '✓ موافقة على حساب: '+acc.name;
+  // Add approval note
+  const note = document.getElementById('approveNote') || (() => {
+    const d=document.createElement('div');
+    d.id='approveNote';
+    d.style='background:var(--grl);border:1px solid var(--gr);border-radius:8px;padding:10px 12px;font-size:.8rem;color:var(--gr);margin-bottom:12px';
+    d.innerHTML='✓ حدد الدور والصلاحيات للموظف ثم اضغط حفظ لتفعيل الحساب';
+    document.querySelector('.mb').prepend(d);
+    return d;
+  })();
+  note.style.display='block';
+}
 
 function renderGrid(){
   const el  = document.getElementById('usersGrid');
@@ -303,7 +394,11 @@ function saveUser(){
     const idx = accounts.findIndex(a => a.username === editingId);
     if(idx >= 0){
       accounts[idx] = { ...accounts[idx], name, role, permissions };
-      if(pass) accounts[idx].password = pass;
+      if(pass){
+        accounts[idx].password              = pass;
+        accounts[idx].password_changed_at   = Date.now();
+        accounts[idx].password_warning_dismissed = false;
+      }
     }
   } else {
     accounts.push({ id:'USR'+Date.now(), username:uname, password:pass, name, role, permissions, active:true, created_at:Date.now() });
