@@ -88,6 +88,17 @@ html,body{height:100%;font-family:'Tajawal',sans-serif}
 // Auto-redirect if already logged in
 if(DB.session()) location.href = DB.firstAccessiblePage();
 
+// Show idle timeout message
+if(location.search.includes('timeout=1')){
+  document.addEventListener('DOMContentLoaded',()=>{
+    const bar=document.createElement('div');
+    bar.style='position:fixed;top:0;left:0;right:0;z-index:99;padding:12px 20px;background:#e67e22;color:#fff;text-align:center;font-family:Tajawal,sans-serif;font-size:.9rem;font-weight:700;box-shadow:0 2px 10px rgba(0,0,0,.3)';
+    bar.innerHTML='⏱ انتهت جلستك تلقائياً بعد دقيقتين من عدم النشاط — الرجاء تسجيل الدخول مجدداً';
+    document.body.prepend(bar);
+    setTimeout(()=>bar.remove(),5000);
+  });
+}
+
 // Load store name
 DB.getSettings().then(s => {
   if(s.store_name) document.getElementById('storeName').textContent = s.store_name;
