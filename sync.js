@@ -37,6 +37,15 @@ async function _sbGet(path) {
   }
 }
 
+
+// ─── SHA-256 (تشفير كلمات المرور) ────────────────────────
+async function _sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256',
+    new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf))
+    .map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
 // ─── localStorage helper ─────────────────────────────────
 const _K = {
   settings:  'th_settings',
@@ -149,50 +158,122 @@ const DB = {
     return true;
   },
 
-  // ── ACCOUNTS (localStorage فقط — أمان) ──────────────────
-  accounts() { return _get(_K.accounts) || []; },
-  account(u) { return this.accounts().find(a => a.username === u) || null; },
-  saveAccounts(list) { _set(_K.accounts, list); },
-  saveAccount(acc) {
-    const list = this.accounts();
-    const i = list.findIndex(a => a.id === acc.id);
-    if (i >= 0) list[i] = { ...list[i], ...acc }; else list.push(acc);
-    this.saveAccounts(list);
-  },
-  deleteAccount(id) { this.saveAccounts(this.accounts().filter(a => a.id !== id)); },
+  // ── ACCOUNTS (Supabase + localStorage cache) ─────────────
+  // Cache محلي للسرعة
+  _accCache: null,
 
-  seedAdmin() {
-    if (!this.account('admin')) {
-      this.saveAccount({
-        id: 'admin', username: 'admin', password: 'admin123',
-        name: 'مدير النظام', role: 'admin', permissions: {},
-        active: true, created_at: Date.now(),
-      });
+  async accounts() {
+    if (this._accCache) return this._accCache;
+    try {
+      const rows = await _sbGet('th_accounts?select=*&order=created_at.asc');
+      this._accCache = rows || [];
+      // مزامنة مع localStorage كـ backup
+      _set(_K.accounts, this._accCache);
+      return this._accCache;
+    } catch(e) {
+      // Fallback للـ localStorage
+      return _get(_K.accounts) || [];
     }
+  },
+
+  async account(username) {
+    const list = await this.accounts();
+    return list.find(a => a.username === username) || null;
+  },
+
+  // للصفحات القديمة التي تستخدم DB.accounts() بدون await
+  // تُرجع الـ cache المحلي فوراً
+  accountsSync() { return this._accCache || _get(_K.accounts) || []; },
+  accountSync(username) { return this.accountsSync().find(a=>a.username===username)||null; },
+
+  async saveAccount(acc) {
+    await _sbGet(`th_accounts?id=eq.${acc.id}`) // dummy to check
+      .catch(()=>null);
+    _sbPush('th_accounts', 'POST', acc);
+    // حدّث الـ cache
+    const list = this.accountsSync();
+    const i = list.findIndex(a=>a.id===acc.id);
+    if(i>=0) list[i]={...list[i],...acc}; else list.push(acc);
+    this._accCache = list;
+    _set(_K.accounts, list);
+  },
+
+  async saveAccounts(list) {
+    for(const acc of list) {
+      _sbPush('th_accounts','POST',acc);
+    }
+    this._accCache = list;
+    _set(_K.accounts, list);
+  },
+
+  async deleteAccount(id) {
+    _sbPush(`th_accounts?id=eq.${id}`, 'DELETE');
+    const list = this.accountsSync().filter(a=>a.id!==id);
+    this._accCache = list;
+    _set(_K.accounts, list);
+  },
+
+  // تشفير كلمة المرور
+  async hashPassword(pass) { return await _sha256(pass); },
+
+  // التحقق من كلمة المرور
+  async verifyPassword(plain, hash) {
+    const h = await _sha256(plain);
+    return h === hash;
+  },
+
+  // أول تشغيل — إنشاء حساب المدير
+  async createFirstAdmin(data) {
+    const hash = await _sha256(data.password);
+    const acc = {
+      id: 'admin_' + Date.now(),
+      username: data.username,
+      password_hash: hash,
+      name: data.name,
+      role: 'admin',
+      permissions: {},
+      active: true,
+      created_at: Date.now(),
+    };
+    _sbPush('th_accounts', 'POST', acc);
+    this._accCache = [acc];
+    _set(_K.accounts, [acc]);
+    return acc;
+  },
+
+  // هل تم الإعداد الأولي؟
+  isFirstRun() {
+    const list = this.accountsSync();
+    return list.length === 0;
   },
 
   recordPasswordChange(username) {
-    const list = this.accounts();
-    const i = list.findIndex(a => a.username === username);
-    if (i >= 0) {
-      list[i].password_changed_at = Date.now();
-      list[i].password_warning_dismissed = false;
-      this.saveAccounts(list);
+    const list = this.accountsSync();
+    const i = list.findIndex(a=>a.username===username);
+    if(i>=0){
+      list[i].password_changed_at=Date.now();
+      list[i].password_warning_dismissed=false;
+      _sbPush(`th_accounts?id=eq.${list[i].id}`,'PATCH',{
+        password_changed_at:list[i].password_changed_at,
+        password_warning_dismissed:false,
+      });
+      this._accCache=list;
+      _set(_K.accounts,list);
     }
   },
   daysSincePasswordChange(username) {
-    const acc = this.account(username);
-    if (!acc?.password_changed_at) return null;
-    return Math.floor((Date.now() - acc.password_changed_at) / 86400000);
+    const acc = this.accountSync(username);
+    if(!acc?.password_changed_at) return null;
+    return Math.floor((Date.now()-acc.password_changed_at)/86400000);
   },
   shouldWarnPassword() {
     const s = this.settings();
-    const days = Number(s.pw_reminder_days || 90); if (!days) return false;
-    const me = this.session(); if (!me) return false;
-    const acc = this.account(me.username);
-    if (!acc || acc.password_warning_dismissed) return false;
-    const since = this.daysSincePasswordChange(me.username);
-    return since === null || since >= days;
+    const days=Number(s.pw_reminder_days||90); if(!days) return false;
+    const me=this.session(); if(!me) return false;
+    const acc=this.accountSync(me.username);
+    if(!acc||acc.password_warning_dismissed) return false;
+    const since=this.daysSincePasswordChange(me.username);
+    return since===null||since>=days;
   },
 
   // ── SETTINGS ─────────────────────────────────────────────
@@ -320,8 +401,8 @@ const DB = {
   uid() { return Math.random().toString(36).slice(2, 9); },
 };
 
-// ─── Auto-seed admin ─────────────────────────────────────
-DB.seedAdmin();
+// ─── مزامنة الحسابات عند البدء ──────────────────────────────
+DB.accounts().catch(e=>console.warn('Accounts sync:',e));
 
 // ─── مزامنة من Supabase عند بدء الصفحة ──────────────────
 (async function syncFromSupabase() {
