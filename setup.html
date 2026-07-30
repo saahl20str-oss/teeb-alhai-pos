@@ -188,13 +188,29 @@ html,body{height:100%;font-family:'Tajawal',sans-serif;background:#0a0604}
 </div>
 <script src="sync.js"></script>
 <script>
-// إذا كان النظام مُعدّاً مسبقاً → اذهب لتسجيل الدخول
+// حماية setup.html — لا يمكن فتحه إن كان النظام مُعدّاً
 (async()=>{
-  await DB.accounts(); // تحميل الحسابات
+  showSetupLoading();
+  try {
+    await DB.accounts(); // تحميل الحسابات من Supabase
+  } catch(e) {
+    console.warn('Could not load accounts:', e);
+  }
+  hideSetupLoading();
+  
   if(!DB.isFirstRun()) {
+    // النظام مُعدّ مسبقاً — لا يُسمح بإعادة الإعداد
     location.href = 'index.html';
+    return;
   }
 })();
+
+function showSetupLoading(){
+  document.getElementById('loadingOv').classList.add('show');
+}
+function hideSetupLoading(){
+  document.getElementById('loadingOv').classList.remove('show');
+}
 
 let curStep = 0;
 
