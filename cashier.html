@@ -314,9 +314,14 @@ input,select{font-family:inherit}
             <span>العميل</span>
             <button onclick="toggleQuickCust()" style="font-size:.72rem;color:var(--g);background:none;border:none;cursor:pointer;font-family:'Tajawal',sans-serif;padding:2px 6px;border-radius:4px;transition:.12s" onmouseover="this.style.background='var(--gl)'" onmouseout="this.style.background='none'">+ عميل جديد</button>
           </div>
-          <select class="cust-sel" id="custSelect">
+          <select class="cust-sel" id="custSelect" onchange="onCustChange()">
             <option value="">— عميل عادي —</option>
           </select>
+          <!-- Customer phone display -->
+          <div id="custPhone" style="display:none;margin-top:5px;padding:6px 10px;background:var(--gl);border-radius:7px;font-size:.76rem;color:var(--gd);display:flex;align-items:center;justify-content:space-between">
+            <span id="custPhoneNum" style="font-family:'IBM Plex Mono',monospace;font-weight:700"></span>
+            <a id="custPageLink" href="customers.html" style="font-size:.7rem;color:var(--g);text-decoration:none">عرض الملف ←</a>
+          </div>
           <div id="quickCustForm" style="display:none;margin-top:8px;padding:10px;background:var(--s3);border:1px solid var(--bd2);border-radius:8px">
             <input id="qc_name" placeholder="اسم العميل" style="width:100%;padding:7px 10px;background:var(--s1);border:1px solid var(--bd2);border-radius:6px;color:var(--tx);font-size:.8rem;font-family:'Tajawal',sans-serif;margin-bottom:6px">
             <input id="qc_phone" placeholder="رقم الهاتف (اختياري)" dir="ltr" style="width:100%;padding:7px 10px;background:var(--s1);border:1px solid var(--bd2);border-radius:6px;color:var(--tx);font-size:.8rem;font-family:'Tajawal',sans-serif;margin-bottom:8px">
@@ -637,6 +642,14 @@ function switchMode(m){
   if(m && map[m]) switchMode(map[m]);
   else if(m) switchMode(m);
   // Auto-fill invoice number if coming from dashboard
+  // Auto-fill supplier name from suppliers page
+  const sup = params.get('supplier');
+  if(sup && m==='receive'){
+    setTimeout(()=>{
+      const el = document.getElementById('rcvSupplier');
+      if(el) el.value = decodeURIComponent(sup);
+    }, 100);
+  }
   const inv = params.get('inv');
   if(inv && m==='return'){
     setTimeout(()=>{
@@ -800,6 +813,21 @@ function calcTotals(){
 }
 
 // Populate customers
+function onCustChange(){
+  const sel = document.getElementById('custSelect');
+  const id  = sel.value;
+  const phoneDiv = document.getElementById('custPhone');
+  if(!id){ phoneDiv.style.display='none'; return; }
+  const c = DB.customers().find(x=>x.id===id);
+  if(c?.phone){
+    document.getElementById('custPhoneNum').textContent = '📞 '+c.phone;
+    document.getElementById('custPageLink').href = 'customers.html';
+    phoneDiv.style.display = 'flex';
+  } else {
+    phoneDiv.style.display = 'none';
+  }
+}
+
 function loadCustomers(){
   const sel = document.getElementById('custSelect');
   const cur = sel.value;
