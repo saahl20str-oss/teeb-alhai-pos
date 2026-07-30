@@ -50,6 +50,8 @@ a{text-decoration:none;color:inherit}button{font-family:inherit;cursor:pointer;b
 .prod-card:hover{border-color:var(--bd2);transform:translateY(-2px);box-shadow:0 4px 20px rgba(0,0,0,.4)}
 .prod-card.low{border-color:rgba(176,106,32,.4)}.prod-card.out{border-color:rgba(192,57,43,.4)}
 .pc-img{width:100%;height:110px;object-fit:contain;background:var(--s3);display:block}
+.pc-img-wrap{position:relative;height:120px;background:var(--s3);border-bottom:1px solid var(--bd)}
+.pc-img{width:100%;height:100%;object-fit:contain}
 .pc-img-ph{width:100%;height:110px;background:var(--s3);display:flex;align-items:center;justify-content:center;font-size:2rem}
 .pc-body{padding:11px 12px}
 .pc-name{font-size:.84rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
@@ -250,20 +252,27 @@ function renderGrid(){
     const qTxt=isOut?'نفد':isLow?`${q} منخفض`:q+'';
     const cardCls=isOut?'out':isLow?'low':'';
     return`<div class="prod-card ${cardCls}" onclick="openEdit('${p.barcode}')">
-      ${p.img?`<img class="pc-img" src="${p.img}">`:`<div class="pc-img-ph">${catIcon(p.category)}</div>`}
+      <div class="pc-img-wrap">
+        ${p.img?`<img class="pc-img" src="${p.img}">`:`<div class="pc-img-ph">${catIcon(p.category)}</div>`}
+        <span class="qty-badge ${qCls}" style="position:absolute;top:7px;right:7px">${qTxt}</span>
+      </div>
       <div class="pc-body">
         <div class="pc-name" title="${p.name}">${p.name}</div>
-        <div class="pc-cat">${p.category||'—'} · ${p.unit||'وحدة'}</div>
-        <div style="font-size:.66rem;color:var(--tx4);font-family:'IBM Plex Mono',monospace;margin-bottom:4px">#${p.barcode||'—'}</div>
-        <div class="pc-row">
-          <span class="qty-badge ${qCls}">${qTxt}</span>
-          <span class="pc-price">${DB.fmt(p.price)}</span>
+        <div style="display:flex;align-items:center;gap:5px;margin:3px 0 5px">
+          <span style="font-size:.7rem;background:var(--gl);color:var(--gd);padding:2px 7px;border-radius:10px;font-weight:700">${p.category||'عام'}</span>
+          <span style="font-size:.7rem;color:var(--tx4)">${p.unit||'وحدة'}</span>
         </div>
-        <div style="display:flex;justify-content:space-between;font-size:.68rem;color:var(--tx3);margin-top:4px">
-          <span>شراء: ${DB.fmt(p.cost)}</span>
-          <span>${p.specs?'📋 مواصفات':''}</span>
-        </div>
-        ${p.company?`<div style="font-size:.66rem;color:var(--tx4);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">🏢 ${p.company}</div>`:''}
+        <div style="font-size:.66rem;color:var(--tx4);font-family:'IBM Plex Mono',monospace;margin-bottom:6px;letter-spacing:.03em">#${p.barcode||'—'}</div>
+        <div style="border-top:1px solid var(--bd);padding-top:7px;display:flex;flex-direction:column;gap:4px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:.7rem;color:var(--tx4)">سعر البيع</span>
+            <span style="font-size:.88rem;font-weight:800;color:var(--gd);font-family:'IBM Plex Mono',monospace">${DB.fmt(p.price)}</span>
+          </div>
+          ${DB.can('view_cost')?`<div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:.7rem;color:var(--tx4)">سعر الشراء</span>
+            <span style="font-size:.78rem;font-weight:600;color:var(--tx3);font-family:'IBM Plex Mono',monospace">${DB.fmt(p.cost)}</span>
+          </div>`:''}
+          ${p.company?`<div style="font-size:.68rem;color:var(--tx4);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">🏢 ${p.company}</div>`:''}
       </div>
     </div>`;
   }).join('');
