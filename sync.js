@@ -242,9 +242,14 @@ const DB = {
   },
 
   // هل تم الإعداد الأولي؟
+  // يتحقق من الـ cache الذي تم تحميله من Supabase
   isFirstRun() {
-    const list = this.accountsSync();
-    return list.length === 0;
+    // تحقق من localStorage أولاً (بعد المزامنة)
+    const local = _get(_K.accounts) || [];
+    if(local.length > 0) return false;
+    // تحقق من الـ cache
+    if(this._accCache && this._accCache.length > 0) return false;
+    return true;
   },
 
   recordPasswordChange(username) {
