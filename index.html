@@ -21,11 +21,7 @@ html,body{height:100%;font-family:'Tajawal',sans-serif}
   padding:32px 30px 26px;box-shadow:0 24px 64px rgba(0,0,0,.55)}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
   background:linear-gradient(90deg,transparent,#C9A84C,transparent);border-radius:20px 20px 0 0}
-.tabs{display:flex;background:#f4f0ea;border-radius:10px;padding:4px;gap:4px;margin-bottom:24px}
-.tab-btn{flex:1;padding:8px;border:none;background:none;font-family:'Tajawal',sans-serif;
-  font-size:.86rem;font-weight:700;color:#8a7458;border-radius:7px;cursor:pointer;transition:.15s}
-.tab-btn.on{background:#fff;color:#1C1208;box-shadow:0 1px 4px rgba(0,0,0,.12)}
-.form{display:none}.form.on{display:block}
+.card-title{font-size:1.1rem;font-weight:900;color:#1C1208;text-align:center;margin-bottom:22px}
 .field{margin-bottom:16px}
 .field label{display:block;font-size:.72rem;font-weight:700;color:#8a7458;margin-bottom:6px;
   letter-spacing:.05em;text-transform:uppercase}
@@ -33,24 +29,18 @@ html,body{height:100%;font-family:'Tajawal',sans-serif}
   border-radius:9px;font-size:.93rem;font-family:'Tajawal',sans-serif;color:#1C1208;
   direction:ltr;text-align:right;transition:.2s}
 .field input:focus{outline:none;border-color:#C9A84C;background:#fffdf8;box-shadow:0 0 0 3px rgba(201,168,76,.12)}
-.field input::placeholder{color:#bfb09a}
+.pw-wrap{position:relative}
+.pw-toggle{position:absolute;top:50%;left:12px;transform:translateY(-50%);background:none;
+  border:none;cursor:pointer;color:#bfb09a;font-size:.85rem;padding:2px}
+.pw-wrap input{padding-left:36px}
 .btn{width:100%;padding:13px;background:linear-gradient(135deg,#C9A84C,#a8893a);color:#1C1208;
   border:none;border-radius:10px;font-size:.97rem;font-weight:900;font-family:'Tajawal',sans-serif;
   cursor:pointer;transition:.15s;box-shadow:0 4px 16px rgba(201,168,76,.35);margin-top:4px}
 .btn:hover{filter:brightness(1.08)}
-.btn:disabled{background:#e0d5c4;color:#a0906a;cursor:not-allowed;box-shadow:none}
-.msg{font-size:.8rem;text-align:center;min-height:22px;margin-top:10px;border-radius:7px}
-.msg.err{color:#c0392b}.msg.ok{color:#2e7d5c}
-.divider{border:none;border-top:1px solid #ede6d8;margin:18px 0}
-.pw-wrap{position:relative}
-.pw-toggle{position:absolute;top:50%;left:12px;transform:translateY(-50%);background:none;
-  border:none;cursor:pointer;color:#bfb09a;font-size:.85rem;transition:.15s;padding:2px}
-.pw-wrap input{padding-left:36px}
-.pw-strength{height:4px;border-radius:2px;background:#ede6d8;margin-top:6px;overflow:hidden}
-.pw-bar{height:100%;width:0;border-radius:2px;transition:.3s}
-.reset-link{text-align:center;font-size:.72rem;color:#a0906a;cursor:pointer;margin-top:14px}
-.reset-link:hover{color:#C9A84C}
-/* Loading overlay */
+.msg{font-size:.8rem;text-align:center;min-height:22px;margin-top:10px;color:#c0392b}
+.reset-link{text-align:center;font-size:.72rem;color:#a0906a;cursor:pointer;
+  margin-top:16px;padding-top:14px;border-top:1px solid #ede6d8}
+.reset-link:hover{color:#C9A84C;text-decoration:underline}
 .login-loading{display:none;position:absolute;inset:0;background:rgba(255,255,255,.85);
   border-radius:20px;z-index:10;align-items:center;justify-content:center;flex-direction:column;gap:10px}
 .login-loading.show{display:flex}
@@ -73,169 +63,85 @@ html,body{height:100%;font-family:'Tajawal',sans-serif}
         <div class="login-spinner"></div>
         <div style="font-size:.82rem;color:#8a7458">جاري التحقق…</div>
       </div>
-      <div class="tabs">
-        <button class="tab-btn on" onclick="switchTab('login')">تسجيل الدخول</button>
-        <button class="tab-btn"    onclick="switchTab('register')">إنشاء حساب</button>
+      <div class="card-title">تسجيل الدخول</div>
+      <div class="field">
+        <label>اسم المستخدم</label>
+        <input id="l_user" placeholder="username" autocomplete="username" autofocus
+          onkeydown="if(event.key==='Enter')document.getElementById('l_pass').focus()">
       </div>
-      <!-- LOGIN -->
-      <div class="form on" id="form-login">
-        <div class="field">
-          <label>اسم المستخدم</label>
-          <input id="l_user" placeholder="username" autocomplete="username" autofocus
-            onkeydown="if(event.key==='Enter')login()">
+      <div class="field">
+        <label>كلمة المرور</label>
+        <div class="pw-wrap">
+          <input id="l_pass" type="password" placeholder="••••••••"
+            autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
+          <button class="pw-toggle" onclick="togglePw()" type="button">👁</button>
         </div>
-        <div class="field">
-          <label>كلمة المرور</label>
-          <div class="pw-wrap">
-            <input id="l_pass" type="password" placeholder="••••••••"
-              autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
-            <button class="pw-toggle" onclick="togglePw('l_pass',this)" type="button">👁</button>
-          </div>
-        </div>
-        <button class="btn" id="loginBtn" onclick="login()">دخول</button>
-        <div class="msg err" id="l_err"></div>
-        <div class="divider"></div>
-        <div class="reset-link" onclick="resetAdmin()">إعادة تعيين حساب المدير</div>
       </div>
-      <!-- REGISTER -->
-      <div class="form" id="form-register">
-        <div class="field">
-          <label>الاسم الكامل *</label>
-          <input id="r_name" placeholder="مثال: أحمد محمد">
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div class="field">
-            <label>اسم المستخدم *</label>
-            <input id="r_user" placeholder="ahmed" dir="ltr" oninput="checkUser()">
-          </div>
-          <div class="field">
-            <label>الهاتف</label>
-            <input id="r_phone" placeholder="05xxxxxxxx" dir="ltr">
-          </div>
-        </div>
-        <div class="field">
-          <label>كلمة المرور *</label>
-          <div class="pw-wrap">
-            <input id="r_pass" type="password" placeholder="8 أحرف على الأقل" oninput="checkStr()">
-            <button class="pw-toggle" onclick="togglePw('r_pass',this)" type="button">👁</button>
-          </div>
-          <div class="pw-strength"><div class="pw-bar" id="pwBar"></div></div>
-        </div>
-        <div class="field">
-          <label>تأكيد كلمة المرور *</label>
-          <div class="pw-wrap">
-            <input id="r_pass2" type="password" placeholder="أعد كتابتها"
-              onkeydown="if(event.key==='Enter')register()">
-            <button class="pw-toggle" onclick="togglePw('r_pass2',this)" type="button">👁</button>
-          </div>
-        </div>
-        <div style="font-size:.72rem;color:#a0896a;background:#faf7f2;border:1px solid #ede6d8;
-          border-radius:8px;padding:9px 12px;margin-bottom:14px;line-height:1.7">
-          ⚠ الحساب الجديد يحتاج موافقة المدير لتفعيله قبل الاستخدام
-        </div>
-        <button class="btn" onclick="register()">إنشاء الحساب</button>
-        <div class="msg" id="r_msg"></div>
-      </div>
+      <button class="btn" id="loginBtn" onclick="login()">دخول</button>
+      <div class="msg" id="l_err"></div>
+      <div class="reset-link" onclick="resetAdmin()">🔑 إعادة تعيين حساب المدير</div>
     </div>
   </div>
 </div>
 <script src="sync.js"></script>
 <script>
-(function(){
-  // Auto-redirect if already logged in
-  if(DB.session()) location.href=DB.firstAccessiblePage();
-  // Load store name
-  DB.getSettings().then(s=>{
-    if(s.store_name) document.getElementById('storeName').textContent=s.store_name;
-  });
-})();
+// Auto-redirect if already logged in
+if(DB.session()) location.href = DB.firstAccessiblePage();
 
-function switchTab(t){
-  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('on',['login','register'][i]===t));
-  document.getElementById('form-login').classList.toggle('on',t==='login');
-  document.getElementById('form-register').classList.toggle('on',t==='register');
-  document.getElementById('l_err').textContent='';
-  document.getElementById('r_msg').textContent='';
+// Load store name
+DB.getSettings().then(s => {
+  if(s.store_name) document.getElementById('storeName').textContent = s.store_name;
+});
+
+function togglePw(){
+  const inp = document.getElementById('l_pass');
+  const btn = document.querySelector('.pw-toggle');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  btn.textContent = inp.type === 'password' ? '👁' : '🙈';
 }
 
-function togglePw(id,btn){
-  const inp=document.getElementById(id);
-  inp.type=inp.type==='password'?'text':'password';
-  btn.textContent=inp.type==='password'?'👁':'🙈';
-}
+function login(){
+  const u = document.getElementById('l_user').value.trim();
+  const p = document.getElementById('l_pass').value;
+  const e = document.getElementById('l_err');
+  e.textContent = '';
 
-function checkStr(){
-  const v=document.getElementById('r_pass').value;
-  const bar=document.getElementById('pwBar');
-  let s=0;
-  if(v.length>=8)s++;if(/[A-Z]/.test(v))s++;if(/[0-9]/.test(v))s++;if(/[^A-Za-z0-9]/.test(v))s++;
-  bar.style.width=[0,25,50,75,100][s]+'%';
-  bar.style.background=['','#c0392b','#e67e22','#C9A84C','#2e7d5c'][s];
-}
+  if(!u || !p){ e.textContent = 'أدخل اسم المستخدم وكلمة المرور'; return; }
 
-function checkUser(){
-  const v=document.getElementById('r_user').value.trim().toLowerCase();
-  const inp=document.getElementById('r_user');
-  if(!v){inp.style.borderColor='';return;}
-  inp.style.borderColor=DB.account(v)?'#c0392b':'#2e7d5c';
-}
+  const acc = DB.account(u);
+  if(!acc){ e.textContent = 'اسم المستخدم غير موجود'; return; }
+  if(!acc.active){ e.textContent = 'الحساب موقوف — تواصل مع المدير'; return; }
+  if(acc.password !== p){ e.textContent = 'كلمة المرور غير صحيحة'; return; }
 
-function setLoading(on){
-  document.getElementById('loginLoading').classList.toggle('show',on);
-  document.getElementById('loginBtn').disabled=on;
-}
+  document.getElementById('loginLoading').classList.add('show');
+  document.getElementById('loginBtn').disabled = true;
 
-async function login(){
-  const u=document.getElementById('l_user').value.trim();
-  const p=document.getElementById('l_pass').value;
-  const e=document.getElementById('l_err');
-  e.textContent='';
-  if(!u||!p){e.textContent='أدخل اسم المستخدم وكلمة المرور';return;}
-  const acc=DB.account(u);
-  if(!acc){e.textContent='اسم المستخدم غير موجود';return;}
-  if(!acc.active){e.textContent='الحساب موقوف — تواصل مع المدير';return;}
-  if(acc.password!==p){e.textContent='كلمة المرور غير صحيحة';return;}
-  setLoading(true);
-  // Verify Supabase is reachable
-  try{await DB.getSettings();}catch(ex){console.warn('Settings load warning',ex);}
-  DB.setSession({id:acc.id,username:acc.username,name:acc.name,
-    role:acc.role,permissions:acc.permissions||{},loginAt:Date.now()});
-  location.href=DB.firstAccessiblePage();
-}
-
-async function register(){
-  const name=document.getElementById('r_name').value.trim();
-  const uname=document.getElementById('r_user').value.trim().toLowerCase();
-  const phone=document.getElementById('r_phone').value.trim();
-  const pass=document.getElementById('r_pass').value;
-  const pass2=document.getElementById('r_pass2').value;
-  const msg=document.getElementById('r_msg');
-  msg.textContent='';msg.className='msg';
-  if(!name){msg.textContent='أدخل الاسم';msg.className='msg err';return;}
-  if(!uname){msg.textContent='أدخل اسم المستخدم';msg.className='msg err';return;}
-  if(DB.account(uname)){msg.textContent='اسم المستخدم مستخدم';msg.className='msg err';return;}
-  if(pass.length<6){msg.textContent='كلمة المرور 6 أحرف على الأقل';msg.className='msg err';return;}
-  if(pass!==pass2){msg.textContent='كلمتا المرور غير متطابقتين';msg.className='msg err';return;}
-  const list=DB.accounts();
-  list.push({id:'USR'+Date.now(),username:uname,password:pass,name,phone,
-    role:'staff',permissions:{},active:false,created_at:Date.now()});
-  DB.saveAccounts(list);
-  msg.textContent='✓ تم إنشاء الحساب — انتظر موافقة المدير';msg.className='msg ok';
-  ['r_name','r_user','r_phone','r_pass','r_pass2'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('pwBar').style.width='0';
+  // Small delay to let Supabase sync complete
+  setTimeout(()=>{
+    DB.setSession({
+      id: acc.id, username: acc.username, name: acc.name,
+      role: acc.role, permissions: acc.permissions || {},
+      loginAt: Date.now(),
+    });
+    location.href = DB.firstAccessiblePage();
+  }, 800);
 }
 
 function resetAdmin(){
-  if(!confirm('إعادة تعيين حساب المدير؟\nسيتم تسجيل الدخول بـ admin / admin123')) return;
-  const list=DB.accounts();
-  const i=list.findIndex(a=>a.username==='admin');
-  const adm={id:'admin',username:'admin',password:'admin123',name:'مدير النظام',
-    role:'admin',permissions:{},active:true,created_at:Date.now()};
-  if(i>=0)list[i]=adm;else list.push(adm);
+  if(!confirm('إعادة تعيين حساب المدير؟\nستُنشأ كلمة مرور: admin123')) return;
+  const list = DB.accounts();
+  const i = list.findIndex(a => a.username === 'admin');
+  const adm = {
+    id:'admin', username:'admin', password:'admin123',
+    name:'مدير النظام', role:'admin', permissions:{},
+    active:true, created_at:Date.now()
+  };
+  if(i >= 0) list[i] = adm; else list.push(adm);
   DB.saveAccounts(list);
-  DB.setSession({id:'admin',username:'admin',name:'مدير النظام',
-    role:'admin',permissions:{},loginAt:Date.now()});
-  location.href='dashboard.html';
+  document.getElementById('l_user').value = 'admin';
+  document.getElementById('l_pass').value = 'admin123';
+  document.getElementById('l_err').textContent = '';
+  login();
 }
 </script>
 </body>
