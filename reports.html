@@ -114,7 +114,7 @@ DB.requireAuth();DB.requirePerm('view_reports');
 DB.applyNavPermissions();
 const me=DB.session();document.getElementById('tbUser').textContent=me?.name||'—';
 (function(){const s=DB.settings();document.getElementById('tbName').textContent=s.store_name||'طيب الحي للعود والأدهان';if(s.logo){const _el=document.getElementById('tbLogo');_el.innerHTML=`<img src="${s.logo}" style="width:100%;height:100%;object-fit:cover">`;};})();
-function logout(){DB._set(DB.K.session,null);location.href='index.html';}
+function logout(){ DB.clearSession(); location.href='index.html'; }
 
 let period='today';let filtered=[];
 function setPeriod(p,btn){period=p;document.querySelectorAll('.pb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');document.getElementById('customRow').classList.toggle('show',p==='custom');if(p!=='custom')load();}
