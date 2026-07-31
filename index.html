@@ -79,39 +79,15 @@ html,body{height:100%;font-family:'Tajawal',sans-serif}
       </div>
       <button class="btn" id="loginBtn" onclick="login()">دخول</button>
       <div class="msg" id="l_err"></div>
-      <div class="reset-link" onclick="resetAdmin()">🔑 إعادة تعيين حساب المدير</div>
+      
     </div>
   </div>
 </div>
 <script src="sync.js"></script>
 <script>
-(async()=>{
-  // إن كان مسجل دخول → اذهب مباشرة
-  if(DB.session()){
-    location.href = DB.firstAccessiblePage();
-    return;
-  }
-  // تحقق من Supabase: هل يوجد حسابات؟
-  try {
-    const r = await fetch(
-      'https://xwjhewvjlmnnuqiylxht.supabase.co/rest/v1/th_accounts?select=id&limit=1',
-      { headers:{
-        'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh3amhld3ZqbG1ubnVxaXlseGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyMzU1NDgsImV4cCI6MjEwMDgxMTU0OH0.7sJGJESM-c6AKNKwscUO-onvSX3Zzco5baWlSEUvHFU',
-        'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh3amhld3ZqbG1ubnVxaXlseGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyMzU1NDgsImV4cCI6MjEwMDgxMTU0OH0.7sJGJESM-c6AKNKwscUO-onvSX3Zzco5baWlSEUvHFU'
-      }}
-    );
-    const data = await r.json().catch(()=>[]);
-    if(!data || data.length === 0){
-      location.href = 'setup.html';
-      return;
-    }
-    // يوجد حسابات — حمّلها في الخلفية
-    DB.accounts().catch(()=>{});
-  } catch(e) {
-    // فشل الاتصال — أبقِ على صفحة الدخول
-    console.warn('Connection check failed:', e);
-  }
-})();
+// تحميل الحسابات في الخلفية
+if(DB.session()) location.href = DB.firstAccessiblePage();
+DB.accounts().catch(()=>{});
 
 // Show idle timeout message
 if(location.search.includes('timeout=1')){
