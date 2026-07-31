@@ -619,7 +619,7 @@ document.getElementById('tbUser').textContent = me?.name || '—';
   if(s.logo){const _el=document.getElementById('tbLogo');_el.innerHTML=`<img src="${s.logo}" style="width:100%;height:100%;object-fit:cover">`; }
 })();
 
-function logout(){ DB._set(DB.K.session, null); location.href='index.html'; }
+function logout(){ DB.clearSession(); location.href='index.html'; }
 
 // ─── TAB ──────────────────────────────────
 let mode = 'sale';
