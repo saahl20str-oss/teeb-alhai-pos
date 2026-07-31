@@ -123,9 +123,24 @@ async function login(){
   document.getElementById('loginLoading').classList.add('show');
   document.getElementById('loginBtn').disabled = true;
 
-  // تحميل الحسابات من Supabase
-  const accounts = await DB.accounts().catch(()=>DB.accountsSync());
-  const acc = accounts.find(a=>a.username===u);
+  // جلب الحسابات مباشرة من Supabase (تجاوز الـ cache)
+  let accounts = [];
+  try {
+    const r = await fetch(
+      'https://xwjhewvjlmnnuqiylxht.supabase.co/rest/v1/th_accounts?select=*',
+      { headers:{
+        'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh3amhld3ZqbG1ubnVxaXlseGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyMzU1NDgsImV4cCI6MjEwMDgxMTU0OH0.7sJGJESM-c6AKNKwscUO-onvSX3Zzco5baWlSEUvHFU',
+        'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh3amhld3ZqbG1ubnVxaXlseGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyMzU1NDgsImV4cCI6MjEwMDgxMTU0OH0.7sJGJESM-c6AKNKwscUO-onvSX3Zzco5baWlSEUvHFU'
+      }}
+    );
+    accounts = await r.json();
+    // حفظ في localStorage للاستخدام لاحقاً
+    if(accounts?.length) localStorage.setItem('th_accounts', JSON.stringify(accounts));
+  } catch(ex) {
+    // fallback للـ localStorage
+    accounts = JSON.parse(localStorage.getItem('th_accounts')||'[]');
+  }
+  const acc = (accounts||[]).find(a=>a.username===u);
 
   if(!acc){
     document.getElementById('loginLoading').classList.remove('show');
