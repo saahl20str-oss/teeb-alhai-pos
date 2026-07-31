@@ -153,11 +153,20 @@ async function login(){
     e.textContent = 'الحساب موقوف — تواصل مع المدير'; return;
   }
 
-  // التحقق من كلمة المرور (مشفّرة أو عادية)
+  // التحقق من كلمة المرور
   let valid = false;
-  if(acc.password_hash){
-    valid = await DB.verifyPassword(p, acc.password_hash);
-  } else if(acc.password){
+  try {
+    if(acc.password_hash){
+      // تشفير كلمة المرور المدخلة ومقارنتها
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(p));
+      const hash = Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+      valid = (hash === acc.password_hash);
+    }
+    if(!valid && acc.password){
+      valid = (acc.password === p);
+    }
+  } catch(ex) {
+    // fallback: مقارنة مباشرة
     valid = (acc.password === p);
   }
 
