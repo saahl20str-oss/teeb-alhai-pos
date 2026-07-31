@@ -94,7 +94,14 @@ const DB = {
     return s;
   },
   setSession(s) { _set(_K.session, s); },
-  clearSession() { _del(_K.session); },
+  clearSession() {
+    _del(_K.session);
+    // احتفظ بـ cache الحسابات حتى بعد الخروج
+    // لمنع العودة لـ setup.html
+    if(this._accCache && this._accCache.length > 0){
+      _set(_K.accounts, this._accCache);
+    }
+  },
 
   can(perm) {
     const s = this.session(); if (!s) return false;
