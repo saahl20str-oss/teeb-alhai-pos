@@ -203,7 +203,6 @@ const DB = {
     if(i>=0) list[i]={...list[i],...acc}; else list.push(acc);
     this._accCache = list;
     _set(_K.accounts, list);
-    // أعلم كل الصفحات المفتوحة أن قائمة الموظفين تغيّرت
     window.dispatchEvent(new CustomEvent('th:synced'));
   },
 
@@ -495,19 +494,14 @@ const DB = {
   isToday(ts) { return new Date(ts).toDateString() === new Date().toDateString(); },
   isThisMonth(ts) { const d = new Date(ts), n = new Date(); return d.getFullYear() === n.getFullYear() && d.getMonth() === n.getMonth(); },
   uid() { return Math.random().toString(36).slice(2, 9); },
-
-  // ── READY (جديد) ──────────────────────────────────────────
-  // Promise يكتمل بعد ما تنتهي أول مزامنة كاملة من Supabase
-  // استخدمها في أي صفحة هكذا:
-  //   await DB.ready;
-  //   renderPage();
-  // أو استمع للتحديثات المستمرة (مزامنة كل 30 ثانية) هكذا:
-  //   window.addEventListener('th:synced', renderPage);
-  ready: null,
 };
 
 // ─── مزامنة الحسابات + كل البيانات عند البدء ────────────────
 // ثم نُطلق حدث 'th:synced' ونحل DB.ready بعد اكتمال كل شيء
+// استخدمها في أي صفحة هكذا:
+//   await DB.ready;  renderPage();
+// أو استمع للتحديثات المستمرة (كل 30 ثانية) هكذا:
+//   window.addEventListener('th:synced', renderPage);
 async function _fullInitialSync() {
   await DB.accounts().catch(e=>console.warn('Accounts sync:',e));
   await syncFromSupabase();
