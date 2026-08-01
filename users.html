@@ -417,7 +417,10 @@ async function saveUser(){
   if(!name)  { toast('أدخل الاسم الكامل','err'); return; }
   if(!uname) { toast('أدخل اسم المستخدم','err'); return; }
 
-  const accounts = DB.accountsSync();
+  // تحميل الحسابات من Supabase إن لم تكن في cache
+  const accounts = DB.accountsSync().length > 0
+    ? DB.accountsSync()
+    : await DB.accounts().catch(()=>[]);
   if(!editingId && accounts.find(a => a.username === uname)){ toast('اسم المستخدم موجود بالفعل','err'); return; }
   if(!editingId && !pass){ toast('أدخل كلمة المرور','err'); return; }
 
