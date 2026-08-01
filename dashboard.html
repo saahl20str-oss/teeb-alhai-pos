@@ -1287,15 +1287,15 @@ async function runHandover(){
   if(p1 !== p2){ err.textContent = 'كلمتا المرور غير متطابقتين'; return; }
   if(cf !== 'تأكيد'){ err.textContent = 'اكتب كلمة "تأكيد" بالضبط للموافقة'; return; }
 
-  // 1. Wipe transactional data
+  // 1. Wipe transactional data (محلياً فقط — راجع الملاحظة أدناه)
   DB._set(DB.K.products, []);
   DB._set(DB.K.invoices, []);
-  DB._set(DB.K.stock_log, []);
+  DB._set(DB.K.stockLog, []);
   DB._set(DB.K.customers, []);
   localStorage.removeItem('th_suppliers');
 
   // 2. Update admin password
-  const accounts = DB.accounts();
+  const accounts = DB.accountsSync();
   const idx = accounts.findIndex(a=>a.username==='admin');
   if(idx>=0){
     accounts[idx].password = p1;
@@ -1352,7 +1352,7 @@ async function checkPwWarning(){
 function dismissPwWarning(){
   const me = DB.session();
   if(!me) return;
-  const list = DB.accounts();
+  const list = DB.accountsSync();
   const idx  = list.findIndex(a=>a.username===me.username);
   if(idx>=0){
     list[idx].password_warning_dismissed = true;
@@ -1397,7 +1397,7 @@ async function saveNewPassword(){
   err.textContent = '';
 
   const me  = DB.session();
-  const acc = DB.account(me?.username);
+  const acc = DB.accountSync(me?.username);
   if(!acc){ err.textContent='خطأ في الجلسة'; return; }
 
   if(acc.password !== cur){
@@ -1414,7 +1414,7 @@ async function saveNewPassword(){
   }
 
   // Save new password + record change date
-  const list = DB.accounts();
+  const list = DB.accountsSync();
   const idx  = list.findIndex(a=>a.username===me.username);
   if(idx>=0){
     list[idx].password                  = nw;
@@ -1548,7 +1548,7 @@ async function checkPwWarning(){
 function dismissPwWarning(){
   const me = DB.session();
   if(!me) return;
-  const list = DB.accounts();
+  const list = DB.accountsSync();
   const idx  = list.findIndex(a=>a.username===me.username);
   if(idx>=0){
     list[idx].password_warning_dismissed = true;
@@ -1593,7 +1593,7 @@ async function saveNewPassword(){
   err.textContent = '';
 
   const me  = DB.session();
-  const acc = DB.account(me?.username);
+  const acc = DB.accountSync(me?.username);
   if(!acc){ err.textContent='خطأ في الجلسة'; return; }
 
   if(acc.password !== cur){
@@ -1610,7 +1610,7 @@ async function saveNewPassword(){
   }
 
   // Save new password + record change date
-  const list = DB.accounts();
+  const list = DB.accountsSync();
   const idx  = list.findIndex(a=>a.username===me.username);
   if(idx>=0){
     list[idx].password                  = nw;
