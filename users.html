@@ -237,7 +237,7 @@ function avClass(r){ return {admin:'av-admin',supervisor:'av-sup',staff:'av-staf
 
 // ─── طلبات الانتساب المعلقة ────────────────────────────
 function renderPending(){
-  const all     = DB.accounts();
+  const all     = DB.accountsSync();
   const pending = all.filter(a => !a.active && a.role !== 'admin');
   const sec     = document.getElementById('pendingSection');
   const cnt     = document.getElementById('pendingCount');
@@ -273,7 +273,7 @@ function rejectUser(id, name){
   DB.deleteAccount(id);
   renderPending();
   // Activate account on approval
-  const updList=DB.accounts();
+  const updList=DB.accountsSync();
   const updIdx=updList.findIndex(a=>a.id===(editingId||''));
   if(updIdx>=0 && !updList[updIdx].active){ updList[updIdx].active=true; DB.saveAccounts(updList); }
   window._approvingId=null;
@@ -285,7 +285,7 @@ renderGrid();
 }
 
 function openApproveModal(id){
-  const acc = DB.accounts().find(a=>a.id===id);
+  const acc = DB.accountsSync().find(a=>a.id===id);
   if(!acc) return;
   // Open the edit modal pre-filled — admin sets role & permissions then saves
   // Override openModal to handle approval
@@ -306,7 +306,7 @@ function openApproveModal(id){
 
 function renderGrid(){
   const el  = document.getElementById('usersGrid');
-  const list = DB.accounts();
+  const list = DB.accountsSync();
   if(!list.length){
     el.innerHTML = `<div style="padding:40px;color:var(--tx4);font-size:.9rem">لا موظفون بعد</div>`;
     return;
@@ -395,7 +395,7 @@ function handleRole(){
 
 function openModal(username = null){
   editingId = username;
-  const a   = username ? DB.account(username) : null;
+  const a   = username ? DB.accountSync(username) : null;
   document.getElementById('mTitle').textContent = a ? 'تعديل: ' + a.name : 'موظف جديد';
   document.getElementById('m_name').value = a?.name || '';
   document.getElementById('m_user').value = a?.username || '';
@@ -448,7 +448,7 @@ async function saveUser(){
 }
 
 function toggleActive(uname){
-  const list = DB.accounts();
+  const list = DB.accountsSync();
   const idx  = list.findIndex(a => a.username === uname);
   if(idx >= 0 && list[idx].role !== 'admin'){
     list[idx].active = !list[idx].active;
@@ -461,12 +461,14 @@ function toggleActive(uname){
 function deleteUser(){
   if(!editingId) return;
   if(!confirm('حذف هذا الحساب نهائياً؟')) return;
-  DB.saveAccounts(DB.accounts().filter(a => a.username !== editingId));
+  DB.saveAccounts(DB.accountsSync().filter(a => a.username !== editingId));
   closeModal(); renderGrid();
   toast('تم الحذف', 'warn');
 }
 
 renderGrid();
+renderPending();
+window.addEventListener('th:synced', ()=>{ renderGrid(); renderPending(); });
 </script>
 </body>
 </html>
