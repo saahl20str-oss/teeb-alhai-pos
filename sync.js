@@ -203,6 +203,8 @@ const DB = {
     if(i>=0) list[i]={...list[i],...acc}; else list.push(acc);
     this._accCache = list;
     _set(_K.accounts, list);
+    // أعلم كل الصفحات المفتوحة أن قائمة الموظفين تغيّرت
+    window.dispatchEvent(new CustomEvent('th:synced'));
   },
 
   async saveAccounts(list) {
@@ -211,6 +213,7 @@ const DB = {
     }
     this._accCache = list;
     _set(_K.accounts, list);
+    window.dispatchEvent(new CustomEvent('th:synced'));
   },
 
   async deleteAccount(id) {
@@ -218,6 +221,7 @@ const DB = {
     const list = this.accountsSync().filter(a=>a.id!==id);
     this._accCache = list;
     _set(_K.accounts, list);
+    window.dispatchEvent(new CustomEvent('th:synced'));
   },
 
   // تشفير كلمة المرور
@@ -444,11 +448,13 @@ const DB = {
     if (i >= 0) list[i] = saved; else list.push(saved);
     _set(_K.customers, list);
     _sbPush('th_customers', 'POST', saved);
+    window.dispatchEvent(new CustomEvent('th:synced'));
   },
 
   deleteCustomer(id) {
     _set(_K.customers, (_get(_K.customers) || []).filter(c => c.id !== id));
     _sbPush('th_customers?id=eq.' + encodeURIComponent(id), 'DELETE');
+    window.dispatchEvent(new CustomEvent('th:synced'));
   },
 
   // ── SUPPLIERS (Supabase + localStorage cache) ────────────
@@ -462,11 +468,16 @@ const DB = {
     list.forEach(s => _sbPush('th_suppliers','POST',{
       ...s, updated_at: Date.now()
     }));
+    window.dispatchEvent(new CustomEvent('th:synced'));
   },
   async syncSuppliers() {
     try {
-      const rows = await _sb('th_suppliers?select=*&order=name.asc');
-      if(rows?.length){ _set(_K.suppliers, rows); }
+      // إصلاح: كانت تستدعي _sb() غير الموجودة، الصحيح _sbGet()
+      const rows = await _sbGet('th_suppliers?select=*&order=name.asc');
+      if(rows?.length){
+        _set(_K.suppliers, rows);
+        window.dispatchEvent(new CustomEvent('th:synced'));
+      }
     } catch(e){ console.warn('Suppliers sync failed',e); }
   },
 
@@ -484,13 +495,27 @@ const DB = {
   isToday(ts) { return new Date(ts).toDateString() === new Date().toDateString(); },
   isThisMonth(ts) { const d = new Date(ts), n = new Date(); return d.getFullYear() === n.getFullYear() && d.getMonth() === n.getMonth(); },
   uid() { return Math.random().toString(36).slice(2, 9); },
+
+  // ── READY (جديد) ──────────────────────────────────────────
+  // Promise يكتمل بعد ما تنتهي أول مزامنة كاملة من Supabase
+  // استخدمها في أي صفحة هكذا:
+  //   await DB.ready;
+  //   renderPage();
+  // أو استمع للتحديثات المستمرة (مزامنة كل 30 ثانية) هكذا:
+  //   window.addEventListener('th:synced', renderPage);
+  ready: null,
 };
 
-// ─── مزامنة الحسابات عند البدء ──────────────────────────────
-DB.accounts().catch(e=>console.warn('Accounts sync:',e));
+// ─── مزامنة الحسابات + كل البيانات عند البدء ────────────────
+// ثم نُطلق حدث 'th:synced' ونحل DB.ready بعد اكتمال كل شيء
+async function _fullInitialSync() {
+  await DB.accounts().catch(e=>console.warn('Accounts sync:',e));
+  await syncFromSupabase();
+  window.dispatchEvent(new CustomEvent('th:synced'));
+}
 
 // ─── مزامنة من Supabase عند بدء الصفحة ──────────────────
-(async function syncFromSupabase() {
+async function syncFromSupabase() {
   try {
     // Settings
     const sRows = await _sbGet('th_settings?id=eq.main&select=data');
@@ -526,7 +551,9 @@ DB.accounts().catch(e=>console.warn('Accounts sync:',e));
   } catch (e) {
     console.warn('[Supabase] فشلت المزامنة — يعمل من localStorage', e.message);
   }
-})();
+}
+
+DB.ready = _fullInitialSync();
 
 // ─── مزامنة دورية كل 30 ثانية (للأجهزة الأخرى) ─────────
 setInterval(async () => {
@@ -539,6 +566,11 @@ setInterval(async () => {
   if (invs?.length) _set(_K.invoices, invs);
   const custs = await _sbGet('th_customers?select=*&order=name.asc');
   if (custs?.length) _set(_K.customers, custs);
+  const sups = await _sbGet('th_suppliers?select=*&order=name.asc');
+  if (sups?.length) _set(_K.suppliers, sups);
+  const accs = await _sbGet('th_accounts?select=*&order=created_at.asc');
+  if (accs?.length) { DB._accCache = accs; _set(_K.accounts, accs); }
+  window.dispatchEvent(new CustomEvent('th:synced'));
 }, 30000);
 
 
