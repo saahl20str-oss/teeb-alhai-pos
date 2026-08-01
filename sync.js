@@ -451,9 +451,24 @@ const DB = {
     _sbPush('th_customers?id=eq.' + encodeURIComponent(id), 'DELETE');
   },
 
-  // ── SUPPLIERS (localStorage — linked by name) ────────────
-  getSuppliers() { return _get(_K.suppliers) || []; },
-  saveSuppliers(list) { _set(_K.suppliers, list); },
+  // ── SUPPLIERS (Supabase + localStorage cache) ────────────
+  getSuppliers() {
+    // إرجاع من localStorage cache أولاً
+    return _get(_K.suppliers) || [];
+  },
+  saveSuppliers(list) {
+    _set(_K.suppliers, list);
+    // مزامنة مع Supabase
+    list.forEach(s => _sbPush('th_suppliers','POST',{
+      ...s, updated_at: Date.now()
+    }));
+  },
+  async syncSuppliers() {
+    try {
+      const rows = await _sb('th_suppliers?select=*&order=name.asc');
+      if(rows?.length){ _set(_K.suppliers, rows); }
+    } catch(e){ console.warn('Suppliers sync failed',e); }
+  },
 
   // ── HELPERS ──────────────────────────────────────────────
   fmt(n) {
@@ -504,6 +519,9 @@ DB.accounts().catch(e=>console.warn('Accounts sync:',e));
     const logs = await _sbGet('th_stock_log?select=*&order=at.desc&limit=500');
     if (logs?.length) _set(_K.stockLog, logs);
 
+    // Suppliers
+    const sups = await _sbGet('th_suppliers?select=*&order=name.asc');
+    if(sups?.length) _set(_K.suppliers, sups);
     console.log('[Supabase] تمت المزامنة بنجاح ✓');
   } catch (e) {
     console.warn('[Supabase] فشلت المزامنة — يعمل من localStorage', e.message);
