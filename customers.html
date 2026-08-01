@@ -367,6 +367,11 @@ function deleteById(id, fromModal = false){
 
 renderStats();
 renderList();
+window.addEventListener('th:synced', ()=>{
+  renderStats();
+  renderList();
+  if(selectedId) selectCustomer(selectedId);
+});
 </script>
 </body>
 </html>
