@@ -225,9 +225,8 @@ document.getElementById('tbUser').textContent = me?.name || '—';
 function logout(){ DB._set(DB.K.session, null); location.href = 'index.html'; }
 
 // Suppliers stored separately, but linked to products/invoices via name match
-const SUP_KEY = 'th_suppliers';
-function getSuppliers(){ return JSON.parse(localStorage.getItem(SUP_KEY)) || []; }
-function saveSuppliers(list){ localStorage.setItem(SUP_KEY, JSON.stringify(list)); }
+function getSuppliers(){ return DB.getSuppliers(); }
+function saveSuppliers(list){ DB.saveSuppliers(list); }
 
 let selectedId = null, editingId = null;
 
@@ -394,6 +393,7 @@ function deleteById(id, fromModal=false){
 
 renderStats();
 renderList();
+window.addEventListener('th:synced', ()=>{ renderStats(); renderList(); });
 </script>
 </body>
 </html>
