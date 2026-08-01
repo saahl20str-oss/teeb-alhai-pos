@@ -238,6 +238,79 @@ function renderMarginChart(prods,cur){
   el.innerHTML=wm.map(x=>`<div class="bar-row"><div class="bar-lbl" title="${x.name}">${x.name}</div><div class="bar-track"><div class="bar-fill" style="width:${mx>0?(Math.abs(x.m)/mx*100).toFixed(0):0}%;background:${x.m>=0?'var(--g)':'var(--rd)'}"></div></div><div class="bar-val" style="color:${x.m>=0?'var(--gr)':'var(--rd)'}">${x.m.toFixed(1)}%</div></div>`).join('');
 }
 function exportPDF(){
+  // حل مشكلة العربي: نطبع الصفحة كـ screenshot
+  const s = DB.settings();
+  // إنشاء نافذة طباعة خاصة
+  const filtered = getFiltered ? getFiltered() : DB.invoices();
+  const sales    = filtered.filter(i=>i.type==='sale');
+  const returns  = filtered.filter(i=>i.type==='return');
+  const purchases= filtered.filter(i=>i.type==='purchase');
+  const cur      = s.currency||'د.إ';
+  const sAmt     = sales.reduce((a,i)=>a+Number(i.total||0),0);
+  const retAmt   = returns.reduce((a,i)=>a+Math.abs(Number(i.total||0)),0);
+  const bAmt     = purchases.reduce((a,i)=>a+Number(i.total||0),0);
+  const netSales = Math.max(0,sAmt-retAmt);
+
+  const printWin = window.open('','_blank','width=800,height=600');
+  printWin.document.write(`<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>تقرير طيب الحي</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Tajawal',sans-serif;padding:20px;direction:rtl;font-size:13px}
+  .header{background:#C9A84C;color:#1C1208;padding:20px;border-radius:8px;margin-bottom:16px;text-align:center}
+  .header h1{font-size:20px;font-weight:900}
+  .header p{font-size:12px;opacity:.8;margin-top:4px}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+  .stat{border:1px solid #e0d5c4;border-radius:8px;padding:12px;text-align:center}
+  .stat-lbl{font-size:11px;color:#8a7458;margin-bottom:4px}
+  .stat-val{font-size:16px;font-weight:900;color:#1C1208}
+  table{width:100%;border-collapse:collapse;margin-top:10px}
+  th{background:#C9A84C;color:#1C1208;padding:8px 10px;font-weight:700;text-align:right}
+  td{padding:7px 10px;border-bottom:1px solid #ede6d8}
+  tr:nth-child(even){background:#faf8f5}
+  .badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700}
+  .sale{background:#d5f5e3;color:#1e8449}
+  .purchase{background:#d6eaf8;color:#1a5276}
+  .return{background:#fadbd8;color:#922b21}
+  .footer{margin-top:20px;padding-top:10px;border-top:1px solid #ede6d8;text-align:center;font-size:11px;color:#8a7458}
+  @media print{body{padding:10px}}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>${s.store_name||'طيب الحي للعود والأدهان'}</h1>
+  <p>تقرير المبيعات — ${new Date().toLocaleDateString('ar-SA-u-nu-latn',{year:'numeric',month:'long',day:'numeric'})}</p>
+</div>
+<div class="stats">
+  <div class="stat"><div class="stat-lbl">المبيعات</div><div class="stat-val">${DB.fmt(sAmt)} ${cur}</div></div>
+  <div class="stat"><div class="stat-lbl">صافي المبيعات</div><div class="stat-val">${DB.fmt(netSales)} ${cur}</div></div>
+  <div class="stat"><div class="stat-lbl">المشتريات</div><div class="stat-val">${DB.fmt(bAmt)} ${cur}</div></div>
+  <div class="stat"><div class="stat-lbl">المرتجعات</div><div class="stat-val">${DB.fmt(retAmt)} ${cur}</div></div>
+</div>
+<table>
+  <thead><tr><th>رقم الفاتورة</th><th>النوع</th><th>التاريخ</th><th>الإجمالي</th></tr></thead>
+  <tbody>
+    ${filtered.slice(0,100).map(i=>`<tr>
+      <td>#${String(i.id||'').slice(-6)}</td>
+      <td><span class="badge ${i.type==='sale'?'sale':i.type==='return'?'return':'purchase'}">${i.type==='sale'?'بيع':i.type==='return'?'مرتجع':'شراء'}</span></td>
+      <td>${DB.fmtDate(i.at,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</td>
+      <td>${DB.fmt(Math.abs(i.total||0))} ${cur}</td>
+    </tr>`).join('')}
+  </tbody>
+</table>
+<div class="footer">${s.receipt_note||'شكراً لتعاملكم معنا'}</div>
+<script>window.onload=()=>{window.print();}<\/script>
+</body>
+</html>`);
+  printWin.document.close();
+  toast('✓ جاري فتح نافذة الطباعة');
+}
+
+function _unusedExportPDF(){
   const s   = DB.settings();
   const cur = s.currency||'د.إ';
   const filtered = getFiltered();
