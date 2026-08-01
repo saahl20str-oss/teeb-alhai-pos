@@ -326,7 +326,10 @@ const DB = {
   // ── PRODUCTS ─────────────────────────────────────────────
   products() {
     return (_get(_K.products) || []).map(p => ({
-      ...p, img: _get('th_img_' + p.barcode) || p.img || null,
+      ...p,
+      img: (p.img && p.img.startsWith('http'))
+        ? p.img
+        : (_get('th_img_' + p.barcode) || null),
     }));
   },
   // aliases للتوافق
@@ -335,17 +338,60 @@ const DB = {
   async getProduct(bc) { return this.product(bc); },
 
   saveProduct(p) {
-    // Save image locally
-    if (p.img && p.img.startsWith('data:')) {
+    // حفظ الصورة محلياً دائماً كـ cache
+    if(p.img && p.img.startsWith('data:')){
       _set('th_img_' + p.barcode, p.img);
     }
-    const list = _get(_K.products) || [];
-    const i = list.findIndex(x => x.barcode === p.barcode);
-    const saved = { ...p, img: null, updated_at: Date.now(), created_at: p.created_at || Date.now() };
-    if (i >= 0) list[i] = saved; else list.push(saved);
+    const list    = _get(_K.products) || [];
+    const i       = list.findIndex(x => x.barcode === p.barcode);
+    const imgUrl  = (p.img && p.img.startsWith('http')) ? p.img : null;
+    const saved   = { ...p, img: imgUrl, updated_at: Date.now(), created_at: p.created_at || Date.now() };
+    if(i >= 0) list[i] = saved; else list.push(saved);
     _set(_K.products, list);
-    // Push to Supabase
+    // رفع للـ DB بدون base64
     _sbPush('th_products', 'POST', saved);
+    // رفع الصورة لـ Supabase Storage في الخلفية
+    if(p.img && p.img.startsWith('data:')){
+      this._uploadProductImage(p.barcode, p.img).then(url=>{
+        if(url){
+          // تحديث الـ URL في DB وlocal
+          _set('th_img_'+p.barcode, url);
+          const updated = { ...saved, img: url };
+          _sbPush('th_products', 'POST', updated);
+          const ls = _get(_K.products)||[];
+          const j  = ls.findIndex(x=>x.barcode===p.barcode);
+          if(j>=0){ ls[j].img=url; _set(_K.products,ls); }
+        }
+      }).catch(()=>{});
+    }
+  },
+
+  async _uploadProductImage(barcode, dataUrl){
+    try {
+      const res  = await fetch(dataUrl);
+      const blob = await res.blob();
+      const ext  = blob.type.includes('png')?'png':'jpg';
+      const path = `products/${barcode}.${ext}`;
+      const r    = await fetch(
+        `${_SB_URL}/storage/v1/object/product-images/${path}`,
+        {
+          method: 'POST',
+          headers: {
+            'apikey': _SB_KEY,
+            'Authorization': `Bearer ${_SB_KEY}`,
+            'Content-Type': blob.type,
+            'x-upsert': 'true',
+          },
+          body: blob,
+        }
+      );
+      if(r.ok){
+        return `${_SB_URL}/storage/v1/object/public/product-images/${path}`;
+      }
+    } catch(e){
+      console.warn('Image upload failed:', e.message);
+    }
+    return null;
   },
 
   deleteProduct(bc) {
@@ -500,6 +546,164 @@ setInterval(async () => {
   // Start timer
   resetIdle();
 })();
+
+
+
+
+// ─── نسخ احتياطي تلقائي ─────────────────────────────
+function downloadBackup(){
+  const data = {
+    backup_date: new Date().toISOString(),
+    backup_version: '1.0',
+    settings:  DB.settings(),
+    products:  DB.products(),
+    invoices:  DB.invoices(),
+    customers: DB.customers(),
+    suppliers: DB.getSuppliers(),
+    stock_log: DB.stockLog(),
+  };
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], {type:'application/json'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `teeb-backup-${new Date().toLocaleDateString('en-CA')}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  localStorage.setItem('th_last_backup', Date.now().toString());
+  toast('✓ تم تحميل النسخة الاحتياطية');
+}
+
+function scheduleAutoBackup(){
+  function checkBackupTime(){
+    const now   = new Date();
+    const hour  = now.getHours();
+    const min   = now.getMinutes();
+    const today = now.toLocaleDateString('en-CA');
+    const lastBackup = localStorage.getItem('th_last_backup_date');
+
+    // الساعة 10 مساءً (22:00) كل يوم
+    if(hour === 22 && min < 5 && lastBackup !== today){
+      localStorage.setItem('th_last_backup_date', today);
+      downloadBackup();
+      // إشعار
+      if(Notification.permission === 'granted'){
+        new Notification('💾 نسخة احتياطية', {
+          body: 'تم تحميل النسخة الاحتياطية اليومية تلقائياً',
+          tag: 'backup',
+        });
+      }
+    }
+  }
+  // فحص كل 4 دقائق
+  setInterval(checkBackupTime, 4 * 60 * 1000);
+}
+
+// تشغيل الجدولة
+scheduleAutoBackup();
+
+
+// ─── إشعارات نفاد المخزون ─────────────────────────────
+async function requestNotificationPermission(){
+  if(!('Notification' in window)) return false;
+  if(Notification.permission === 'granted') return true;
+  if(Notification.permission === 'denied') return false;
+  const result = await Notification.requestPermission();
+  return result === 'granted';
+}
+
+function sendStockNotification(product){
+  if(!('Notification' in window) || Notification.permission !== 'granted') return;
+  const s = DB.settings();
+  new Notification(`⚠ تنبيه مخزون — ${s.store_name||'طيب الحي'}`, {
+    body: `منتج "${product.name}" وصل لـ ${product.qty} ${product.unit||'وحدة'} فقط`,
+    icon: s.logo || '/favicon.ico',
+    badge: '/favicon.ico',
+    tag: 'stock-' + product.barcode,
+    requireInteraction: false,
+  });
+}
+
+async function checkStockAlerts(){
+  const s        = DB.settings();
+  const low      = Number(s.low_alert || 5);
+  const products = DB.products();
+  const alerted  = JSON.parse(localStorage.getItem('th_alerted_barcodes')||'{}');
+  const now      = Date.now();
+
+  // اطلب الإذن إن لم يكن ممنوحاً
+  await requestNotificationPermission();
+
+  products.forEach(p=>{
+    const qty = Number(p.qty||0);
+    // نفاد كامل
+    if(qty <= 0){
+      const key = 'out_' + p.barcode;
+      if(!alerted[key] || (now - alerted[key]) > 3600000){ // مرة كل ساعة
+        sendStockNotification({...p, qty, unit: p.unit||'وحدة'});
+        alerted[key] = now;
+      }
+    }
+    // قارب على النفاد
+    else if(qty <= low){
+      const key = 'low_' + p.barcode;
+      if(!alerted[key] || (now - alerted[key]) > 3600000){
+        sendStockNotification(p);
+        alerted[key] = now;
+      }
+    } else {
+      // حذف التنبيه إن عاد المخزون
+      delete alerted['out_' + p.barcode];
+      delete alerted['low_' + p.barcode];
+    }
+  });
+  localStorage.setItem('th_alerted_barcodes', JSON.stringify(alerted));
+}
+
+// تشغيل فحص المخزون كل 10 دقائق
+setInterval(checkStockAlerts, 10 * 60 * 1000);
+
+
+// ─── MOBILE NAV ───────────────────────────────────────
+function toggleMobileNav(){
+  const nav = document.getElementById('mobNav');
+  const ov  = document.getElementById('mobNavOv');
+  const btn = document.getElementById('tbBurger');
+  if(!nav) return;
+  const isOpen = nav.classList.contains('show');
+  if(isOpen){ closeMobileNav(); }
+  else {
+    // بناء روابط القائمة
+    const links = document.getElementById('mobNavLinks');
+    const tbLinks = document.querySelectorAll('.tb-nav a');
+    if(links && tbLinks.length){
+      links.innerHTML = Array.from(tbLinks)
+        .filter(a=>a.style.display!=='none')
+        .map(a=>`<a href="${a.href}" class="${a.classList.contains('on')?'on':''}">${a.textContent}</a>`)
+        .join('');
+    }
+    // اسم المتجر
+    const storeEl = document.getElementById('mobNavStore');
+    const tbName  = document.getElementById('tbName');
+    if(storeEl && tbName) storeEl.textContent = tbName.textContent;
+    // اسم المستخدم
+    const userEl = document.getElementById('mobNavUser');
+    const tbUser = document.getElementById('tbUser');
+    if(userEl && tbUser) userEl.textContent = 'مرحباً، ' + tbUser.textContent;
+
+    nav.classList.add('show');
+    ov.classList.add('show');
+    btn.classList.add('open');
+  }
+}
+function closeMobileNav(){
+  const nav = document.getElementById('mobNav');
+  const ov  = document.getElementById('mobNavOv');
+  const btn = document.getElementById('tbBurger');
+  if(nav) nav.classList.remove('show');
+  if(ov)  ov.classList.remove('show');
+  if(btn) btn.classList.remove('open');
+}
 
 // ─── TOAST ───────────────────────────────────────────────
 function toast(msg, type = 'ok') {
