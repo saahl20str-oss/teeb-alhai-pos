@@ -66,14 +66,14 @@ html,body{height:100%;font-family:'Tajawal',sans-serif}
       <div class="card-title">تسجيل الدخول</div>
       <div class="field">
         <label>اسم المستخدم</label>
-        <input id="l_user" placeholder="username" autocomplete="username" autofocus
+        <input id="l_user" placeholder="username" autocomplete="off" autofocus
           onkeydown="if(event.key==='Enter')document.getElementById('l_pass').focus()">
       </div>
       <div class="field">
         <label>كلمة المرور</label>
         <div class="pw-wrap">
           <input id="l_pass" type="password" placeholder="••••••••"
-            autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
+            autocomplete="off" onkeydown="if(event.key==='Enter')login()">
           <button class="pw-toggle" onclick="togglePw()" type="button">👁</button>
         </div>
       </div>
@@ -86,11 +86,39 @@ html,body{height:100%;font-family:'Tajawal',sans-serif}
 <script src="sync.js"></script>
 <script>
 // تحميل الحسابات في الخلفية
+// مسح الحقول عند التحميل - منع المتصفح من ملء البيانات المحفوظة
+window.addEventListener('load', ()=>{
+  const u = document.getElementById('l_user');
+  const p = document.getElementById('l_pass');
+  if(u) u.value = '';
+  if(p) p.value = '';
+});
 if(DB.session()) location.href = DB.firstAccessiblePage();
 DB.accounts().catch(()=>{});
 
 // Show idle timeout message
 if(location.search.includes('timeout=1')){
+  document.addEventListener('DOMContentLoaded',()=>{
+    // احصل على آخر جلسة لمعرفة المستخدم
+    const lastSession = JSON.parse(sessionStorage.getItem('last_user')||'null');
+    const u = document.getElementById('l_user');
+    const p = document.getElementById('l_pass');
+    if(u) u.value = '';
+    if(p) p.value = '';
+    // إخفاء حقل اليوزر وإظهار اسم المستخدم كـ label
+    if(lastSession && u){
+      const userField = u.closest('.field');
+      if(userField){
+        userField.innerHTML = `<label>اسم المستخدم</label>
+          <div style="padding:11px 14px;background:#faf8f5;border:1.5px solid #e0d5c4;
+            border-radius:9px;font-size:.93rem;color:#1C1208;direction:ltr;text-align:right">
+            ${lastSession}
+          </div>`;
+        u.style.display='none';
+      }
+    }
+    if(p) setTimeout(()=>p.focus(), 100);
+  });
   document.addEventListener('DOMContentLoaded',()=>{
     const bar=document.createElement('div');
     bar.style='position:fixed;top:0;left:0;right:0;z-index:99;padding:12px 20px;background:#e67e22;color:#fff;text-align:center;font-family:Tajawal,sans-serif;font-size:.9rem;font-weight:700;box-shadow:0 2px 10px rgba(0,0,0,.3)';
@@ -113,7 +141,12 @@ function togglePw(){
 }
 
 async function login(){
-  const u = document.getElementById('l_user').value.trim();
+  // إن كان timeout mode: اقرأ اليوزر من sessionStorage
+  const isTimeout = location.search.includes('timeout=1');
+  const savedUser = JSON.parse(sessionStorage.getItem('last_user')||'null');
+  const u = isTimeout && savedUser
+    ? savedUser
+    : document.getElementById('l_user').value.trim();
   const p = document.getElementById('l_pass').value;
   const e = document.getElementById('l_err');
   e.textContent = '';
@@ -181,6 +214,8 @@ async function login(){
     role: acc.role, permissions: acc.permissions || {},
     loginAt: Date.now(),
   });
+  // حفظ اسم المستخدم لعرضه عند انتهاء الجلسة
+  sessionStorage.setItem('last_user', JSON.stringify(u));
   location.href = DB.firstAccessiblePage();
 }
 
