@@ -950,9 +950,10 @@ function renderInvoice(inv){
   const s   = DB.settings();
   const cur = s.currency||'د.إ';
   const payLbl = {cash:'نقد',card:'بطاقة',transfer:'تحويل'};
-  const logoHtml = s.logo
-    ? `<div class="rp-logo"><img src="${s.logo}"></div>`
-    : `<div class="rp-logo">${s.store_name?.[0]||'ط'}</div>`;
+  const _logoSrc = s.logo || localStorage.getItem('th_logo') || null;
+  const logoHtml = _logoSrc
+    ? `<div class="rp-logo"><img src="${_logoSrc}" style="width:100%;height:100%;object-fit:cover;border-radius:8px"></div>`
+    : `<div class="rp-logo" style="background:linear-gradient(135deg,#C9A84C,#a8893a);color:#fff;font-weight:900;font-size:1.2rem">${(s.store_name||'ط')[0]}</div>`;
   const custName = inv.customer_id ? (DB.customer(inv.customer_id)?.name||'') : '';
 
   document.getElementById('receiptPrint').innerHTML = `
