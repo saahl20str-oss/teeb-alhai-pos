@@ -878,11 +878,11 @@ function loadCustomers(){
   if(cur) sel.value=cur;
 }
 
-// Populate suppliers datalist (from suppliers.html storage)
+// Populate suppliers datalist (يُقرأ الآن عبر DB — متزامن مع Supabase)
 function loadSuppliersList(){
   const dl = document.getElementById('supplierList');
   if(!dl) return;
-  const sups = JSON.parse(localStorage.getItem('th_suppliers')) || [];
+  const sups = DB.getSuppliers();
   dl.innerHTML = sups.map(s=>`<option value="${s.name}">`).join('');
 }
 
@@ -1576,6 +1576,12 @@ renderCart();
 calcTotals();
 updateDiag();
 document.getElementById('saleInput').focus();
+
+window.addEventListener('th:synced', ()=>{
+  loadCustomers();
+  loadSuppliersList();
+  updateDiag();
+});
 </script>
 </body>
 </html>
