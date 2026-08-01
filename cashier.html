@@ -348,24 +348,30 @@ input,select{font-family:inherit}
       <div class="sr-body">
         <!-- Customer -->
         <div style="margin-bottom:10px">
-          <div style="font-size:.72rem;color:var(--tx3);margin-bottom:5px;font-weight:700;display:flex;justify-content:space-between;align-items:center">
-            <span>العميل</span>
-            <button onclick="toggleQuickCust()" style="font-size:.72rem;color:var(--g);background:none;border:none;cursor:pointer;font-family:'Tajawal',sans-serif;padding:2px 6px;border-radius:4px;transition:.12s" onmouseover="this.style.background='var(--gl)'" onmouseout="this.style.background='none'">+ عميل جديد</button>
-          </div>
+          <div style="font-size:.72rem;color:var(--tx3);margin-bottom:5px;font-weight:700">العميل</div>
           <select class="cust-sel" id="custSelect" onchange="onCustChange()">
-            <option value="">— عميل عادي —</option>
+            <option value="">— عميل عادي (بدون اسم) —</option>
           </select>
           <!-- Customer phone display -->
           <div id="custPhone" style="display:none;margin-top:5px;padding:6px 10px;background:var(--gl);border-radius:7px;font-size:.76rem;color:var(--gd);display:flex;align-items:center;justify-content:space-between">
             <span id="custPhoneNum" style="font-family:'IBM Plex Mono',monospace;font-weight:700"></span>
             <a id="custPageLink" href="customers.html" style="font-size:.7rem;color:var(--g);text-decoration:none">عرض الملف ←</a>
           </div>
+          <button id="quickCustToggleBtn" onclick="toggleQuickCust()" style="width:100%;margin-top:7px;padding:9px;background:var(--s3);border:1.5px dashed var(--bd2);color:var(--tx2);border-radius:8px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif;transition:.12s" onmouseover="this.style.borderColor='var(--g)';this.style.color='var(--g)'" onmouseout="this.style.borderColor='var(--bd2)';this.style.color='var(--tx2)'">
+            + إضافة عميل جديد (الاسم ورقم الهاتف)
+          </button>
           <div id="quickCustForm" style="display:none;margin-top:8px;padding:10px;background:var(--s3);border:1px solid var(--bd2);border-radius:8px">
-            <input id="qc_name" placeholder="اسم العميل" style="width:100%;padding:7px 10px;background:var(--s1);border:1px solid var(--bd2);border-radius:6px;color:var(--tx);font-size:.8rem;font-family:'Tajawal',sans-serif;margin-bottom:6px">
-            <input id="qc_phone" placeholder="رقم الهاتف (اختياري)" dir="ltr" style="width:100%;padding:7px 10px;background:var(--s1);border:1px solid var(--bd2);border-radius:6px;color:var(--tx);font-size:.8rem;font-family:'Tajawal',sans-serif;margin-bottom:8px">
+            <div class="fg" style="margin-bottom:6px">
+              <label style="font-size:.7rem;font-weight:700;color:var(--tx3);display:block;margin-bottom:3px">اسم العميل *</label>
+              <input id="qc_name" placeholder="مثال: أحمد محمد" style="width:100%;padding:8px 10px;background:var(--s1);border:1px solid var(--bd2);border-radius:6px;color:var(--tx);font-size:.84rem;font-family:'Tajawal',sans-serif">
+            </div>
+            <div class="fg" style="margin-bottom:8px">
+              <label style="font-size:.7rem;font-weight:700;color:var(--tx3);display:block;margin-bottom:3px">رقم الهاتف (اختياري)</label>
+              <input id="qc_phone" placeholder="05xxxxxxxx" dir="ltr" onkeydown="if(event.key==='Enter')saveQuickCust()" style="width:100%;padding:8px 10px;background:var(--s1);border:1px solid var(--bd2);border-radius:6px;color:var(--tx);font-size:.84rem;font-family:'Tajawal',sans-serif">
+            </div>
             <div style="display:flex;gap:6px">
-              <button onclick="saveQuickCust()" style="flex:1;padding:6px;background:var(--g);color:#1C1208;border:none;border-radius:6px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif">حفظ واختيار</button>
-              <button onclick="toggleQuickCust()" style="padding:6px 12px;background:var(--s4);color:var(--tx3);border:none;border-radius:6px;font-size:.78rem;cursor:pointer;font-family:'Tajawal',sans-serif">إلغاء</button>
+              <button onclick="saveQuickCust()" style="flex:1;padding:8px;background:var(--g);color:#1C1208;border:none;border-radius:6px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif">✓ حفظ واختيار هذا العميل</button>
+              <button onclick="toggleQuickCust()" style="padding:8px 14px;background:var(--s4);color:var(--tx3);border:none;border-radius:6px;font-size:.8rem;cursor:pointer;font-family:'Tajawal',sans-serif">إلغاء</button>
             </div>
           </div>
         </div>
@@ -479,8 +485,15 @@ input,select{font-family:inherit}
             <input id="rcvUnitCustom" placeholder="وحدة مخصصة" style="display:none;margin-top:6px;padding:7px 10px;background:var(--s3);border:1.5px solid var(--bd);border-radius:7px;color:var(--tx);font-size:.86rem;width:100%">
           </div>
           <div class="fg">
-            <label>المواصفات</label>
-            <textarea id="rcvSpecs" rows="2" placeholder="مثال: تركيز 30%، حجم 12 مل، عبوة زجاجية فاخرة…"></textarea>
+            <label style="display:flex;justify-content:space-between;align-items:center">
+              <span>المواصفات</span>
+              <button type="button" onclick="generateSpecsAI()" id="specsAIBtn"
+                style="font-size:.72rem;font-weight:700;color:var(--g);background:var(--gl);border:1px solid rgba(201,168,76,.35);
+                padding:3px 10px;border-radius:6px;cursor:pointer;font-family:'Tajawal',sans-serif;transition:.12s"
+                onmouseover="this.style.background='var(--g)';this.style.color='#1C1208'"
+                onmouseout="this.style.background='var(--gl)';this.style.color='var(--g)'">✨ توليد بالذكاء الاصطناعي</button>
+            </label>
+            <textarea id="rcvSpecs" rows="2" placeholder="مثال: تركيز 30%، حجم 12 مل، عبوة زجاجية فاخرة… — أو اضغط «توليد» بعد تعبئة الاسم والفئة والملاحظات"></textarea>
           </div>
         </div>
 
@@ -889,20 +902,23 @@ function loadSuppliersList(){
 // Quick add customer
 function toggleQuickCust(){
   const f = document.getElementById('quickCustForm');
+  const btn = document.getElementById('quickCustToggleBtn');
   const show = f.style.display === 'none';
   f.style.display = show ? 'block' : 'none';
+  if(btn) btn.style.display = show ? 'none' : 'block';
   if(show){ document.getElementById('qc_name').value=''; document.getElementById('qc_phone').value=''; setTimeout(()=>document.getElementById('qc_name').focus(),50); }
 }
 function saveQuickCust(){
   const name  = document.getElementById('qc_name').value.trim();
   const phone = document.getElementById('qc_phone').value.trim();
-  if(!name){ toast('أدخل اسم العميل','err'); return; }
+  if(!name){ toast('أدخل اسم العميل','err'); document.getElementById('qc_name').focus(); return; }
   const c = { id:'CUS'+Date.now(), name, phone, email:'', address:'', notes:'' };
   DB.saveCustomer(c);
   loadCustomers();
   document.getElementById('custSelect').value = c.id;
+  onCustChange();
   toggleQuickCust();
-  toast('تم إضافة العميل ✓');
+  toast('تم إضافة العميل ✓ — سيُربط بهذه الفاتورة تلقائياً');
 }
 
 // Barcode generator for new products
@@ -1112,6 +1128,51 @@ function calcRcvPrice(){
   const cost   = Number(document.getElementById('rcvCost').value)||0;
   const margin = Number(document.getElementById('rcvMargin').value)||30;
   if(cost>0) document.getElementById('rcvPrice').value = (cost*(1+margin/100)).toFixed(2);
+}
+
+// ─── توليد المواصفات بالذكاء الاصطناعي (عبر Supabase Edge Function) ───
+async function generateSpecsAI(){
+  const name    = document.getElementById('rcvName').value.trim();
+  const cat     = document.getElementById('rcvCat').value;
+  const company = document.getElementById('rcvCompany').value.trim();
+  const notesEl = document.getElementById('rcvNotes').value.trim();
+  const unit    = rcvUnit==='أخرى' ? (document.getElementById('rcvUnitCustom').value.trim()||'أخرى') : rcvUnit;
+
+  if(!name){ toast('أدخل اسم المنتج أولاً','err'); document.getElementById('rcvName').focus(); return; }
+
+  const btn = document.getElementById('specsAIBtn');
+  const specsEl = document.getElementById('rcvSpecs');
+  const oldBtnText = btn.textContent;
+  btn.disabled = true; btn.textContent = '⏳ جارٍ التوليد…';
+
+  try {
+    const r = await fetch(`${_SB_URL}/functions/v1/generate-specs`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': _SB_KEY,
+        'Authorization': 'Bearer ' + _SB_KEY,
+      },
+      body: JSON.stringify({
+        name, category: cat, company, unit,
+        existing_notes: notesEl,
+        existing_specs: specsEl.value.trim(),
+      }),
+    });
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    if(data?.specs){
+      specsEl.value = data.specs;
+      toast('✓ تم توليد المواصفات — راجعها قبل الحفظ');
+    } else {
+      throw new Error('لا يوجد رد');
+    }
+  } catch(e){
+    console.warn('AI specs generation failed:', e.message);
+    toast('تعذّر التوليد — تحقق من إعداد الـ Edge Function (راجع التوثيق)', 'err');
+  } finally {
+    btn.disabled = false; btn.textContent = oldBtnText;
+  }
 }
 
 function scanReceive(){
