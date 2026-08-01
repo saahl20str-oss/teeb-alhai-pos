@@ -1165,7 +1165,7 @@ async function openInvDrawer(id){
       ${(inv.items||[]).map(it=>`<div class="dl-row">
         <div class="dl-dot" style="background:var(--g)"></div>
         <div style="flex:1"><div style="font-size:.83rem;font-weight:600">${it.name}</div><div style="font-size:.69rem;color:var(--tx4)">${it.unit||'وحدة'} × ${it.qty}</div></div>
-        <div class="mono" style="font-size:.8rem;font-weight:700">${DB.fmt(Number(it.price||0)*Number(it.qty||0))} ${cur}</div>
+        <div class="mono" style="font-size:.8rem;font-weight:700">${DB.fmt(Number(inv.type==='purchase'?(it.cost||it.price||0):(it.price||0))*Number(it.qty||0))} ${cur}</div>
       </div>`).join('')}
     </div></div>
     <div class="ds"><div class="ds-title">الإجماليات</div>
