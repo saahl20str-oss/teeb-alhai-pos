@@ -141,6 +141,10 @@ a{text-decoration:none;color:inherit}button{font-family:inherit;cursor:pointer;b
     <a href="customers.html" class="tb-link">العملاء</a>
     <a href="users.html"     class="tb-link on">الموظفون</a>
   </nav>
+  <!-- Hamburger للجوال -->
+  <button class="tb-burger" id="tbBurger" onclick="toggleMobileNav()" aria-label="القائمة">
+    <span></span><span></span><span></span>
+  </button>
   <div style="display:flex;align-items:center;gap:8px">
     <span class="tb-user" id="tbUser">—</span>
     <button class="tb-out" onclick="logout()">خروج</button>
