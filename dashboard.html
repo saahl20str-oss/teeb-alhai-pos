@@ -1276,6 +1276,16 @@ function closeHandoverModal(){
   document.getElementById('handoverModal').classList.remove('on');
 }
 
+// حذف كل صفوف جدول من Supabase فعلياً (مو محلياً فقط)
+async function _wipeSupabaseTable(table, filterCol){
+  try {
+    await fetch(`${_SB_URL}/rest/v1/${table}?${filterCol}=not.is.null`, {
+      method: 'DELETE',
+      headers: { apikey: _SB_KEY, Authorization: 'Bearer ' + _SB_KEY },
+    });
+  } catch(e){ console.warn('فشل مسح جدول', table, e.message); }
+}
+
 async function runHandover(){
   const p1 = document.getElementById('hov_pass1').value;
   const p2 = document.getElementById('hov_pass2').value;
@@ -1287,24 +1297,45 @@ async function runHandover(){
   if(p1 !== p2){ err.textContent = 'كلمتا المرور غير متطابقتين'; return; }
   if(cf !== 'تأكيد'){ err.textContent = 'اكتب كلمة "تأكيد" بالضبط للموافقة'; return; }
 
-  // 1. Wipe transactional data (محلياً فقط — راجع الملاحظة أدناه)
+  // 1. مسح البيانات فعلياً من Supabase (وليس محلياً فقط)
+  await Promise.all([
+    _wipeSupabaseTable('th_products',  'barcode'),
+    _wipeSupabaseTable('th_invoices',  'id'),
+    _wipeSupabaseTable('th_customers', 'id'),
+    _wipeSupabaseTable('th_suppliers', 'id'),
+    _wipeSupabaseTable('th_stock_log', 'id'),
+  ]);
+
+  // 2. مسح النسخة المحلية أيضاً حتى لا تُعاد من الكاش
   DB._set(DB.K.products, []);
   DB._set(DB.K.invoices, []);
   DB._set(DB.K.stockLog, []);
   DB._set(DB.K.customers, []);
   localStorage.removeItem('th_suppliers');
 
-  // 2. Update admin password
+  // 3. حذف كل حسابات الموظفين ما عدا المدير، وتحديث كلمة مرور المدير
   const accounts = DB.accountsSync();
-  const idx = accounts.findIndex(a=>a.username==='admin');
-  if(idx>=0){
-    accounts[idx].password = p1;
-    accounts[idx].active = true;
-    accounts[idx].role = 'admin';
-    DB.saveAccounts(accounts);
+  const adminAcc = accounts.find(a=>a.username==='admin');
+  for(const a of accounts){
+    if(a.username !== 'admin') await DB.deleteAccount(a.id);
+  }
+  if(adminAcc){
+    const newHash = await DB.hashPassword(p1);
+    await DB.saveAccount({
+      ...adminAcc,
+      password_hash: newHash,
+      password: null,
+      active: true,
+      role: 'admin',
+      password_changed_at: Date.now(),
+      password_warning_dismissed: false,
+    });
   }
 
-  // 3. Show success step
+  // 4. إنهاء الجلسة الحالية — على المالك الجديد تسجيل الدخول بكلمة المرور الجديدة
+  DB.clearSession();
+
+  // 5. عرض خطوة النجاح
   document.getElementById('hovStep1').style.display='none';
   document.getElementById('hovStep2').style.display='block';
 }
