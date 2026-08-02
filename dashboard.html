@@ -969,7 +969,7 @@ async function getStagnantProducts(products, days){
   });
 }
 async function renderStagnant(invoices, products){
-  const list = getStagnantProducts(products, 60).slice(0,6);
+  const list = (await getStagnantProducts(products, 60)).slice(0,6);
   const el = document.getElementById('stagnantList');
   if(!list.length){ el.innerHTML = `<div class="empty" style="padding:18px"><div class="empty-t" style="color:var(--gr)">لا منتجات راكدة ✓</div></div>`; return; }
   const sales = (DB.invoices()).filter(i=>i.type==='sale');
