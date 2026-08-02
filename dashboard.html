@@ -1314,14 +1314,22 @@ async function runHandover(){
   localStorage.removeItem('th_suppliers');
 
   // 3. حذف كل حسابات الموظفين ما عدا المدير، وتحديث كلمة مرور المدير
+  // (نستخدم fetch منتظرة فعلياً — مو _sbPush "أطلق ولا تنتظر" — لضمان اكتمال كل حذف)
   const accounts = DB.accountsSync();
   const adminAcc = accounts.find(a=>a.username==='admin');
   for(const a of accounts){
-    if(a.username !== 'admin') await DB.deleteAccount(a.id);
+    if(a.username !== 'admin'){
+      try {
+        await fetch(`${_SB_URL}/rest/v1/th_accounts?id=eq.${a.id}`, {
+          method: 'DELETE',
+          headers: { apikey: _SB_KEY, Authorization: 'Bearer ' + _SB_KEY },
+        });
+      } catch(e){ console.warn('فشل حذف حساب', a.username, e.message); }
+    }
   }
   if(adminAcc){
     const newHash = await DB.hashPassword(p1);
-    await DB.saveAccount({
+    const updatedAdmin = {
       ...adminAcc,
       password_hash: newHash,
       password: null,
@@ -1329,7 +1337,22 @@ async function runHandover(){
       role: 'admin',
       password_changed_at: Date.now(),
       password_warning_dismissed: false,
-    });
+    };
+    try {
+      await fetch(`${_SB_URL}/rest/v1/th_accounts?id=eq.${adminAcc.id}`, {
+        method: 'PATCH',
+        headers: {
+          apikey: _SB_KEY, Authorization: 'Bearer ' + _SB_KEY,
+          'Content-Type': 'application/json', Prefer: 'return=minimal',
+        },
+        body: JSON.stringify({
+          password_hash: newHash, password: null, active: true, role: 'admin',
+          password_changed_at: updatedAdmin.password_changed_at, password_warning_dismissed: false,
+        }),
+      });
+    } catch(e){ console.warn('فشل تحديث كلمة مرور المدير', e.message); }
+    DB._accCache = [updatedAdmin];
+    DB._set(DB.K.accounts, [updatedAdmin]);
   }
 
   // 4. إنهاء الجلسة الحالية — على المالك الجديد تسجيل الدخول بكلمة المرور الجديدة
