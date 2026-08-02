@@ -473,7 +473,7 @@ const DB = {
     try {
       // إصلاح: كانت تستدعي _sb() غير الموجودة، الصحيح _sbGet()
       const rows = await _sbGet('th_suppliers?select=*&order=name.asc');
-      if(rows?.length){
+      if(Array.isArray(rows)){
         _set(_K.suppliers, rows);
         window.dispatchEvent(new CustomEvent('th:synced'));
       }
@@ -519,7 +519,7 @@ async function syncFromSupabase() {
     }
     // Products
     const prods = await _sbGet('th_products?select=*&order=updated_at.desc&limit=1000');
-    if (prods?.length) {
+    if (Array.isArray(prods)) {
       const local = _get(_K.products) || [];
       // Merge: Supabase wins for non-image fields, keep local images
       const merged = prods.map(sp => {
@@ -530,17 +530,17 @@ async function syncFromSupabase() {
     }
     // Invoices
     const invs = await _sbGet('th_invoices?select=*&order=at.desc&limit=2000');
-    if (invs?.length) _set(_K.invoices, invs);
+    if (Array.isArray(invs)) _set(_K.invoices, invs);
     // Customers
     const custs = await _sbGet('th_customers?select=*&order=name.asc');
-    if (custs?.length) _set(_K.customers, custs);
+    if (Array.isArray(custs)) _set(_K.customers, custs);
     // Stock log
     const logs = await _sbGet('th_stock_log?select=*&order=at.desc&limit=500');
-    if (logs?.length) _set(_K.stockLog, logs);
+    if (Array.isArray(logs)) _set(_K.stockLog, logs);
 
     // Suppliers
     const sups = await _sbGet('th_suppliers?select=*&order=name.asc');
-    if(sups?.length) _set(_K.suppliers, sups);
+    if(Array.isArray(sups)) _set(_K.suppliers, sups);
     console.log('[Supabase] تمت المزامنة بنجاح ✓');
   } catch (e) {
     console.warn('[Supabase] فشلت المزامنة — يعمل من localStorage', e.message);
@@ -552,18 +552,18 @@ DB.ready = _fullInitialSync();
 // ─── مزامنة دورية كل 30 ثانية (للأجهزة الأخرى) ─────────
 setInterval(async () => {
   const prods = await _sbGet('th_products?select=*&order=updated_at.desc&limit=1000');
-  if (prods?.length) {
+  if (Array.isArray(prods)) {
     const local = _get(_K.products) || [];
     _set(_K.products, prods.map(sp => ({ ...sp, img: local.find(x=>x.barcode===sp.barcode)?.img||null })));
   }
   const invs = await _sbGet('th_invoices?select=*&order=at.desc&limit=2000');
-  if (invs?.length) _set(_K.invoices, invs);
+  if (Array.isArray(invs)) _set(_K.invoices, invs);
   const custs = await _sbGet('th_customers?select=*&order=name.asc');
-  if (custs?.length) _set(_K.customers, custs);
+  if (Array.isArray(custs)) _set(_K.customers, custs);
   const sups = await _sbGet('th_suppliers?select=*&order=name.asc');
-  if (sups?.length) _set(_K.suppliers, sups);
+  if (Array.isArray(sups)) _set(_K.suppliers, sups);
   const accs = await _sbGet('th_accounts?select=*&order=created_at.asc');
-  if (accs?.length) { DB._accCache = accs; _set(_K.accounts, accs); }
+  if (Array.isArray(accs)) { DB._accCache = accs; _set(_K.accounts, accs); }
   window.dispatchEvent(new CustomEvent('th:synced'));
 }, 30000);
 
